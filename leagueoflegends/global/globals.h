@@ -4,8 +4,8 @@
 
 namespace globals
 {
-	extern LPCWSTR processName;
 	extern QWORD moduleBase;
+	extern MODULEINFO moduleInfo;
 
 	extern float windowWidth;
 	extern float windowHeight;
@@ -21,6 +21,11 @@ namespace globals
 
 	namespace scripts
 	{
+		namespace orbwalker
+		{
+			extern OrbwalkState orbwalkState;
+		}
+
 		namespace recalls
 		{
 			extern std::vector<RecallInfo> recallList;

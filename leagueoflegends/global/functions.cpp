@@ -3,6 +3,15 @@
 namespace functions
 {
 	float lastRefreshTime = 0.0f;
+	
+	void* spoof_trampoline = 0x0;
+
+	void Init()
+	{
+		spoof_trampoline = (void*)mem::ScanModInternal((char*)"\xFF\x23", (char*)"xx", (char*)globals::moduleBase);
+
+		LoadSettings();
+	}
 
 	void SaveSettings()
 	{
@@ -13,6 +22,7 @@ namespace functions
 		std::string connChar = "=";
 
 		settings << "isMenuOpen" << connChar << settings::isMenuOpen << std::endl;
+		settings << "scripts::orbwalker::enabled" << connChar << settings::scripts::orbwalker::enabled << std::endl;
 		settings << "scripts::cooldowns" << connChar << settings::scripts::cooldowns << std::endl;
 		settings << "scripts::recalls" << connChar << settings::scripts::recalls << std::endl;
 
@@ -39,6 +49,8 @@ namespace functions
 
 			if (name == "isMenuOpen")
 				settings::isMenuOpen = boolValue;
+			else if (name == "scripts::orbwalker::enabled")
+				settings::scripts::orbwalker::enabled = boolValue;
 			else if (name == "scripts::cooldowns")
 				settings::scripts::cooldowns = boolValue;
 			else if (name == "scripts::recalls")
@@ -48,6 +60,32 @@ namespace functions
 		settings.close();
 	}
 
+	void RefreshArrays()
+	{
+		float gameTime = GetGameTime();
+		if (gameTime < lastRefreshTime + 0.1f) return;
+		lastRefreshTime = gameTime;
+
+		globals::heroes.clear();
+
+		for (int i = 0; i < globals::heroManager->GetListSize(); i++)
+		{
+			Object* obj = globals::heroManager->GetIndex(i);
+			if (!IsValidPtr(obj)) continue;
+			globals::heroes.push_back(obj);
+		}
+	}
+
+	bool IsGameFocused()
+	{
+		return GetActiveWindow() == hooks::impl::windowDX;
+	}
+
+	float GetGameTime()
+	{
+		return *(float*)(globals::moduleBase + oGameTime);
+	}
+
 	Vector3 ReadVector3(QWORD offset)
 	{
 		Vector3 result;
@@ -55,6 +93,14 @@ namespace functions
 		result.y = *(float*)(offset + 0x4);
 		result.z = *(float*)(offset + 0x8);
 		return result;
+	}
+
+	Vector2 GetMousePos()
+	{
+		if (!IsGameFocused()) return Vector2();
+		POINT curMouse;
+		bool getMouse = GetCursorPos(&curMouse);
+		return Vector2(curMouse.x, curMouse.y);
 	}
 
 	Vector3 GetBaseDrawPosition(Object* obj)
@@ -76,29 +122,18 @@ namespace functions
 		return Vector2(out.x, out.y);
 	}
 
-	bool IsGameFocused()
+	void IssueOrder()
 	{
-		return GetActiveWindow() == hooks::impl::windowDX;
-	}
+		typedef bool(__fastcall* fnTryRightClick)(QWORD* player, unsigned int* params);
+		fnTryRightClick _fnTryRightClick = (fnTryRightClick)(globals::moduleBase + oAttackMove);
 
-	float GetGameTime()
-	{
-		return *(float*)(globals::moduleBase + oGameTime);
-	}
+		Vector2 mousePos = GetMousePos();
 
-	void RefreshArrays()
-	{
-		float gameTime = GetGameTime();
-		if (gameTime < lastRefreshTime + 0.1f) return;
-		lastRefreshTime = gameTime;
+		unsigned int* params = new unsigned int[20];
+		params[17] = (int)mousePos.x;
+		params[18] = (int)mousePos.y;
+		params[19] = 2;
 
-		globals::heroes.clear();
-
-		for (int i = 0; i < globals::heroManager->GetListSize(); i++)
-		{
-			Object* obj = globals::heroManager->GetIndex(i);
-			if (!IsValidPtr(obj)) continue;
-			globals::heroes.push_back(obj);
-		}
+		spoof_call(spoof_trampoline, _fnTryRightClick, (QWORD*)globals::localPlayer, params);
 	}
 }

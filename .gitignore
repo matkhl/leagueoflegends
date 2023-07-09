@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/leagueoflegends
+/packages/Microsoft.Windows.CppWinRT.2.0.210806.1
+/start
+/Win32
+/x64/Release

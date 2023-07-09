@@ -9,6 +9,12 @@ namespace settings
 
 	namespace scripts
 	{
+		namespace orbwalker
+		{
+			bool enabled = true;
+			float clickDelay = 0.03f;
+		}
+
 		bool cooldowns = true;
 		bool recalls = true;
 	}

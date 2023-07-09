@@ -55,6 +55,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -198,15 +199,14 @@
     <ClInclude Include="kiero\minhook\src\hde\table64.h" />
     <ClInclude Include="kiero\minhook\src\trampoline.h" />
     <ClInclude Include="mem\mem.h" />
+    <ClInclude Include="mem\spoof_call.h" />
     <ClInclude Include="menu\menu.h" />
-    <ClInclude Include="proc\proc.h" />
     <ClInclude Include="render\render.h" />
     <ClInclude Include="scripts\scripts.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="classes\classes.cpp" />
-    <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="global\functions.cpp" />
     <ClCompile Include="global\globals.cpp" />
     <ClCompile Include="global\settings.cpp" />
@@ -225,9 +225,9 @@
     <ClCompile Include="kiero\minhook\src\hde\hde64.c" />
     <ClCompile Include="kiero\minhook\src\hook.c" />
     <ClCompile Include="kiero\minhook\src\trampoline.c" />
+    <ClCompile Include="main\dllmain.cpp" />
     <ClCompile Include="mem\mem.cpp" />
     <ClCompile Include="menu\menu.cpp" />
-    <ClCompile Include="proc\proc.cpp" />
     <ClCompile Include="render\render.cpp" />
     <ClCompile Include="render\renderfunctions.cpp" />
     <ClCompile Include="scripts\scripts.cpp" />
@@ -236,9 +236,13 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <MASM Include="mem\spoofer.asm" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\Microsoft.Windows.CppWinRT.2.0.210806.1\build\native\Microsoft.Windows.CppWinRT.targets" Condition="Exists('..\packages\Microsoft.Windows.CppWinRT.2.0.210806.1\build\native\Microsoft.Windows.CppWinRT.targets')" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

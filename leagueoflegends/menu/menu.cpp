@@ -103,12 +103,62 @@ namespace menu
 
 			TextCentered(std::string("Menu by Matkhl"));
 			ImGui::Spacing();
+			ImGui::Checkbox("Orbwalker", &settings::scripts::orbwalker::enabled);
+			ImGui::Spacing();
 			ImGui::Checkbox("Track cooldowns", &settings::scripts::cooldowns);
-			ImGui::Checkbox("Track recalls (Fixed)", &settings::scripts::recalls);
+			ImGui::Checkbox("Track recalls", &settings::scripts::recalls);
 			ImGui::Spacing();
 			if (ImGui::Button("Save")) functions::SaveSettings();
 
+			const float logHeight = ImGui::GetContentRegionAvail().y - ImGui::GetTextLineHeightWithSpacing();
+			ImGui::BeginChild("Log", ImVec2(-1, logHeight), true, ImGuiWindowFlags_HorizontalScrollbar);
+			ImGui::TextUnformatted(log::logBuffer.begin(), log::logBuffer.end());
+			if (log::scrollToBottom)
+				ImGui::SetScrollHereY(1.0f);
+			log::scrollToBottom = false;
+			ImGui::EndChild();
+
 			ImGui::End();
+		}
+	}
+
+	namespace log
+	{
+		static ImGuiTextBuffer logBuffer;
+		static bool scrollToBottom = true;
+
+		void Log(const char* message)
+		{
+			std::string newline = message + std::string("\n");
+			logBuffer.appendf(newline.c_str());
+		}
+
+		void Log(int number)
+		{
+			char buffer[sizeof(number) * CHAR_BIT / 2] = "";
+			sprintf_s(buffer, "%i", number);
+			Log(buffer);
+		}
+
+		void Log(double decimal)
+		{
+			char buffer[(sizeof(decimal) * CHAR_BIT / 4) + 2] = "";
+			sprintf_s(buffer, "%.2f", decimal);
+			Log(buffer);
+		}
+
+		void Log(uint64_t address)
+		{
+			char buffer[32] = "";
+			sprintf_s(buffer, "%llx", address);
+			Log(buffer);
+		}
+
+		void Log(void* pointer)
+		{
+			char buffer[32] = "";
+			sprintf_s(buffer, "%p", pointer);
+			Log(buffer);
 		}
 	}
 }

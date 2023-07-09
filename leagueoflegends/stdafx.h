@@ -5,10 +5,12 @@
 
 #include <windows.h>
 #include <iostream>
+#include <Psapi.h>
 
 #include <vector>
 #include <TlHelp32.h>
 #include <directxmath.h>
+#include <winternl.h>
 #include <string>
 #include <sstream>
 #include <fstream>
@@ -30,15 +32,14 @@
 #include "hooks/impl/impl.h"
 #include "menu/menu.h"
 
+#include "mem/mem.h"
+#include "mem/spoof_call.h"
 #include "global/colors.h"
 #include "global/offsets.h"
 #include "global/structs.h"
 #include "global/utils.h"
 #include "classes/classes.h"
-#include "input/input.h"
 #include "global/functions.h"
-#include "mem/mem.h"
-#include "proc/proc.h"
 #include "render/render.h"
 #include "global/settings.h"
 #include "global/globals.h"

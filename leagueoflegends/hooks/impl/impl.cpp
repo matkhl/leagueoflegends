@@ -10,7 +10,7 @@ namespace hooks
 
 		void Inits()
 		{
-			functions::LoadSettings();
+			functions::Init();
 
 			globals::localPlayer = *(Object**)(globals::moduleBase + oLocalPlayer);
 			globals::heroManager = *(HeroManager**)(globals::moduleBase + oHeroManager);
@@ -115,6 +115,10 @@ namespace hooks
 					settings::isMenuOpen = !settings::isMenuOpen;
 					functions::SaveSettings();
 				}
+
+				globals::scripts::orbwalker::orbwalkState = OrbwalkState::OFF;
+				if (GetAsyncKeyState(VK_SPACE))
+					globals::scripts::orbwalker::orbwalkState = OrbwalkState::ATTACK;
 			}
 
 			ImGui_ImplDX9_NewFrame();

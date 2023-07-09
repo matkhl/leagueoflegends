@@ -4,7 +4,38 @@ namespace scripts
 {
 	void Update()
 	{
+		if (settings::scripts::orbwalker::enabled) orbwalker::Update();
 		if (settings::scripts::recalls) recalls::Update();
+	}
+
+	namespace orbwalker
+	{
+		float lastIssueOrderTime = 0.0f;
+
+		void IssueOrder()
+		{
+			float gameTime = functions::GetGameTime();
+			if (!lastIssueOrderTime) lastIssueOrderTime = gameTime;
+			if (gameTime < lastIssueOrderTime + settings::scripts::orbwalker::clickDelay) return;
+			lastIssueOrderTime = gameTime;
+
+			functions::IssueOrder();
+		}
+
+		void Attack()
+		{
+			IssueOrder();
+		}
+
+		void Update()
+		{
+			switch (globals::scripts::orbwalker::orbwalkState)
+			{
+			case OrbwalkState::ATTACK:
+				Attack();
+				break;
+			}
+		}
 	}
 
 	namespace recalls

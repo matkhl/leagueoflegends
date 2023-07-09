@@ -4,6 +4,8 @@
 #define oGetHealthBarPosition 0x825F30
 #define oGetBaseDrawPosition 0x1F5AB0
 #define oWorldToScreen 0xDF2D10
+#define oTryRightClick 0x884580
+#define oAttackMove 0x884550
 
 //variables
 #define oGameTime 0x521EE00

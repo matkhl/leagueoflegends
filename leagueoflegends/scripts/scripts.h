@@ -6,6 +6,13 @@ namespace scripts
 {
 	void Update();
 
+	namespace orbwalker
+	{
+		void IssueOrder();
+		void Attack();
+		void Update();
+	}
+
 	namespace recalls
 	{
 		void RemoveRecall(int index);

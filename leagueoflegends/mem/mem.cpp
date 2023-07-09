@@ -1,50 +1,69 @@
 #include "../stdafx.h"
 
-bool Hook(void* toHook, void* ourFunct, int len) {
-	if (len < 5) {
-		return false;
-	}
-
-	DWORD curProtection;
-	VirtualProtect(toHook, len, PAGE_EXECUTE_READWRITE, &curProtection);
-
-	memset(toHook, 0x90, len);
-
-	DWORD relativeAddress = ((DWORD)ourFunct - (DWORD)toHook) - 5;
-
-	*(BYTE*)toHook = 0xE9;
-	*(DWORD*)((DWORD)toHook + 1) = relativeAddress;
-
-	DWORD temp;
-	VirtualProtect(toHook, len, curProtection, &temp);
-
-	return true;
-}
-
-void Patch(BYTE* dst, BYTE* src, unsigned int size)
+namespace mem
 {
-	DWORD oldprotect;
-	VirtualProtect(dst, size, PAGE_EXECUTE_READWRITE, &oldprotect);
-
-	memcpy(dst, src, size);
-	VirtualProtect(dst, size, oldprotect, &oldprotect);
-}
-
-void Nop(BYTE* dst, unsigned int size)
-{
-	DWORD oldprotect;
-	VirtualProtect(dst, size, PAGE_EXECUTE_READWRITE, &oldprotect);
-	memset(dst, NOP, size);
-	VirtualProtect(dst, size, oldprotect, &oldprotect);
-}
-
-uintptr_t FindDMAAddy(uintptr_t ptr, std::vector<unsigned int> offsets)
-{
-	uintptr_t addr = ptr;
-	for (unsigned int i = 0; i < offsets.size(); ++i)
+	char* ScanBasic(char* pattern, char* mask, char* begin, intptr_t size)
 	{
-		addr = *(uintptr_t*)addr;
-		addr += offsets[i];
+		intptr_t patternLen = strlen(mask);
+
+		for (int i = 0; i < size; i++)
+		{
+			bool found = true;
+			for (int j = 0; j < patternLen; j++)
+			{
+				if (mask[j] != '?' && pattern[j] != *(char*)((intptr_t)begin + i + j))
+				{
+					found = false;
+					break;
+				}
+			}
+			if (found)
+			{
+				return (begin + i);
+			}
+		}
+		return nullptr;
 	}
-	return addr;
+
+	char* ScanInternal(char* pattern, char* mask, char* begin, intptr_t size)
+	{
+		char* match{ nullptr };
+		MEMORY_BASIC_INFORMATION mbi{};
+
+		for (char* curr = begin; curr < begin + size; curr += mbi.RegionSize)
+		{
+			if (!VirtualQuery(curr, &mbi, sizeof(mbi)) || mbi.State != MEM_COMMIT || mbi.Protect == PAGE_NOACCESS) continue;
+
+			match = ScanBasic(pattern, mask, curr, mbi.RegionSize);
+
+			if (match != nullptr)
+			{
+				break;
+			}
+		}
+		return match;
+	}
+
+	char* TO_CHAR(wchar_t* string)
+	{
+		size_t len = wcslen(string) + 1;
+		char* c_string = new char[len];
+		size_t numCharsRead;
+		wcstombs_s(&numCharsRead, c_string, len, string, _TRUNCATE);
+		return c_string;
+	}
+
+	PEB* GetPEB()
+	{
+		PEB* peb = (PEB*)__readgsqword(0x60);
+
+		return peb;
+	}
+
+	char* ScanModInternal(char* pattern, char* mask, char* moduleBase)
+	{
+		char* match = ScanInternal(pattern, mask, moduleBase, globals::moduleInfo.SizeOfImage);
+
+		return match;
+	}
 }

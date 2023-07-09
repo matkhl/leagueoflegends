@@ -4,9 +4,6 @@
     <Filter Include="mem">
       <UniqueIdentifier>{5a4fe51e-5662-431e-827c-4337615faa38}</UniqueIdentifier>
     </Filter>
-    <Filter Include="proc">
-      <UniqueIdentifier>{fa2028c5-7fb4-4501-817d-c1b17b3e4325}</UniqueIdentifier>
-    </Filter>
     <Filter Include="render">
       <UniqueIdentifier>{2a1bb88d-0576-4781-a0e1-5e285260e70f}</UniqueIdentifier>
     </Filter>
@@ -55,14 +52,8 @@
     <ClInclude Include="classes\classes.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="proc\proc.h">
-      <Filter>proc</Filter>
-    </ClInclude>
     <ClInclude Include="render\render.h">
       <Filter>render</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>main</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
       <Filter>imgui</Filter>
@@ -142,6 +133,12 @@
     <ClInclude Include="scripts\scripts.h">
       <Filter>scripts</Filter>
     </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>main</Filter>
+    </ClInclude>
+    <ClInclude Include="mem\spoof_call.h">
+      <Filter>mem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="global\globals.cpp">
@@ -153,17 +150,8 @@
     <ClCompile Include="mem\mem.cpp">
       <Filter>mem</Filter>
     </ClCompile>
-    <ClCompile Include="proc\proc.cpp">
-      <Filter>proc</Filter>
-    </ClCompile>
     <ClCompile Include="render\render.cpp">
       <Filter>render</Filter>
-    </ClCompile>
-    <ClCompile Include="dllmain.cpp">
-      <Filter>main</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>main</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_impl_win32.cpp">
       <Filter>imgui</Filter>
@@ -225,8 +213,19 @@
     <ClCompile Include="scripts\scripts.cpp">
       <Filter>scripts</Filter>
     </ClCompile>
+    <ClCompile Include="main\dllmain.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="mem\spoofer.asm">
+      <Filter>mem</Filter>
+    </MASM>
   </ItemGroup>
 </Project>

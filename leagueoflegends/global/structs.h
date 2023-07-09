@@ -51,3 +51,11 @@ enum SpellIndex
 	Trinket,
 	Recall
 };
+
+enum OrbwalkState
+{
+	OFF,
+	ATTACK,
+	CLEAR,
+	HARASS
+};

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 
 //#define CONSOLE_ENABLED
 
@@ -22,7 +22,12 @@ DWORD __stdcall OnInject(LPVOID lpReserved)
 
 	std::cout << "Injected" << std::endl;
 
-	globals::moduleBase = (uintptr_t)GetModuleHandle(NULL);
+	globals::moduleBase = (uintptr_t)GetModuleHandle(nullptr);
+	if (!GetModuleInformation(GetCurrentProcess(), (HMODULE)globals::moduleBase, &globals::moduleInfo, sizeof(MODULEINFO)))
+	{
+		std::cout << "Failed to get module information." << std::endl;
+		return 0;
+	}
 
 	while (true)
 	{
