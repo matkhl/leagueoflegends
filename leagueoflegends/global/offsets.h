@@ -4,8 +4,8 @@
 #define oGetHealthBarPosition 0x825F30
 #define oGetBaseDrawPosition 0x1F5AB0
 #define oWorldToScreen 0xDF2D10
-#define oTryRightClick 0x884580
-#define oAttackMove 0x884550
+#define oTryRightClick 0x884700
+#define oIssueMove 0x883AE0
 
 //variables
 #define oGameTime 0x521EE00
@@ -13,6 +13,8 @@
 #define oHeroManager 0x2173340
 #define oViewport 0x39CDCA0
 #define oViewportW2S 0x270
+#define oHudInstance 0x2173230
+#define oHudInstanceHudInputOffset 0x28
 
 //structs
 #define oSpellLevel 0x28

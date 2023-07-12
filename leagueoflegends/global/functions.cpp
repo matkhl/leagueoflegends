@@ -124,10 +124,10 @@ namespace functions
 
 	void IssueOrder()
 	{
-		typedef bool(__fastcall* fnTryRightClick)(QWORD* player, unsigned int* params);
-		fnTryRightClick _fnTryRightClick = (fnTryRightClick)(globals::moduleBase + oAttackMove);
-
 		Vector2 mousePos = GetMousePos();
+
+		typedef bool(__fastcall* fnTryRightClick)(QWORD* player, unsigned int* params);
+		fnTryRightClick _fnTryRightClick = (fnTryRightClick)(globals::moduleBase + oTryRightClick);
 
 		unsigned int* params = new unsigned int[20];
 		params[17] = (int)mousePos.x;
@@ -135,5 +135,15 @@ namespace functions
 		params[19] = 2;
 
 		spoof_call(spoof_trampoline, _fnTryRightClick, (QWORD*)globals::localPlayer, params);
+	}
+
+	void IssueMove()
+	{
+		Vector2 mousePos = GetMousePos();
+
+		typedef bool(__fastcall* fnIssueMove)(QWORD* oHudInput, int screenX, int screenY, bool isAttackMove, int zeroOrOne, int order);
+		fnIssueMove _fnIssueMove = (fnIssueMove)(globals::moduleBase + oIssueMove);
+
+		spoof_call(spoof_trampoline, _fnIssueMove, (QWORD*)(*(QWORD*)(*(QWORD*)(globals::moduleBase + oHudInstance) + oHudInstanceHudInputOffset)), (int)mousePos.x, (int)mousePos.y, false, 0, 0);
 	}
 }

@@ -10,11 +10,10 @@ namespace hooks
 
 		void Inits()
 		{
-			functions::Init();
-
 			globals::localPlayer = *(Object**)(globals::moduleBase + oLocalPlayer);
 			globals::heroManager = *(HeroManager**)(globals::moduleBase + oHeroManager);
 
+			functions::Init();
 			render::Init();
 			menu::Init();
 
