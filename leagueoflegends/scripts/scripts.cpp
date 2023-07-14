@@ -4,9 +4,10 @@ namespace scripts
 {
 	void Init()
 	{
-		orbwalker::Init();
 		cooldowns::Init();
 		recalls::Init();
+		orbwalker::Init();
+		debug::Init();
 	}
 
 	void Update()
@@ -17,25 +18,49 @@ namespace scripts
 
 	namespace orbwalker
 	{
-		float lastIssueOrderTime = 0.0f;
+		float lastMoveTime = 0.0f;
+		float lastAttackTime = 0.0f;
 
-		void IssueMove()
+		float gameTime = 0.0f;
+
+		namespace actions
 		{
-			float gameTime = functions::GetGameTime();
-			if (!lastIssueOrderTime) lastIssueOrderTime = gameTime;
-			if (gameTime < lastIssueOrderTime + settings::GetFloat("orbwalker", "clickdelay", 0.05f)) return;
-			lastIssueOrderTime = gameTime;
+			void Idle()
+			{
+				if (!lastMoveTime) lastMoveTime = gameTime;
+				if (gameTime < lastMoveTime + settings::GetFloat("orbwalker", "clickdelay", 0.05f)) return;
+				lastMoveTime = gameTime;
 
-			Vector2 mousePos = functions::GetMousePos();
-			Vector3 mouseWorldPos = functions::GetMouseWorldPos();
+				functions::MoveToMousePos();
+			}
 
-			functions::IssueMove(mousePos);
-			functions::CastSpell(SpellIndex::Q, nullptr, mouseWorldPos);
+			void AttackObject(Object* obj)
+			{
+
+			}
 		}
 
-		void Attack()
+		namespace states
 		{
-			IssueMove();
+			void Attack()
+			{
+				actions::Idle();
+			}
+		}
+
+		bool StopOrbwalk()
+		{
+			return (
+				!functions::CanSendInput() ||
+				gameTime < lastAttackTime + globals::localPlayer->GetAttackWindup()
+			);
+		}
+
+		void CheckActiveAttack()
+		{
+			if (auto spellCast = globals::localPlayer->GetActiveSpellCast())
+				if (spellCast->IsAutoAttack())
+					lastAttackTime = spellCast->GetStartTime();
 		}
 
 		void Init()
@@ -47,10 +72,15 @@ namespace scripts
 
 		void Update()
 		{
+			gameTime = functions::GetGameTime();
+			CheckActiveAttack();
+
+			if (StopOrbwalk()) return;
+
 			switch (globals::scripts::orbwalker::orbwalkState)
 			{
 			case OrbwalkState::ATTACK:
-				Attack();
+				states::Attack();
 				break;
 			}
 		}
@@ -114,9 +144,9 @@ namespace scripts
 				}
 			}
 
-			for (int i = 0; i < globals::heroes.size(); i++)
+			for (int i = 0; i < globals::heroManager->GetListSize(); i++)
 			{
-				Object* obj = globals::heroes[i];
+				Object* obj = globals::heroManager->GetIndex(i);
 				if (!IsValidPtr(obj)) continue;
 				if (!obj->IsEnemy()) continue;
 				int state = obj->GetRecallState();
@@ -134,6 +164,14 @@ namespace scripts
 					continue;
 				}
 			}
+		}
+	}
+
+	namespace debug
+	{
+		void Init()
+		{
+			settings::GetBool("debug", "draw object data", false);
 		}
 	}
 }

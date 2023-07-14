@@ -5,26 +5,28 @@ namespace menu
 	static bool no_titlebar = true;
 	static bool no_border = true;
 	static bool no_resize = true;
-	static bool auto_resize = false;
+	static bool auto_resize = true;
 	static bool no_move = false;
-	static bool no_scrollbar = false;
+	static bool no_scrollbar = true;
 	static bool no_collapse = true;
 	static bool no_menu = true;
 	static bool start_pos_set = false;
 
 	ImGuiWindowFlags window_flags;
 
+	float nextSaveTime = 0.0f;
+
 	void Init()
 	{
 		ImGuiStyle* style = &ImGui::GetStyle();
 
-		style->WindowPadding = ImVec2(5.0f, 5.0f);
+		style->WindowPadding = ImVec2(6.0f, 14.0f);
 		style->WindowRounding = 0.0f;
 		style->FramePadding = ImVec2(4.0f, 4.0f);
 		style->FrameRounding = 0.0f;
-		style->ItemSpacing = ImVec2(4.0f, 3.0f);
-		style->ItemInnerSpacing = ImVec2(12.0f, 12.0f);
-		style->IndentSpacing = 6.0f;
+		style->ItemSpacing = ImVec2(8.0f, 20.0f);
+		style->ItemInnerSpacing = ImVec2(4.0f, 4.0f);
+		style->IndentSpacing = -20.0f;
 		style->ScrollbarSize = 12.0f;
 		style->ScrollbarRounding = 2.0f;
 		style->GrabMinSize = 4.0f;
@@ -76,7 +78,7 @@ namespace menu
 		if (no_collapse)	window_flags |= ImGuiWindowFlags_NoCollapse;
 		if (!no_menu)		window_flags |= ImGuiWindowFlags_MenuBar;
 
-		globals::menuSize = ImVec2(100.0f, 300.0f);
+		globals::menuSize = ImVec2(150.0f, 100.0f);
 
 		ImGui::SetNextWindowSize(globals::menuSize, ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(25, 25));
@@ -84,6 +86,11 @@ namespace menu
 		ImGui::GetIO().MouseDrawCursor = false;
 
 		std::cout << "Menu initialized" << std::endl;
+	}
+
+	void SaveSoon()
+	{
+		nextSaveTime = functions::GetGameTime() + 1.0f;
 	}
 
 	void TextCentered(std::string text) {
@@ -94,44 +101,55 @@ namespace menu
 		ImGui::Text(text.c_str());
 	}
 
+	void DrawMenu(std::pair<std::string, settings::SettingsGroup> group)
+	{
+		if (ImGui::BeginMenu(group.first.c_str())) {
+			bool first = true;
+			for (const auto& setting : group.second) {
+
+				if (first)
+					first = false;
+				else
+					ImGui::Separator();
+
+				const std::string& key = setting.first;
+				const settings::SettingValue& value = setting.second;
+
+				if (std::holds_alternative<bool>(value)) {
+					bool boolValue = std::get<bool>(value);
+					if (ImGui::Checkbox(key.c_str(), &boolValue)) SaveSoon();
+					settings::Set(group.first, setting.first, boolValue);
+				}
+				else if (std::holds_alternative<int>(value)) {
+					int intValue = std::get<int>(value);
+					const auto bounds = settings::GetBoundsInt(group.first, key, std::pair<int, int>(0, 1));
+					if (ImGui::SliderInt(key.c_str(), &intValue, bounds.first, bounds.second)) SaveSoon();
+					settings::Set(group.first, setting.first, intValue);
+				}
+				else if (std::holds_alternative<float>(value)) {
+					float floatValue = std::get<float>(value);
+					const auto bounds = settings::GetBoundsFloat(group.first, key, std::pair<float, float>(0.0f, 1.0f));
+					if (ImGui::SliderFloat(key.c_str(), &floatValue, bounds.first, bounds.second)) SaveSoon();
+					settings::Set(group.first, setting.first, floatValue);
+				}
+			}
+
+			ImGui::EndMenu();
+		}
+	}
+
 	void DynamicSettings()
 	{
+		for (const auto& key : scripts::settingsOrder) {
+			auto it = settings::data.find(key);
+			if (it != settings::data.end()) {
+				DrawMenu(*it);
+			}
+		}
+
 		for (const auto& group : settings::data) {
-			if (ImGui::BeginMenu(group.first.c_str())) {
-				bool first = true;
-				for (const auto& setting : group.second) {
-
-					if (first) {
-						first = false;
-					} else {
-						ImGui::Separator();
-					}
-
-					const std::string& key = setting.first;
-					const settings::SettingValue& value = setting.second;
-
-					if (std::holds_alternative<bool>(value)) {
-						bool boolValue = std::get<bool>(value);
-						ImGui::Checkbox(key.c_str(), &boolValue);
-						settings::Set(group.first, setting.first, boolValue);
-					}
-					else if (std::holds_alternative<int>(value)) {
-						ImGui::Text("%s:", key.c_str());
-						int intValue = std::get<int>(value);
-						const auto bounds = settings::GetBoundsInt(group.first, key, std::pair<int, int>(0, 1));
-						ImGui::SliderInt("##Value", &intValue, bounds.first, bounds.second);
-						settings::Set(group.first, setting.first, intValue);
-					}
-					else if (std::holds_alternative<float>(value)) {
-						ImGui::Text("%s:", key.c_str());
-						float floatValue = std::get<float>(value);
-						const auto bounds = settings::GetBoundsFloat(group.first, key, std::pair<float, float>(0.0f, 1.0f));
-						ImGui::SliderFloat("##Value", &floatValue, bounds.first, bounds.second);
-						settings::Set(group.first, setting.first, floatValue);
-					}
-				}
-
-				ImGui::EndMenu();
+			if (std::find(scripts::settingsOrder.begin(), scripts::settingsOrder.end(), group.first) == scripts::settingsOrder.end()) {
+				DrawMenu(group);
 			}
 		}
 	}
@@ -144,63 +162,15 @@ namespace menu
 		{
 			ImGui::Begin("menu", &globals::menuOpen, window_flags);
 
-			TextCentered(std::string("Menu by Matkhl"));
-			ImGui::Spacing();
-			
 			DynamicSettings();
-
-			ImGui::Spacing();
-			if (ImGui::Button("Save")) settings::Save();
-
-			const float logHeight = ImGui::GetContentRegionAvail().y - ImGui::GetTextLineHeightWithSpacing();
-			ImGui::BeginChild("Log", ImVec2(-1, logHeight), true, ImGuiWindowFlags_HorizontalScrollbar);
-			ImGui::TextUnformatted(log::logBuffer.begin(), log::logBuffer.end());
-			if (log::scrollToBottom)
-				ImGui::SetScrollHereY(1.0f);
-			log::scrollToBottom = false;
-			ImGui::EndChild();
 
 			ImGui::End();
 		}
-	}
 
-	namespace log
-	{
-		static ImGuiTextBuffer logBuffer;
-		static bool scrollToBottom = true;
-
-		void Log(const char* message)
+		if (nextSaveTime && functions::GetGameTime() >= nextSaveTime)
 		{
-			std::string newline = message + std::string("\n");
-			logBuffer.appendf(newline.c_str());
-		}
-
-		void Log(int number)
-		{
-			char buffer[sizeof(number) * CHAR_BIT / 2] = "";
-			sprintf_s(buffer, "%i", number);
-			Log(buffer);
-		}
-
-		void Log(double decimal)
-		{
-			char buffer[(sizeof(decimal) * CHAR_BIT / 4) + 2] = "";
-			sprintf_s(buffer, "%.2f", decimal);
-			Log(buffer);
-		}
-
-		void Log(uint64_t address)
-		{
-			char buffer[32] = "";
-			sprintf_s(buffer, "%llx", address);
-			Log(buffer);
-		}
-
-		void Log(void* pointer)
-		{
-			char buffer[32] = "";
-			sprintf_s(buffer, "%p", pointer);
-			Log(buffer);
+			settings::Save();
+			nextSaveTime = 0.0f;
 		}
 	}
 }

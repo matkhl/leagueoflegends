@@ -11,30 +11,11 @@ namespace functions
 		spoof_trampoline = (void*)mem::ScanModInternal((char*)"\xFF\x23", (char*)"xx", (char*)globals::moduleBase);
 	}
 
-	void RefreshArrays()
+	std::string GetHexString(QWORD hexNumber)
 	{
-		float gameTime = GetGameTime();
-		if (gameTime < lastRefreshTime + 0.1f) return;
-		lastRefreshTime = gameTime;
-
-		globals::heroes.clear();
-
-		for (int i = 0; i < globals::heroManager->GetListSize(); i++)
-		{
-			Object* obj = globals::heroManager->GetIndex(i);
-			if (!IsValidPtr(obj)) continue;
-			globals::heroes.push_back(obj);
-		}
-	}
-
-	bool IsGameFocused()
-	{
-		return GetActiveWindow() == hooks::impl::windowDX;
-	}
-
-	float GetGameTime()
-	{
-		return *(float*)(globals::moduleBase + oGameTime);
+		std::stringstream ss;
+		ss << std::hex << hexNumber;
+		return ss.str();
 	}
 
 	Vector3 ReadVector3(QWORD offset)
@@ -51,6 +32,59 @@ namespace functions
 		*(float*)(offset) = vector.x;
 		*(float*)(offset + 0x4) = vector.y;
 		*(float*)(offset + 0x8) = vector.z;
+	}
+
+	void PrintChat(std::string text)
+	{
+		typedef void(__thiscall* fnPrintChat)(QWORD* chatClient, const char* message, int colorId);
+		fnPrintChat _fnSendChat = (fnPrintChat)(globals::moduleBase + oPrintChat);
+		std::string formattedText = "[" + ConvertTime(GetGameTime()) + "] " + text;
+		std::string coloredText = CHAT_COLOR_("#" + GetHexString((DWORD)COLOR_GREEN >> 2), formattedText);
+		_fnSendChat((QWORD*)(*(QWORD*)(globals::moduleBase + oChatInstance)), coloredText.c_str(), 0);
+	}
+
+	void PrintChat(int number)
+	{
+		PrintChat(std::to_string(number));
+	}
+
+	void PrintChat(float number)
+	{
+		PrintChat(std::to_string(number));
+	}
+
+	void PrintChat(void* address)
+	{
+		PrintChat(GetHexString((QWORD)address));
+	}
+
+	float GetGameTime()
+	{
+		return *(float*)(globals::moduleBase + oGameTime);
+	}
+
+	std::string ConvertTime(float seconds) {
+		int minutes = (int)(seconds / 60);
+		seconds = fmod(seconds, 60);
+		int secs = (int)seconds;
+		int milliseconds = round((seconds - secs) * 1000);
+
+		std::stringstream ss;
+		ss << std::setw(2) << std::setfill('0') << minutes << ":";
+		ss << std::setw(2) << std::setfill('0') << secs << ".";
+		ss << std::setw(3) << std::setfill('0') << milliseconds;
+
+		return ss.str();
+	}
+
+	bool IsGameFocused()
+	{
+		return GetActiveWindow() == hooks::impl::windowDX;
+	}
+
+	bool IsChatOpen()
+	{
+		return *(bool*)(*(QWORD*)(globals::moduleBase + oChatClient) + oChatClientChatOpen);
 	}
 
 	Vector2 GetMousePos()
@@ -72,7 +106,7 @@ namespace functions
 		fnWorldToScreen _fnWorldToScreen = (fnWorldToScreen)(globals::moduleBase + oWorldToScreen);
 		QWORD* viewport = *(QWORD**)(globals::moduleBase + oViewport);
 		Vector3 out;
-		_fnWorldToScreen((QWORD*)((QWORD)viewport + (QWORD)oViewportW2S), &in, &out);
+		_fnWorldToScreen((QWORD*)((QWORD)viewport + oViewportW2S), &in, &out);
 		return Vector2(out.x, out.y);
 	}
 
@@ -84,7 +118,7 @@ namespace functions
 		_fnGetBaseDrawPosition((QWORD*)obj, &out);
 		return out;
 	}
-
+	
 	Vector2 GetHpBarPosition(Object* obj)
 	{
 		Vector3 hpBarPos = obj->GetPosition();
@@ -144,5 +178,28 @@ namespace functions
 		}
 
 		spoof_call(spoof_trampoline, _fnCastSpellWrapper, (QWORD*)(*(QWORD*)(*(QWORD*)(globals::moduleBase + oHudInstance) + oHudInstanceSpellInfo)), (QWORD*)spellInfo);
+	}
+
+	bool CanSendInput()
+	{
+		return globals::localPlayer->IsAlive() && IsGameFocused() && !IsChatOpen();
+	}
+
+	void AttackObject(Object* obj)
+	{
+		if (!CanSendInput()) return;
+
+		Vector3 headPos = obj->GetPosition();
+		const float objectHeight = *(float*)(obj->GetCharacterData() + oObjCharDataDataSize) * obj->GetScale();
+		headPos.y += objectHeight;
+
+		auto screenPos = WorldToScreen(headPos);
+		IssueOrder(screenPos);
+	}
+
+	void MoveToMousePos()
+	{
+		if (!CanSendInput()) return;
+		IssueMove(GetMousePos());
 	}
 }

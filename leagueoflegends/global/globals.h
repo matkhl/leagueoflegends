@@ -17,8 +17,8 @@ namespace globals
 	extern float windowHeight;
 
 	extern Object* localPlayer;
-	extern HeroManager* heroManager;
-	extern std::vector<Object*> heroes;
+	extern ObjectManager* heroManager;
+	extern ObjectManager* minionManager;
 
 	namespace scripts
 	{

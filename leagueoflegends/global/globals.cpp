@@ -15,8 +15,8 @@ namespace globals
 	float windowHeight = 0.0f;
 
 	Object* localPlayer;
-	HeroManager* heroManager;
-	std::vector<Object*> heroes;
+	ObjectManager* heroManager;
+	ObjectManager* minionManager;
 
 	namespace scripts
 	{

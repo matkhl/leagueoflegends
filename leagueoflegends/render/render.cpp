@@ -40,6 +40,7 @@ namespace render
 		{
 			if (settings::GetBool("cooldowns", "enabled", true)) cooldowns::Update();
 			if (settings::GetBool("recalls", "enabled", true)) recalls::Update();
+			debug::Update();
 		}
 		
 		namespace cooldowns
@@ -68,7 +69,7 @@ namespace render
 				Vector2 outerBorderAngle2 = Vector2(middleBorderAngle2.x + 1, middleBorderAngle2.y + 1);
 
 				RenderRectFilled(outerBorderAngle1.ToImVec(), outerBorderAngle2.ToImVec(), COLOR_DARK_TRANSPARENT, 0.0f, 0);
-				RenderRectFilled(middleBorderAngle1.ToImVec(), middleBorderAngle2.ToImVec(), COLOR_GREY, 0.0f, 0);
+				RenderRectFilled(middleBorderAngle1.ToImVec(), middleBorderAngle2.ToImVec(), COLOR_GRAY, 0.0f, 0);
 				RenderRectFilled(innerBorderAngle1.ToImVec(), innerBorderAngle2.ToImVec(), COLOR_DARK, 0.0f, 0);
 
 				for (int i = 0; i < 6; i++) {
@@ -87,7 +88,7 @@ namespace render
 
 			void Update()
 			{
-				for (Object* obj : globals::heroes)
+				for (auto obj : *globals::heroManager)
 				{
 					if (obj->IsAlive() && obj->IsVisible()) DrawCooldownBar(obj);
 				}
@@ -144,6 +145,29 @@ namespace render
 					bool teleporting = (recallInfo.state == RecallState::TELEPORTING || recallInfo.state == RecallState::TELEPORTING_FINISHED) ? true : false;
 					DrawRecall(relativePositionOffset, recallInfo.name, recallColor, teleporting);
 				}
+			}
+		}
+
+		namespace debug
+		{
+			void DrawData(Object* obj, int index)
+			{
+				RenderText("List id: " + std::to_string(index), functions::WorldToScreen(obj->GetPosition()).ToImVec(), 18.0f, COLOR_WHITE, true);
+			}
+
+			void DrawObjectData()
+			{
+				for (int i = 0; i < globals::minionManager->GetListSize(); i++)
+				{
+					auto obj = globals::minionManager->GetIndex(i);
+					if (obj->IsAlive() && obj->IsVisible())
+						DrawData(obj, i);
+				}
+			}
+
+			void Update()
+			{
+				if (settings::GetBool("debug", "draw object data", false)) DrawObjectData();
 			}
 		}
 	}

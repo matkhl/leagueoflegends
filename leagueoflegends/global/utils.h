@@ -8,5 +8,4 @@ typedef unsigned long long QWORD;
 
 #define PI 3.1415927f
 
-#define SCREENWIDTH ::GetSystemMetrics(SM_CXSCREEN)
-#define SCREENHEIGHT ::GetSystemMetrics(SM_CYSCREEN)
+#define CHAT_COLOR_(color, text) std::string("<font color='" + std::string(color) + "'>" + std::string(text) + "</font>")

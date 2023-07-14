@@ -5,6 +5,7 @@
 
 #include <windows.h>
 #include <iostream>
+#include <iomanip>
 #include <Psapi.h>
 
 #include <vector>
@@ -30,12 +31,9 @@
 #include "imgui/imgui_impl_dx9.h"
 #include "imgui/imgui_impl_win32.h"
 
-#include "hooks/hooks.h"
-#include "hooks/impl/impl.h"
-#include "menu/menu.h"
-
 #include "mem/mem.h"
 #include "mem/spoof_call.h"
+#include "global/strings.h"
 #include "global/colors.h"
 #include "global/offsets.h"
 #include "global/structs.h"
@@ -47,3 +45,7 @@
 #include "global/globals.h"
 #include "global/targetver.h"
 #include "scripts/scripts.h"
+
+#include "hooks/hooks.h"
+#include "hooks/impl/impl.h"
+#include "menu/menu.h"

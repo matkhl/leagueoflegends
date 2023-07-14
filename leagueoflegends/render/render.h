@@ -51,5 +51,12 @@ namespace render
 			void DrawRecall(float relativePositionOffset, std::string name, uintptr_t color, bool teleport);
 			void Update();
 		}
+
+		namespace debug
+		{
+			void DrawData(Object* obj, int index);
+			void DrawObjectData();
+			void Update();
+		}
 	}
 }

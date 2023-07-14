@@ -78,7 +78,14 @@ namespace settings
 							{
 							}
 						}
-						data[currentGroup][key] = value;
+
+						auto groupIt = data.find(currentGroup);
+						if (groupIt != data.end()) {
+							auto keyIt = groupIt->second.find(key);
+							if (keyIt != groupIt->second.end()) {
+								data[currentGroup][key] = value;
+							}
+						}
 					}
 				}
 			}
@@ -116,7 +123,7 @@ namespace settings
 
 	void Set(std::string group, std::string key, SettingValue value)
 	{
-		data[std::move(group)][std::move(key)] = value;
+		data[group][key] = value;
 	}
 
 	SettingBoundsValue GetBounds(std::string group, std::string key, SettingBoundsValue defaultValue)

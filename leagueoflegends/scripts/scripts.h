@@ -4,13 +4,35 @@
 
 namespace scripts
 {
+	static std::vector<std::string> settingsOrder = {
+		"orbwalker",
+		"cooldowns",
+		"recalls",
+		"debug"
+	};
+
 	void Init();
 	void Update();
 
+	namespace targetselector
+	{
+
+	}
+
 	namespace orbwalker
 	{
-		void IssueMove();
-		void Attack();
+		namespace actions
+		{
+			void Idle();
+			void AttackObject(Object* obj);
+		}
+
+		namespace states
+		{
+			void Attack();
+		}
+
+		bool StopOrbwalk();
 		void Init();
 		void Update();
 	}
@@ -26,5 +48,10 @@ namespace scripts
 		int GetRecallListIndex(Object* obj);
 		void Init();
 		void Update();
+	}
+
+	namespace debug
+	{
+		void Init();
 	}
 }

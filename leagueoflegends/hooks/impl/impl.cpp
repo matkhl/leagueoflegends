@@ -11,13 +11,14 @@ namespace hooks
 		void Inits()
 		{
 			globals::localPlayer = *(Object**)(globals::moduleBase + oLocalPlayer);
-			globals::heroManager = *(HeroManager**)(globals::moduleBase + oHeroManager);
+			globals::heroManager = *(ObjectManager**)(globals::moduleBase + oHeroManager);
+			globals::minionManager = *(ObjectManager**)(globals::moduleBase + oMinionManager);
 
-			settings::Load();
 			functions::Init();
 			render::Init();
-			menu::Init();
 			scripts::Init();
+			settings::Load();
+			menu::Init();
 
 			RECT windowRect;
 			if (GetWindowRect(windowDX, &windowRect))
@@ -26,12 +27,13 @@ namespace hooks
 				globals::windowHeight = abs(windowRect.bottom - windowRect.top);
 			}
 
+			functions::PrintChat("Matkhl chair loaded");
+
 			globals::hookResponse = true;
 		}
 
 		void Updates()
 		{
-			functions::RefreshArrays();
 			scripts::Update();
 			render::Update();
 			menu::Update();

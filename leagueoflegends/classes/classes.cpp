@@ -54,6 +54,16 @@ std::string Spell::GetName()
 	return this->GetSpellInfo()->GetSpellData()->GetName();
 }
 
+float SpellCast::GetStartTime()
+{
+	return *(float*)((QWORD)this + oActiveSpellCastStartTime);
+}
+
+bool SpellCast::IsAutoAttack()
+{
+	return *(int*)((QWORD)this + oActiveSpellCastSpellType) == -1;
+}
+
 int Object::GetNetId()
 {
 	return *(int*)((QWORD)this + oObjNetId);
@@ -67,16 +77,6 @@ int Object::GetTeam()
 Vector3 Object::GetPosition()
 {
 	return functions::ReadVector3((QWORD)this + oObjPosition);
-}
-
-std::string Object::GetName()
-{
-	return std::string((char*)((QWORD)this + oObjName));
-}
-
-bool Object::IsEnemy()
-{
-	return this->GetTeam() != globals::localPlayer->GetTeam();
 }
 
 bool Object::IsAlive()
@@ -99,6 +99,23 @@ float Object::GetScale()
 	return *(float*)((QWORD)this + oObjScale);
 }
 
+float Object::GetAttackRange()
+{
+	return *(float*)((QWORD)this + oObjAttackRange);
+}
+
+std::string Object::GetName()
+{
+	return *(char**)((QWORD)this + oObjName);
+}
+
+SpellCast* Object::GetActiveSpellCast()
+{
+	QWORD* activeSpellCastOffset = (QWORD*)((QWORD)this + oObjActiveSpellCast);
+	if (!IsValidPtr(activeSpellCastOffset)) return 0;
+	return *(SpellCast**)(activeSpellCastOffset);
+}
+
 QWORD Object::GetCharacterData()
 {
 	return *(QWORD*)(*(QWORD*)((QWORD)this + oObjCharData) + oObjCharDataData);
@@ -109,12 +126,43 @@ Spell* Object::GetSpellById(int id)
 	return *(Spell**)((QWORD)this + oObjSpellBook + oObjSpellBookSpellSlot + id * 0x8);
 }
 
-int HeroManager::GetListSize()
+float Object::GetBoundingRadius()
+{
+	typedef float(__cdecl* fnGetBoundingRadius)(Object* obj);
+	fnGetBoundingRadius _fnGetBoundingRadius = (fnGetBoundingRadius)(globals::moduleBase + oGetBoundingRadius);
+	return _fnGetBoundingRadius(this);
+}
+
+float Object::GetAttackDelay()
+{
+	typedef float(__cdecl* fnGetAttackDelay)(Object* obj);
+	fnGetAttackDelay _fnGetAttackDelay = (fnGetAttackDelay)(globals::moduleBase + oGetAttackDelay);
+	return _fnGetAttackDelay(this);
+}
+
+float Object::GetAttackWindup()
+{
+	typedef float(__cdecl* fnGetAttackWindup)(Object* obj, int flags);
+	fnGetAttackWindup _fnGetAttackWindup = (fnGetAttackWindup)(globals::moduleBase + oGetAttackWindup);
+	return _fnGetAttackWindup(this, 0x40);
+}
+
+bool Object::IsEnemy()
+{
+	return this->GetTeam() != globals::localPlayer->GetTeam();
+}
+
+float Object::GetRealAttackRange()
+{
+	return this->GetAttackRange() + this->GetBoundingRadius();
+}
+
+int ObjectManager::GetListSize()
 {
 	return *(int*)((QWORD)this + oManagerListSize);
 }
 
-Object* HeroManager::GetIndex(int index)
+Object* ObjectManager::GetIndex(int index)
 {
 	index = min(index, this->GetListSize());
 	return *(Object**)(*(QWORD*)((QWORD)this + oManagerList) + 0x8 * index);

@@ -139,6 +139,9 @@
     <ClInclude Include="mem\spoof_call.h">
       <Filter>mem</Filter>
     </ClInclude>
+    <ClInclude Include="global\strings.h">
+      <Filter>global</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="global\globals.cpp">

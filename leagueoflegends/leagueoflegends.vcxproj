@@ -176,6 +176,7 @@
     <ClInclude Include="global\globals.h" />
     <ClInclude Include="global\offsets.h" />
     <ClInclude Include="global\settings.h" />
+    <ClInclude Include="global\strings.h" />
     <ClInclude Include="global\structs.h" />
     <ClInclude Include="global\targetver.h" />
     <ClInclude Include="global\utils.h" />
