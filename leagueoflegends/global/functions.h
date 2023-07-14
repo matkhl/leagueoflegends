@@ -2,13 +2,6 @@
 
 namespace functions
 {
-	extern void* spoof_trampoline;
-
-	void Init();
-
-	void SaveSettings();
-	void LoadSettings();
-
 	template<typename Function> Function CallVirtual(PVOID base, QWORD index)
 	{
 		QWORD** VTablePointer = (QWORD**)base;
@@ -17,16 +10,23 @@ namespace functions
 		return (Function)(dwAddress);
 	}
 
+	void Init();
+
 	void RefreshArrays();
 	bool IsGameFocused();
 	float GetGameTime();
 
 	Vector3 ReadVector3(QWORD offset);
+	void WriteVector3(QWORD offset, Vector3 vector);
 
 	Vector2 GetMousePos();
+	Vector3 GetMouseWorldPos();
 
-	Vector3 GetBaseDrawPosition(Object* obj);
 	Vector2 WorldToScreen(Vector3 in);
+	Vector3 GetBaseDrawPosition(Object* obj);
+	Vector2 GetHpBarPosition(Object* obj);
 
-	void IssueOrder();
+	void IssueOrder(Vector2 pos);
+	void IssueMove(Vector2 pos);
+	void CastSpell(int spellId, Object* target, Vector3 pos);
 }

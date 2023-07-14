@@ -2,29 +2,47 @@
 
 namespace scripts
 {
+	void Init()
+	{
+		orbwalker::Init();
+		cooldowns::Init();
+		recalls::Init();
+	}
+
 	void Update()
 	{
-		if (settings::scripts::orbwalker::enabled) orbwalker::Update();
-		if (settings::scripts::recalls) recalls::Update();
+		if (settings::GetBool("orbwalker", "enabled", true)) orbwalker::Update();
+		if (settings::GetBool("recalls", "enabled", true)) recalls::Update();
 	}
 
 	namespace orbwalker
 	{
 		float lastIssueOrderTime = 0.0f;
 
-		void IssueOrder()
+		void IssueMove()
 		{
 			float gameTime = functions::GetGameTime();
 			if (!lastIssueOrderTime) lastIssueOrderTime = gameTime;
-			if (gameTime < lastIssueOrderTime + settings::scripts::orbwalker::clickDelay) return;
+			if (gameTime < lastIssueOrderTime + settings::GetFloat("orbwalker", "clickdelay", 0.05f)) return;
 			lastIssueOrderTime = gameTime;
 
-			functions::IssueOrder();
+			Vector2 mousePos = functions::GetMousePos();
+			Vector3 mouseWorldPos = functions::GetMouseWorldPos();
+
+			functions::IssueMove(mousePos);
+			functions::CastSpell(SpellIndex::Q, nullptr, mouseWorldPos);
 		}
 
 		void Attack()
 		{
-			IssueOrder();
+			IssueMove();
+		}
+
+		void Init()
+		{
+			settings::GetFloat("orbwalker", "clickdelay", 0.05f);
+			settings::AddBounds("orbwalker", "clickdelay", 0.03f, 1.0f);
+			settings::GetBool("orbwalker", "enabled", true);
 		}
 
 		void Update()
@@ -35,6 +53,14 @@ namespace scripts
 				Attack();
 				break;
 			}
+		}
+	}
+
+	namespace cooldowns
+	{
+		void Init()
+		{
+			settings::GetBool("cooldowns", "enabled", true);
 		}
 	}
 
@@ -54,6 +80,11 @@ namespace scripts
 				if (recallList[i].name == obj->GetName()) return i;
 			}
 			return 999;
+		}
+
+		void Init()
+		{
+			settings::GetBool("recalls", "enabled", true);
 		}
 
 		void Update()

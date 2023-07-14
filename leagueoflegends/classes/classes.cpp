@@ -1,13 +1,23 @@
 #include "../stdafx.h"
 
+std::string SpellData::GetName()
+{
+	return *(char**)((QWORD)this + oSpellDataSpellName);
+}
+
+SpellData* SpellInfo::GetSpellData()
+{
+	return *(SpellData**)((QWORD)this + oSpellInfoSpellData);
+}
+
 int Spell::GetLevel()
 {
-	return *(int*)((QWORD)this + oSpellLevel);
+	return *(int*)((QWORD)this + oSpellSlotLevel);
 }
 
 float Spell::GetCooldownTimer()
 {
-	return *(float*)((QWORD)this + oSpellCooldown);
+	return *(float*)((QWORD)this + oSpellSlotCooldown);
 }
 
 float Spell::GetCooldown()
@@ -19,7 +29,7 @@ float Spell::GetCooldown()
 
 float Spell::GetTotalCooldown()
 {
-	return *(float*)((QWORD)this + oSpellTotalCooldown);
+	return *(float*)((QWORD)this + oSpellSlotTotalCooldown);
 }
 
 float Spell::GetRelativeCooldown()
@@ -27,6 +37,26 @@ float Spell::GetRelativeCooldown()
 	if (!this->GetLevel()) return 1.0f;
 	if (this->GetLevel() && this->GetCooldownTimer() < 1.0f) return 0.0f;
 	return min(this->GetCooldown() / this->GetTotalCooldown(), 1.0f);
+}
+
+SpellInput* Spell::GetSpellInput()
+{
+	return *(SpellInput**)((QWORD)this + oSpellSlotSpellInput);
+}
+
+SpellInfo* Spell::GetSpellInfo()
+{
+	return *(SpellInfo**)((QWORD)this + oSpellSlotSpellInfo);
+}
+
+std::string Spell::GetName()
+{
+	return this->GetSpellInfo()->GetSpellData()->GetName();
+}
+
+int Object::GetNetId()
+{
+	return *(int*)((QWORD)this + oObjNetId);
 }
 
 int Object::GetTeam()
@@ -64,9 +94,19 @@ int Object::GetRecallState()
 	return *(int*)((QWORD)this + oObjRecallState);
 }
 
+float Object::GetScale()
+{
+	return *(float*)((QWORD)this + oObjScale);
+}
+
+QWORD Object::GetCharacterData()
+{
+	return *(QWORD*)(*(QWORD*)((QWORD)this + oObjCharData) + oObjCharDataData);
+}
+
 Spell* Object::GetSpellById(int id)
 {
-	return *(Spell**)((QWORD)this + oObjSpells + id * 0x8);
+	return *(Spell**)((QWORD)this + oObjSpellBook + oObjSpellBookSpellSlot + id * 0x8);
 }
 
 int HeroManager::GetListSize()

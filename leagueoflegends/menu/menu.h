@@ -4,6 +4,7 @@ namespace menu
 {
 	void Init();
 	void TextCentered(std::string text);
+	void DynamicSettings();
 	void Update();
 
 	namespace log

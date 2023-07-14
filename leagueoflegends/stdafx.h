@@ -8,6 +8,8 @@
 #include <Psapi.h>
 
 #include <vector>
+#include <map>
+#include <variant>
 #include <TlHelp32.h>
 #include <directxmath.h>
 #include <winternl.h>

@@ -50,7 +50,7 @@ DWORD __stdcall OnInject(LPVOID lpReserved)
 	{
 		Sleep(5);
 		//if game rendertype is not supported
-		if (!globals::hookResponse && GetAsyncKeyState(settings::detachKey))
+		if (!globals::hookResponse && GetAsyncKeyState(VK_DELETE))
 			globals::eject = true;
 	}
 #ifdef CONSOLE_ENABLED

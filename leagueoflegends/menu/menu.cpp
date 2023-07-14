@@ -23,18 +23,19 @@ namespace menu
 		style->FramePadding = ImVec2(4.0f, 4.0f);
 		style->FrameRounding = 0.0f;
 		style->ItemSpacing = ImVec2(4.0f, 3.0f);
-		style->ItemInnerSpacing = ImVec2(4.0f, 3.0f);
+		style->ItemInnerSpacing = ImVec2(12.0f, 12.0f);
 		style->IndentSpacing = 6.0f;
 		style->ScrollbarSize = 12.0f;
 		style->ScrollbarRounding = 2.0f;
 		style->GrabMinSize = 4.0f;
 		style->GrabRounding = 0.0f;
 		style->WindowBorderSize = 0.0f;
+		style->PopupBorderSize = 0.0f;
 
 		style->Colors[ImGuiCol_Text] = ImVec4(0.80f, 0.80f, 0.83f, 1.00f);
 		style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
 		style->Colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.05f, 0.07f, 0.50f);
-		style->Colors[ImGuiCol_PopupBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
+		style->Colors[ImGuiCol_PopupBg] = ImVec4(0.06f, 0.05f, 0.07f, 0.50f);
 		style->Colors[ImGuiCol_Border] = ImVec4(0.80f, 0.80f, 0.83f, 0.88f);
 		style->Colors[ImGuiCol_BorderShadow] = ImVec4(0.92f, 0.91f, 0.88f, 0.00f);
 		style->Colors[ImGuiCol_FrameBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
@@ -75,7 +76,7 @@ namespace menu
 		if (no_collapse)	window_flags |= ImGuiWindowFlags_NoCollapse;
 		if (!no_menu)		window_flags |= ImGuiWindowFlags_MenuBar;
 
-		globals::menuSize = ImVec2(220.0f, 350.0f);
+		globals::menuSize = ImVec2(100.0f, 300.0f);
 
 		ImGui::SetNextWindowSize(globals::menuSize, ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(25, 25));
@@ -93,22 +94,63 @@ namespace menu
 		ImGui::Text(text.c_str());
 	}
 
+	void DynamicSettings()
+	{
+		for (const auto& group : settings::data) {
+			if (ImGui::BeginMenu(group.first.c_str())) {
+				bool first = true;
+				for (const auto& setting : group.second) {
+
+					if (first) {
+						first = false;
+					} else {
+						ImGui::Separator();
+					}
+
+					const std::string& key = setting.first;
+					const settings::SettingValue& value = setting.second;
+
+					if (std::holds_alternative<bool>(value)) {
+						bool boolValue = std::get<bool>(value);
+						ImGui::Checkbox(key.c_str(), &boolValue);
+						settings::Set(group.first, setting.first, boolValue);
+					}
+					else if (std::holds_alternative<int>(value)) {
+						ImGui::Text("%s:", key.c_str());
+						int intValue = std::get<int>(value);
+						const auto bounds = settings::GetBoundsInt(group.first, key, std::pair<int, int>(0, 1));
+						ImGui::SliderInt("##Value", &intValue, bounds.first, bounds.second);
+						settings::Set(group.first, setting.first, intValue);
+					}
+					else if (std::holds_alternative<float>(value)) {
+						ImGui::Text("%s:", key.c_str());
+						float floatValue = std::get<float>(value);
+						const auto bounds = settings::GetBoundsFloat(group.first, key, std::pair<float, float>(0.0f, 1.0f));
+						ImGui::SliderFloat("##Value", &floatValue, bounds.first, bounds.second);
+						settings::Set(group.first, setting.first, floatValue);
+					}
+				}
+
+				ImGui::EndMenu();
+			}
+		}
+	}
+
 	void Update()
 	{
 		ImGui::SetNextWindowSize(globals::menuSize, ImGuiCond_FirstUseEver);
 
-		if (settings::isMenuOpen)
+		if (globals::menuOpen)
 		{
-			ImGui::Begin("menu", &settings::isMenuOpen, window_flags);
+			ImGui::Begin("menu", &globals::menuOpen, window_flags);
 
 			TextCentered(std::string("Menu by Matkhl"));
 			ImGui::Spacing();
-			ImGui::Checkbox("Orbwalker", &settings::scripts::orbwalker::enabled);
+			
+			DynamicSettings();
+
 			ImGui::Spacing();
-			ImGui::Checkbox("Track cooldowns", &settings::scripts::cooldowns);
-			ImGui::Checkbox("Track recalls", &settings::scripts::recalls);
-			ImGui::Spacing();
-			if (ImGui::Button("Save")) functions::SaveSettings();
+			if (ImGui::Button("Save")) settings::Save();
 
 			const float logHeight = ImGui::GetContentRegionAvail().y - ImGui::GetTextLineHeightWithSpacing();
 			ImGui::BeginChild("Log", ImVec2(-1, logHeight), true, ImGuiWindowFlags_HorizontalScrollbar);

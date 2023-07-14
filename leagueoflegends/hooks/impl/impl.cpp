@@ -13,9 +13,11 @@ namespace hooks
 			globals::localPlayer = *(Object**)(globals::moduleBase + oLocalPlayer);
 			globals::heroManager = *(HeroManager**)(globals::moduleBase + oHeroManager);
 
+			settings::Load();
 			functions::Init();
 			render::Init();
 			menu::Init();
+			scripts::Init();
 
 			RECT windowRect;
 			if (GetWindowRect(windowDX, &windowRect))
@@ -33,6 +35,19 @@ namespace hooks
 			scripts::Update();
 			render::Update();
 			menu::Update();
+		}
+
+		void KeyChecks()
+		{
+			if (GetAsyncKeyState(VK_SHIFT)) {
+				globals::menuOpen = true;
+			} else {
+				globals::menuOpen = false;
+			}
+
+			globals::scripts::orbwalker::orbwalkState = OrbwalkState::OFF;
+			if (GetAsyncKeyState(VK_SPACE))
+				globals::scripts::orbwalker::orbwalkState = OrbwalkState::ATTACK;
 		}
 
 		typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
@@ -77,6 +92,7 @@ namespace hooks
 				IMGUI_CHECKVERSION();
 				ImGui::CreateContext();
 				ImGuiIO& io = ImGui::GetIO(); (void)io;
+				io.IniFilename = "settings-metadata-window.ini";
 				io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
 
 				ImGui_ImplWin32_Init(windowDX);
@@ -91,8 +107,10 @@ namespace hooks
 
 			if (functions::IsGameFocused())
 			{
-				if (GetAsyncKeyState(settings::detachKey) & 1)
+				if (GetAsyncKeyState(VK_DELETE) & 1)
 				{
+					settings::Save();
+
 					SetWindowLongPtr(windowDX, GWLP_WNDPROC, (LONG_PTR)o_wndProcDX);
 
 					ImGui_ImplDX9_Shutdown();
@@ -100,7 +118,7 @@ namespace hooks
 					ImGui::DestroyContext();
 
 					HRESULT result = o_endSceneDX9(pDevice);
-					
+
 					kiero::shutdown();
 					pDevice->Release();
 
@@ -109,15 +127,7 @@ namespace hooks
 					return result;
 				}
 
-				if (GetAsyncKeyState(settings::openMenuKey) & 1)
-				{
-					settings::isMenuOpen = !settings::isMenuOpen;
-					functions::SaveSettings();
-				}
-
-				globals::scripts::orbwalker::orbwalkState = OrbwalkState::OFF;
-				if (GetAsyncKeyState(VK_SPACE))
-					globals::scripts::orbwalker::orbwalkState = OrbwalkState::ATTACK;
+				KeyChecks();
 			}
 
 			ImGui_ImplDX9_NewFrame();

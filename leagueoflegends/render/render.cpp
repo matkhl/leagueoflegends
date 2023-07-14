@@ -38,8 +38,8 @@ namespace render
 	{
 		void Update()
 		{
-			if (settings::scripts::cooldowns) cooldowns::Update();
-			if (settings::scripts::recalls) recalls::Update();
+			if (settings::GetBool("cooldowns", "enabled", true)) cooldowns::Update();
+			if (settings::GetBool("recalls", "enabled", true)) recalls::Update();
 		}
 		
 		namespace cooldowns
@@ -49,13 +49,12 @@ namespace render
 			float cdWidth = 20.0f;
 			float cdHeight = 6.0f;
 
-			float yOffset = -60.0f;
-			float xOffset = -width / 2.0f + 10.0f;
+			float yOffset = 0.0f;
+			float xOffset = -width / 2.0f + 8.0f;
 
 			void DrawCooldownBar(Object* obj)
 			{
-				Vector3 worldPos = functions::GetBaseDrawPosition(obj);
-				Vector2 screenPos = functions::WorldToScreen(worldPos);
+				Vector2 screenPos = functions::GetHpBarPosition(obj);
 
 				Vector2 basePos = Vector2(screenPos.x + xOffset, screenPos.y + yOffset);
 				
