@@ -2,6 +2,29 @@
 
 namespace scripts
 {
+	std::vector<std::pair<std::string, std::vector<std::string>>> settingsOrder = {};
+
+	void AddSetting(std::string group, std::string key, settings::SettingValue value, settings::SettingValue min, settings::SettingValue max)
+	{
+		std::pair<std::string, std::vector<std::string>>* groupData = nullptr;
+		for (auto& pair : settingsOrder)
+			if (pair.first == group)
+				groupData = &pair;
+
+		if (groupData) {
+			groupData->second.push_back(key);
+		} else {
+			settingsOrder.push_back({ group, {key} });
+		}
+
+		settings::Get(group, key, value);
+
+		if (std::holds_alternative<int>(value))
+			settings::AddBounds(group, key, std::get<int>(min), std::get<int>(max));
+		if (std::holds_alternative<float>(value))
+			settings::AddBounds(group, key, std::get<float>(min), std::get<float>(max));
+	}
+
 	void Init()
 	{
 		cooldowns::Init();
@@ -12,8 +35,8 @@ namespace scripts
 
 	void Update()
 	{
-		if (settings::GetBool("orbwalker", "enabled", true)) orbwalker::Update();
-		if (settings::GetBool("recalls", "enabled", true)) recalls::Update();
+		if (settings::GetBool("orbwalker", "enabled")) orbwalker::Update();
+		if (settings::GetBool("recalls", "enabled")) recalls::Update();
 	}
 
 	namespace orbwalker
@@ -29,7 +52,7 @@ namespace scripts
 			bool CanDoAction()
 			{
 				if (!lastActionTime) lastActionTime = gameTime;
-				if (gameTime < lastActionTime + settings::GetFloat("orbwalker", "clickdelay", 0.05f)) return false;
+				if (gameTime < lastActionTime + settings::GetFloat("orbwalker", "clickdelay")) return false;
 				lastActionTime = gameTime;
 				return true;
 			}
@@ -64,13 +87,13 @@ namespace scripts
 		{
 			return (
 				!functions::CanSendInput() ||
-				gameTime < lastAttackTime + globals::localPlayer->GetAttackWindup() + settings::GetFloat("orbwalker", "windupbuffer", 0.03f)
+				gameTime < lastAttackTime + globals::localPlayer->GetAttackWindup() + settings::GetFloat("orbwalker", "windupbuffer")
 			);
 		}
 
 		bool IsReloading()
 		{
-			return gameTime < lastAttackTime + globals::localPlayer->GetAttackDelay() - settings::GetFloat("orbwalker", "attack before can attack", 0.01f);
+			return gameTime < lastAttackTime + globals::localPlayer->GetAttackDelay() - settings::GetFloat("orbwalker", "attack before can attack");
 		}
 
 		void CheckActiveAttack()
@@ -90,13 +113,10 @@ namespace scripts
 
 		void Init()
 		{
-			settings::GetBool("orbwalker", "enabled", true);
-			settings::GetFloat("orbwalker", "clickdelay", 0.05f);
-			settings::AddBounds("orbwalker", "clickdelay", 0.03f, 1.0f);
-			settings::GetFloat("orbwalker", "windupbuffer", 0.03f);
-			settings::AddBounds("orbwalker", "windupbuffer", 0.01f, 0.2f);
-			settings::GetFloat("orbwalker", "attack before can attack", 0.01f);
-			settings::AddBounds("orbwalker", "attack before can attack", 0.0f, 0.2f);
+			AddSetting("orbwalker", "enabled", true);
+			AddSetting("orbwalker", "clickdelay", 0.05f, 0.03f, 1.0f);
+			AddSetting("orbwalker", "windupbuffer", 0.03f, 0.01f, 0.2f);
+			AddSetting("orbwalker", "attack before can attack", 0.01f, 0.0f, 0.2f);
 		}
 
 		void Update()
@@ -125,7 +145,7 @@ namespace scripts
 	{
 		void Init()
 		{
-			settings::GetBool("cooldowns", "enabled", true);
+			AddSetting("cooldowns", "enabled", true);
 		}
 	}
 
@@ -149,7 +169,7 @@ namespace scripts
 
 		void Init()
 		{
-			settings::GetBool("recalls", "enabled", true);
+			AddSetting("recalls", "enabled", true);
 		}
 
 		void Update()
@@ -206,7 +226,7 @@ namespace scripts
 	{
 		void Init()
 		{
-			settings::GetBool("debug", "draw object data", false);
+			AddSetting("debug", "draw object data", false);
 		}
 	}
 }

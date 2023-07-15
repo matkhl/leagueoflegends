@@ -106,19 +106,19 @@ namespace settings
 		return defaultValue;
 	}
 
-	bool GetBool(std::string group, std::string key, SettingValue defaultValue)
+	bool GetBool(std::string group, std::string key)
 	{
-		return std::get<bool>(Get(group, key, defaultValue));
+		return std::get<bool>(Get(group, key, false));
 	}
 
-	int GetInt(std::string group, std::string key, SettingValue defaultValue)
+	int GetInt(std::string group, std::string key)
 	{
-		return std::get<int>(Get(group, key, defaultValue));
+		return std::get<int>(Get(group, key, 0));
 	}
 
-	float GetFloat(std::string group, std::string key, SettingValue defaultValue)
+	float GetFloat(std::string group, std::string key)
 	{
-		return std::get<float>(Get(group, key, defaultValue));
+		return std::get<float>(Get(group, key, 0.0f));
 	}
 
 	void Set(std::string group, std::string key, SettingValue value)
@@ -150,11 +150,11 @@ namespace settings
 
 	void AddBounds(std::string group, std::string key, int min, int max)
 	{
-		bounds[std::move(group)][std::move(key)] = std::pair<int, int>(min, max);
+		bounds[group][key] = std::pair<int, int>(min, max);
 	}
 
 	void AddBounds(std::string group, std::string key, float min, float max)
 	{
-		bounds[std::move(group)][std::move(key)] = std::pair<float, float>(min, max);
+		bounds[group][key] = std::pair<float, float>(min, max);
 	}
 }

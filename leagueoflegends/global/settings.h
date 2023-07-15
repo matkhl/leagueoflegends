@@ -18,9 +18,9 @@ namespace settings
 	void Save();
 
 	SettingValue Get(std::string group, std::string key, SettingValue defaultValue);
-	bool GetBool(std::string group, std::string key, SettingValue defaultValue);
-	int GetInt(std::string group, std::string key, SettingValue defaultValue);
-	float GetFloat(std::string group, std::string key, SettingValue defaultValue);
+	bool GetBool(std::string group, std::string key);
+	int GetInt(std::string group, std::string key);
+	float GetFloat(std::string group, std::string key);
 	void Set(std::string group, std::string key, SettingValue value);
 
 	SettingBoundsValue GetBounds(std::string group, std::string key, SettingBoundsValue defaultValue);

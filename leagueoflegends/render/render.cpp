@@ -38,8 +38,8 @@ namespace render
 	{
 		void Update()
 		{
-			if (settings::GetBool("cooldowns", "enabled", true)) cooldowns::Update();
-			if (settings::GetBool("recalls", "enabled", true)) recalls::Update();
+			if (settings::GetBool("cooldowns", "enabled")) cooldowns::Update();
+			if (settings::GetBool("recalls", "enabled")) recalls::Update();
 			debug::Update();
 		}
 		
@@ -167,7 +167,7 @@ namespace render
 
 			void Update()
 			{
-				if (settings::GetBool("debug", "draw object data", false)) DrawObjectData();
+				if (settings::GetBool("debug", "draw object data")) DrawObjectData();
 			}
 		}
 	}

@@ -101,36 +101,41 @@ namespace menu
 		ImGui::Text(text.c_str());
 	}
 
-	void DrawMenu(std::pair<std::string, settings::SettingsGroup> group)
+	void DrawMenu(std::pair<std::string, settings::SettingsGroup> group, std::pair<std::string, std::vector<std::string>> groupOrder)
 	{
 		if (ImGui::BeginMenu(group.first.c_str())) {
+
 			bool first = true;
-			for (const auto& setting : group.second) {
+			for (const auto& key : groupOrder.second) {
+				auto it = group.second.find(key);
+				if (it != group.second.end()) {
+					std::pair<std::string, settings::SettingValue> setting = *it;
 
-				if (first)
-					first = false;
-				else
-					ImGui::Separator();
+					if (first)
+						first = false;
+					else
+						ImGui::Separator();
 
-				const std::string& key = setting.first;
-				const settings::SettingValue& value = setting.second;
+					const std::string& key = setting.first;
+					const settings::SettingValue& value = setting.second;
 
-				if (std::holds_alternative<bool>(value)) {
-					bool boolValue = std::get<bool>(value);
-					if (ImGui::Checkbox(key.c_str(), &boolValue)) SaveSoon();
-					settings::Set(group.first, setting.first, boolValue);
-				}
-				else if (std::holds_alternative<int>(value)) {
-					int intValue = std::get<int>(value);
-					const auto bounds = settings::GetBoundsInt(group.first, key, std::pair<int, int>(0, 1));
-					if (ImGui::SliderInt(key.c_str(), &intValue, bounds.first, bounds.second)) SaveSoon();
-					settings::Set(group.first, setting.first, intValue);
-				}
-				else if (std::holds_alternative<float>(value)) {
-					float floatValue = std::get<float>(value);
-					const auto bounds = settings::GetBoundsFloat(group.first, key, std::pair<float, float>(0.0f, 1.0f));
-					if (ImGui::SliderFloat(key.c_str(), &floatValue, bounds.first, bounds.second)) SaveSoon();
-					settings::Set(group.first, setting.first, floatValue);
+					if (std::holds_alternative<bool>(value)) {
+						bool boolValue = std::get<bool>(value);
+						if (ImGui::Checkbox(key.c_str(), &boolValue)) SaveSoon();
+						settings::Set(group.first, setting.first, boolValue);
+					}
+					else if (std::holds_alternative<int>(value)) {
+						int intValue = std::get<int>(value);
+						const auto bounds = settings::GetBoundsInt(group.first, key, std::pair<int, int>(0, 1));
+						if (ImGui::SliderInt(key.c_str(), &intValue, bounds.first, bounds.second)) SaveSoon();
+						settings::Set(group.first, setting.first, intValue);
+					}
+					else if (std::holds_alternative<float>(value)) {
+						float floatValue = std::get<float>(value);
+						const auto bounds = settings::GetBoundsFloat(group.first, key, std::pair<float, float>(0.0f, 1.0f));
+						if (ImGui::SliderFloat(key.c_str(), &floatValue, bounds.first, bounds.second)) SaveSoon();
+						settings::Set(group.first, setting.first, floatValue);
+					}
 				}
 			}
 
@@ -140,16 +145,10 @@ namespace menu
 
 	void DynamicSettings()
 	{
-		for (const auto& key : scripts::settingsOrder) {
-			auto it = settings::data.find(key);
+		for (const auto& group : scripts::settingsOrder) {
+			auto it = settings::data.find(group.first);
 			if (it != settings::data.end()) {
-				DrawMenu(*it);
-			}
-		}
-
-		for (const auto& group : settings::data) {
-			if (std::find(scripts::settingsOrder.begin(), scripts::settingsOrder.end(), group.first) == scripts::settingsOrder.end()) {
-				DrawMenu(group);
+				DrawMenu(*it, group);
 			}
 		}
 	}

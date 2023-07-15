@@ -4,13 +4,9 @@
 
 namespace scripts
 {
-	static std::vector<std::string> settingsOrder = {
-		"orbwalker",
-		"cooldowns",
-		"recalls",
-		"debug"
-	};
+	extern std::vector<std::pair<std::string, std::vector<std::string>>> settingsOrder;
 
+	void AddSetting(std::string group, std::string key, settings::SettingValue value, settings::SettingValue min = 0, settings::SettingValue max = 1);
 	void Init();
 	void Update();
 
