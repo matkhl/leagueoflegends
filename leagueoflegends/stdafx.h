@@ -17,6 +17,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <cctype>
 
 #include <dxgi.h>
 #include <d3d11.h>

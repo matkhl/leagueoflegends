@@ -20,29 +20,30 @@ namespace menu
 	{
 		ImGuiStyle* style = &ImGui::GetStyle();
 
-		style->WindowPadding = ImVec2(6.0f, 14.0f);
+		style->WindowPadding = ImVec2(12.0f, 14.0f);
 		style->WindowRounding = 0.0f;
-		style->FramePadding = ImVec2(4.0f, 4.0f);
+		style->FramePadding = ImVec2(10.0f, 4.0f);
 		style->FrameRounding = 0.0f;
-		style->ItemSpacing = ImVec2(8.0f, 20.0f);
-		style->ItemInnerSpacing = ImVec2(4.0f, 4.0f);
-		style->IndentSpacing = -20.0f;
+		style->ItemSpacing = ImVec2(12.0f, 16.0f);
+		style->ItemInnerSpacing = ImVec2(14.0f, 4.0f);
+		style->IndentSpacing = 0.0f;
 		style->ScrollbarSize = 12.0f;
 		style->ScrollbarRounding = 2.0f;
 		style->GrabMinSize = 4.0f;
 		style->GrabRounding = 0.0f;
 		style->WindowBorderSize = 0.0f;
-		style->PopupBorderSize = 0.0f;
+		style->PopupBorderSize = 1.0f;
+		style->GrabMinSize = 14.0f;
 
-		style->Colors[ImGuiCol_Text] = ImVec4(0.80f, 0.80f, 0.83f, 1.00f);
+		style->Colors[ImGuiCol_Text] = ImVec4(0.85f, 0.85f, 0.88f, 1.00f);
 		style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
-		style->Colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.05f, 0.07f, 0.50f);
-		style->Colors[ImGuiCol_PopupBg] = ImVec4(0.06f, 0.05f, 0.07f, 0.50f);
-		style->Colors[ImGuiCol_Border] = ImVec4(0.80f, 0.80f, 0.83f, 0.88f);
+		style->Colors[ImGuiCol_WindowBg] = ImVec4(0.05f, 0.05f, 0.07f, 0.70f);
+		style->Colors[ImGuiCol_PopupBg] = ImVec4(0.06f, 0.05f, 0.07f, 0.80f);
+		style->Colors[ImGuiCol_Border] = ImVec4(0.80f, 0.80f, 0.83f, 0.60f);
 		style->Colors[ImGuiCol_BorderShadow] = ImVec4(0.92f, 0.91f, 0.88f, 0.00f);
-		style->Colors[ImGuiCol_FrameBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
-		style->Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
-		style->Colors[ImGuiCol_FrameBgActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+		style->Colors[ImGuiCol_FrameBg] = ImVec4(0.61f, 0.61f, 0.61f, 0.54f);
+		style->Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.85f, 0.85f, 0.85f, 0.54f);
+		style->Colors[ImGuiCol_FrameBgActive] = ImVec4(0.82f, 0.82f, 0.82f, 0.75f);
 		style->Colors[ImGuiCol_TitleBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
 		style->Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(1.00f, 0.98f, 0.95f, 0.75f);
 		style->Colors[ImGuiCol_TitleBgActive] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
@@ -52,8 +53,8 @@ namespace menu
 		style->Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
 		style->Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
 		style->Colors[ImGuiCol_CheckMark] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
-		style->Colors[ImGuiCol_SliderGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
-		style->Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+		style->Colors[ImGuiCol_SliderGrab] = ImVec4(0.42f, 1.0f, 0.93f, 0.75f);
+		style->Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.41f, 1.0f, 0.93f, 0.92f);
 		style->Colors[ImGuiCol_Button] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
 		style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
 		style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
@@ -78,7 +79,7 @@ namespace menu
 		if (no_collapse)	window_flags |= ImGuiWindowFlags_NoCollapse;
 		if (!no_menu)		window_flags |= ImGuiWindowFlags_MenuBar;
 
-		globals::menuSize = ImVec2(150.0f, 100.0f);
+		globals::menuSize = ImVec2(150.0f, 140.0f);
 
 		ImGui::SetNextWindowSize(globals::menuSize, ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(25, 25));
@@ -93,7 +94,8 @@ namespace menu
 		nextSaveTime = functions::GetGameTime() + 1.0f;
 	}
 
-	void TextCentered(std::string text) {
+	void TextCentered(std::string text)
+	{
 		auto windowWidth = ImGui::GetWindowSize().x;
 		auto textWidth = ImGui::CalcTextSize(text.c_str()).x;
 
@@ -101,41 +103,98 @@ namespace menu
 		ImGui::Text(text.c_str());
 	}
 
+	bool CustomCheckbox(const char* label, bool* isChecked)
+	{
+		ImGuiWindow* currentWindow = ImGui::GetCurrentWindow();
+		if (currentWindow->SkipItems)
+			return false;
+
+		ImGuiContext& context = *GImGui;
+		const ImGuiStyle& style = context.Style;
+		const ImGuiID id = currentWindow->GetID(label);
+
+		ImVec2 labelSize = ImGui::CalcTextSize(label, NULL, true);
+		ImVec2 valueSize = ImGui::CalcTextSize(*isChecked ? "On" : "Off", NULL, true);
+
+		const float minWidgetWidth = 180.0f;
+		const float widgetWidth = ImMax(ImMax(minWidgetWidth, labelSize.x + valueSize.x + 20.0f), ImGui::GetWindowSize().x);
+
+		const float widgetHeight = ImMax(labelSize.y, valueSize.y);
+
+		ImRect totalBoundingBox(currentWindow->DC.CursorPos, currentWindow->DC.CursorPos + ImVec2(widgetWidth, widgetHeight));
+
+		if (!ImGui::ItemAdd(totalBoundingBox, id))
+			return false;
+
+		bool isHovered, isHeld;
+		bool isPressed = ImGui::InvisibleButton(label, ImVec2(widgetWidth - 30.0f, widgetHeight));
+		if (isPressed)
+			*isChecked = !(*isChecked);
+
+		ImVec2 textPosition = totalBoundingBox.Min;
+		ImGui::RenderText(textPosition, label);
+
+		textPosition.x += widgetWidth - valueSize.x - 30.0f - ((*isChecked) ? 18.0f : 0.0f);
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(*isChecked ? 0.2f : 8.0f, *isChecked ? 8.0f : 0.2f, 0.2f, 1.0f));
+		ImGui::RenderText(textPosition, *isChecked ? "On" : "Off");
+		ImGui::PopStyleColor();
+
+		if (*isChecked) {
+			textPosition.x += valueSize.x + 5.0f;
+			ImGui::RenderCheckMark(currentWindow->DrawList, textPosition, COLOR_GREEN, labelSize.y);
+		}
+
+		return isPressed;
+	}
+
 	void DrawMenu(std::pair<std::string, settings::SettingsGroup> group, std::pair<std::string, std::vector<std::string>> groupOrder)
 	{
-		if (ImGui::BeginMenu(group.first.c_str())) {
-
-			bool first = true;
-			for (const auto& key : groupOrder.second) {
+		if (ImGui::BeginMenu(functions::CapitalizeFirstLetter(group.first).c_str()))
+		{
+			int id = 0;
+			for (const auto& key : groupOrder.second)
+			{
 				auto it = group.second.find(key);
-				if (it != group.second.end()) {
+				if (it != group.second.end())
+				{
 					std::pair<std::string, settings::SettingValue> setting = *it;
 
-					if (first)
-						first = false;
-					else
+					if (id == 1)
 						ImGui::Separator();
 
 					const std::string& key = setting.first;
 					const settings::SettingValue& value = setting.second;
 
-					if (std::holds_alternative<bool>(value)) {
+					if (std::holds_alternative<bool>(value))
+					{
 						bool boolValue = std::get<bool>(value);
-						if (ImGui::Checkbox(key.c_str(), &boolValue)) SaveSoon();
+						if (CustomCheckbox(key.c_str(), &boolValue)) SaveSoon();
 						settings::Set(group.first, setting.first, boolValue);
 					}
-					else if (std::holds_alternative<int>(value)) {
+					else if (std::holds_alternative<int>(value))
+					{
 						int intValue = std::get<int>(value);
 						const auto bounds = settings::GetBoundsInt(group.first, key, std::pair<int, int>(0, 1));
-						if (ImGui::SliderInt(key.c_str(), &intValue, bounds.first, bounds.second)) SaveSoon();
+
+						if (ImGui::SliderInt((std::string("##") + key).c_str(), &intValue, bounds.first, bounds.second, key.c_str())) SaveSoon();
+						ImGui::SameLine();
+						ImGui::Text("%.3f", intValue);
+
 						settings::Set(group.first, setting.first, intValue);
 					}
-					else if (std::holds_alternative<float>(value)) {
+					else if (std::holds_alternative<float>(value))
+					{
 						float floatValue = std::get<float>(value);
 						const auto bounds = settings::GetBoundsFloat(group.first, key, std::pair<float, float>(0.0f, 1.0f));
-						if (ImGui::SliderFloat(key.c_str(), &floatValue, bounds.first, bounds.second)) SaveSoon();
+
+						if (ImGui::SliderFloat((std::string("##") + key).c_str(), &floatValue, bounds.first, bounds.second, key.c_str())) SaveSoon();
+						ImGui::SameLine();
+						ImGui::Text("%.3f", floatValue);
+
 						settings::Set(group.first, setting.first, floatValue);
 					}
+
+					++id;
 				}
 			}
 

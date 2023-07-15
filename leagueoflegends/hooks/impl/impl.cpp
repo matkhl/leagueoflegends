@@ -96,6 +96,7 @@ namespace hooks
 				ImGuiIO& io = ImGui::GetIO(); (void)io;
 				io.IniFilename = "settings-metadata-window.ini";
 				io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
+				io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 14);
 
 				ImGui_ImplWin32_Init(windowDX);
 				ImGui_ImplDX9_Init(pDevice);

@@ -13,6 +13,7 @@ namespace functions
 	void Init();
 
 	std::string GetHexString(QWORD hexNumber);
+	std::string CapitalizeFirstLetter(std::string str);
 
 	Vector3 ReadVector3(QWORD offset);
 	void WriteVector3(QWORD offset, Vector3 vector);

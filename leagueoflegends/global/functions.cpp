@@ -18,6 +18,14 @@ namespace functions
 		return ss.str();
 	}
 
+	std::string CapitalizeFirstLetter(std::string str)
+	{
+		if (!str.empty()) {
+			str[0] = std::toupper(static_cast<unsigned char>(str[0]));
+		}
+		return str;
+	}
+
 	Vector3 ReadVector3(QWORD offset)
 	{
 		Vector3 result;
