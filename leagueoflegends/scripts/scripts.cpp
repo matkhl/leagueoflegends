@@ -18,25 +18,32 @@ namespace scripts
 
 	namespace orbwalker
 	{
-		float lastMoveTime = 0.0f;
+		float lastActionTime = 0.0f;
 		float lastAttackTime = 0.0f;
+		QWORD lastSpellCastAddress = 0;
 
 		float gameTime = 0.0f;
 
 		namespace actions
 		{
+			bool CanDoAction()
+			{
+				if (!lastActionTime) lastActionTime = gameTime;
+				if (gameTime < lastActionTime + settings::GetFloat("orbwalker", "clickdelay", 0.05f)) return false;
+				lastActionTime = gameTime;
+				return true;
+			}
+
 			void Idle()
 			{
-				if (!lastMoveTime) lastMoveTime = gameTime;
-				if (gameTime < lastMoveTime + settings::GetFloat("orbwalker", "clickdelay", 0.05f)) return;
-				lastMoveTime = gameTime;
-
+				if (!CanDoAction()) return;
 				functions::MoveToMousePos();
 			}
 
 			void AttackObject(Object* obj)
 			{
-
+				if (!CanDoAction()) return;
+				functions::AttackObject(obj);
 			}
 		}
 
@@ -44,6 +51,11 @@ namespace scripts
 		{
 			void Attack()
 			{
+				if (Object* obj = targetselector::GetEnemyChampionInRange(globals::localPlayer->GetRealAttackRange()))
+				{
+					actions::AttackObject(obj);
+					return;
+				}
 				actions::Idle();
 			}
 		}
@@ -52,22 +64,39 @@ namespace scripts
 		{
 			return (
 				!functions::CanSendInput() ||
-				gameTime < lastAttackTime + globals::localPlayer->GetAttackWindup()
+				gameTime < lastAttackTime + globals::localPlayer->GetAttackWindup() + settings::GetFloat("orbwalker", "windupbuffer", 0.03f)
 			);
+		}
+
+		bool IsReloading()
+		{
+			return gameTime < lastAttackTime + globals::localPlayer->GetAttackDelay() - settings::GetFloat("orbwalker", "attack before can attack", 0.01f);
 		}
 
 		void CheckActiveAttack()
 		{
-			if (auto spellCast = globals::localPlayer->GetActiveSpellCast())
-				if (spellCast->IsAutoAttack())
-					lastAttackTime = spellCast->GetStartTime();
+			auto spellCast = globals::localPlayer->GetActiveSpellCast();
+			if (spellCast)
+			{
+				if ((spellCast->IsAutoAttack() ||
+					functions::stringcheck::IsAttackWindupSpell(spellCast->GetSpellInfo()->GetSpellData()->GetName())) &&
+					(QWORD)spellCast != lastSpellCastAddress)
+				{
+					lastAttackTime = gameTime;
+				}
+			}
+			lastSpellCastAddress = (QWORD)spellCast;
 		}
 
 		void Init()
 		{
+			settings::GetBool("orbwalker", "enabled", true);
 			settings::GetFloat("orbwalker", "clickdelay", 0.05f);
 			settings::AddBounds("orbwalker", "clickdelay", 0.03f, 1.0f);
-			settings::GetBool("orbwalker", "enabled", true);
+			settings::GetFloat("orbwalker", "windupbuffer", 0.03f);
+			settings::AddBounds("orbwalker", "windupbuffer", 0.01f, 0.2f);
+			settings::GetFloat("orbwalker", "attack before can attack", 0.01f);
+			settings::AddBounds("orbwalker", "attack before can attack", 0.0f, 0.2f);
 		}
 
 		void Update()
@@ -76,6 +105,12 @@ namespace scripts
 			CheckActiveAttack();
 
 			if (StopOrbwalk()) return;
+
+			if (globals::scripts::orbwalker::orbwalkState && IsReloading())
+			{
+				actions::Idle();
+				return;
+			}
 
 			switch (globals::scripts::orbwalker::orbwalkState)
 			{

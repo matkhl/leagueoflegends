@@ -4,6 +4,7 @@
 #define oGetBaseDrawPosition 0x1F5AB0
 #define oWorldToScreen 0xDF2D10
 #define oTryRightClick 0x884700
+#define oIssueOrder 0x899380
 #define oIssueMove 0x883AE0
 #define oCastSpellWrapper 0x890320
 #define oPrintChat 0x844850
@@ -42,14 +43,21 @@
 //structs
 #define oObjNetId 0x10
 #define oObjTeam 0x3C
+#define oObjIssueOrderFloatCheck1 0x84
+#define oObjIssueOrderFloatCheck2 0x88
+#define oObjIssueOrderCheck 0xD4
 #define oObjPosition 0x220
 #define oObjVisible 0x310
 #define oObjAlive 0x328
+#define oObjTargetable 0xEB0
 #define oObjRecallState 0xF40
+#define oObjHealth 0x1068
 #define oObjScale 0x1694
+#define oObjArmor 0x16A4
+#define oObjMagicResist 0x16AC
 #define oObjAttackRange 0x16C4
 #define oObjSpellBook 0x29F8
-#define oObjActiveSpellCast 0x29F8
+#define oObjActiveSpellCast 0x2A30
 #define oObjCharData 0x3538
 #define oObjName 0x35E8
 
@@ -69,8 +77,9 @@
 
 #define oSpellDataSpellName 0x80
 
+#define oActiveSpellCastSpellInfo 0x8
 #define oActiveSpellCastSpellType 0x10
-#define oActiveSpellCastStartTime 0x170
+#define oActiveSpellCastStartTime 0x16C
 
 #define oObjCharDataData 0x28
 #define oObjCharDataDataSize 0xC4

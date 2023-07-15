@@ -132,12 +132,16 @@ namespace functions
 		float zoomDelta = maxZoom / currentZoom;
 
 		screenPos.y -= (((globals::windowHeight) * 0.00083333335f * zoomDelta) * hpBarHeight);
-
+		 
 		return screenPos;
 	}
 
-	void IssueOrder(Vector2 pos)
+	void TryRightClick(Vector2 pos)
 	{
+		*(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck1) = 0.0f;
+		*(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck2) = 0.0f;
+		*(DWORD*)((QWORD)globals::localPlayer + oObjIssueOrderCheck) = 0x0;
+
 		typedef bool(__fastcall* fnTryRightClick)(QWORD* player, unsigned int* params);
 		fnTryRightClick _fnTryRightClick = (fnTryRightClick)(globals::moduleBase + oTryRightClick);
 
@@ -147,6 +151,17 @@ namespace functions
 		params[19] = 2;
 
 		spoof_call(spoof_trampoline, _fnTryRightClick, (QWORD*)globals::localPlayer, params);
+	}
+
+	void IssueOrder(Vector2 pos)
+	{
+		*(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck1) = 0.0f;
+		*(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck2) = 0.0f;
+		*(DWORD*)((QWORD)globals::localPlayer + oObjIssueOrderCheck) = 0x0;
+
+		typedef bool(__fastcall* fnIssueOrder)(QWORD* player, int order, bool isAttackMove, bool isMinion, int screenX, int screenY, int unknown);
+		fnIssueOrder _fnIssueOrder = (fnIssueOrder)(globals::moduleBase + oIssueOrder);
+		spoof_call(spoof_trampoline, _fnIssueOrder, (QWORD*)globals::localPlayer, 2, false, false, (int)pos.x, (int)pos.y, 0);
 	}
 
 	void IssueMove(Vector2 pos)
@@ -194,7 +209,7 @@ namespace functions
 		headPos.y += objectHeight;
 
 		auto screenPos = WorldToScreen(headPos);
-		IssueOrder(screenPos);
+		TryRightClick(screenPos);
 	}
 
 	void MoveToMousePos()

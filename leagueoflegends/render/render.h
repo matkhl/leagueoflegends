@@ -31,6 +31,7 @@ namespace render
 	void RenderRectFilled(const ImVec2& from, const ImVec2& to, uint32_t color, float rounding, uint32_t roundingCornersFlags);
 	void RenderImage(ImTextureID pTexture, const ImVec2& from, const ImVec2& to, uint32_t color);
 	void RenderImageRounded(ImTextureID pTexture, const ImVec2& from, const ImVec2& to, uint32_t color, float rounding, uint32_t roundingCornersFlags);
+	void RenderCircleWorld(const Vector3& worldPos, int numPoints, float radius, uintptr_t color, float thickness);
 
 	void Init();
 	void Update();

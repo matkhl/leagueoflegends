@@ -222,6 +222,12 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>main</Filter>
     </ClCompile>
+    <ClCompile Include="global\stringcheck.cpp">
+      <Filter>global</Filter>
+    </ClCompile>
+    <ClCompile Include="scripts\targetselector.cpp">
+      <Filter>scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

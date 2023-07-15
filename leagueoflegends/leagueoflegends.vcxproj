@@ -211,6 +211,7 @@
     <ClCompile Include="global\functions.cpp" />
     <ClCompile Include="global\globals.cpp" />
     <ClCompile Include="global\settings.cpp" />
+    <ClCompile Include="global\stringcheck.cpp" />
     <ClCompile Include="hooks\hooks.cpp" />
     <ClCompile Include="hooks\impl\impl.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -232,6 +233,7 @@
     <ClCompile Include="render\render.cpp" />
     <ClCompile Include="render\renderfunctions.cpp" />
     <ClCompile Include="scripts\scripts.cpp" />
+    <ClCompile Include="scripts\targetselector.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>

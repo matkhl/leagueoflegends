@@ -54,6 +54,11 @@ std::string Spell::GetName()
 	return this->GetSpellInfo()->GetSpellData()->GetName();
 }
 
+SpellInfo* SpellCast::GetSpellInfo()
+{
+	return *(SpellInfo**)((QWORD)this + oActiveSpellCastSpellInfo);
+}
+
 float SpellCast::GetStartTime()
 {
 	return *(float*)((QWORD)this + oActiveSpellCastStartTime);
@@ -79,14 +84,19 @@ Vector3 Object::GetPosition()
 	return functions::ReadVector3((QWORD)this + oObjPosition);
 }
 
+bool Object::IsVisible()
+{
+	return *(bool*)((QWORD)this + oObjVisible);
+}
+
 bool Object::IsAlive()
 {
 	return !(*(int*)((QWORD)this + oObjAlive) % 2);
 }
 
-bool Object::IsVisible()
+bool Object::IsTargetable()
 {
-	return *(bool*)((QWORD)this + oObjVisible);
+	return *(bool*)((QWORD)this + oObjTargetable);
 }
 
 int Object::GetRecallState()
@@ -94,9 +104,24 @@ int Object::GetRecallState()
 	return *(int*)((QWORD)this + oObjRecallState);
 }
 
+float Object::GetHealth()
+{
+	return *(float*)((QWORD)this + oObjHealth);
+}
+
 float Object::GetScale()
 {
 	return *(float*)((QWORD)this + oObjScale);
+}
+
+float Object::GetArmor()
+{
+	return *(float*)((QWORD)this + oObjArmor);
+}
+
+float Object::GetMagicResist()
+{
+	return *(float*)((QWORD)this + oObjMagicResist);
 }
 
 float Object::GetAttackRange()
@@ -128,7 +153,7 @@ Spell* Object::GetSpellById(int id)
 
 float Object::GetBoundingRadius()
 {
-	typedef float(__cdecl* fnGetBoundingRadius)(Object* obj);
+	typedef float(__fastcall* fnGetBoundingRadius)(Object* obj);
 	fnGetBoundingRadius _fnGetBoundingRadius = (fnGetBoundingRadius)(globals::moduleBase + oGetBoundingRadius);
 	return _fnGetBoundingRadius(this);
 }
@@ -152,9 +177,19 @@ bool Object::IsEnemy()
 	return this->GetTeam() != globals::localPlayer->GetTeam();
 }
 
+bool Object::IsValidTarget()
+{
+	return this->IsVisible() && this->IsAlive() && this->IsEnemy() && this->IsTargetable();
+}
+
 float Object::GetRealAttackRange()
 {
 	return this->GetAttackRange() + this->GetBoundingRadius();
+}
+
+bool Object::IsInRange(Vector3 pos, float radius)
+{
+	return radius >= render::Distance(pos, this->GetPosition());
 }
 
 int ObjectManager::GetListSize()

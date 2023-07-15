@@ -35,6 +35,7 @@ namespace functions
 	Vector3 GetBaseDrawPosition(Object* obj);
 	Vector2 GetHpBarPosition(Object* obj);
 
+	void TryRightClick(Vector2 pos);
 	void IssueOrder(Vector2 pos);
 	void IssueMove(Vector2 pos);
 	void CastSpell(int spellId, Object* target, Vector3 pos);
@@ -43,4 +44,10 @@ namespace functions
 
 	void AttackObject(Object* obj);
 	void MoveToMousePos();
+
+	namespace stringcheck
+	{
+		bool VectorContains(std::vector<std::string> vector, std::string string);
+		bool IsAttackWindupSpell(std::string spellName);
+	}
 }

@@ -16,13 +16,14 @@ namespace scripts
 
 	namespace targetselector
 	{
-
+		Object* GetEnemyChampionInRange(float range);
 	}
 
 	namespace orbwalker
 	{
 		namespace actions
 		{
+			bool CanDoAction();
 			void Idle();
 			void AttackObject(Object* obj);
 		}
@@ -33,6 +34,8 @@ namespace scripts
 		}
 
 		bool StopOrbwalk();
+		bool IsReloading();
+		void CheckActiveAttack();
 		void Init();
 		void Update();
 	}

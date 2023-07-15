@@ -36,6 +36,7 @@ public:
 class SpellCast
 {
 public:
+    SpellInfo* GetSpellInfo();
     float GetStartTime();
 public:
     bool IsAutoAttack();
@@ -46,11 +47,15 @@ class Object
 public:
 	int GetNetId();
 	int GetTeam();
-	Vector3 GetPosition();
+    Vector3 GetPosition();
+    bool IsVisible();
 	bool IsAlive();
-	bool IsVisible();
+    bool IsTargetable();
     int GetRecallState();
+    float GetHealth();
 	float GetScale();
+	float GetArmor();
+	float GetMagicResist();
     float GetAttackRange();
 	std::string GetName();
     SpellCast* GetActiveSpellCast();
@@ -62,7 +67,9 @@ public:
     float GetAttackWindup();
 public:
     bool IsEnemy();
+    bool IsValidTarget();
     float GetRealAttackRange();
+    bool IsInRange(Vector3 pos, float radius);
 };
 
 class ObjectManager

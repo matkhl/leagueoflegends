@@ -215,4 +215,31 @@ namespace render
 
 		window->DrawList->AddImageRounded(pTexture, from, to, { 0.0f, 0.0f }, { 1.0f, 1.0f }, ImGui::GetColorU32({ r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f }), rounding, roundingCornersFlags);
 	}
+
+	void RenderCircleWorld(const Vector3& worldPos, int numPoints, float radius, uintptr_t color, float thickness)
+	{
+		ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+		float a = (color >> 24) & 0xFF;
+		float r = (color >> 16) & 0xFF;
+		float g = (color >> 8) & 0xFF;
+		float b = (color) & 0xFF;
+
+		numPoints = min(numPoints, 49);
+		ImVec2 points[50];
+
+		float step = 6.2831f / numPoints;
+		float theta = 0.f;
+		for (int i = 0; i < numPoints; i++, theta += step)
+		{
+			Vector3 worldSpace = { worldPos.x + radius * cos(theta), worldPos.y, worldPos.z - radius * sin(theta) };
+			ImVec2 screenSpace = functions::WorldToScreen(worldSpace).ToImVec();
+
+			points[i] = screenSpace;
+		}
+
+		points[numPoints] = points[0];
+
+		window->DrawList->AddPolyline(points, numPoints, ImGui::GetColorU32({ r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f }), true, thickness);
+	}
 }
