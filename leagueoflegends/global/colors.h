@@ -5,6 +5,7 @@
 #define COLOR_RED 0xffff1f1f
 #define COLOR_GREEN 0xff0c9d00
 #define COLOR_BLUE 0xff7ea6ff
+#define COLOR_TURQUOISE 0xff6BFFEE
 
 #define COLOR_GRAY 0xff4C4A4C
 #define COLOR_DARK 0xff090509

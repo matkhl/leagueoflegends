@@ -27,7 +27,7 @@ namespace hooks
 				globals::windowHeight = abs(windowRect.bottom - windowRect.top);
 			}
 
-			functions::PrintChat("Matkhl chair loaded");
+			functions::PrintChat(CHAT_COLOR_("#72ff72", "Loaded"));
 
 			globals::hookResponse = true;
 		}
@@ -126,6 +126,8 @@ namespace hooks
 					pDevice->Release();
 
 					globals::eject = true;
+
+					functions::PrintChat(CHAT_COLOR_("#ff5b5b", "Ejected"));
 
 					return result;
 				}

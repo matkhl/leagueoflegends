@@ -49,6 +49,8 @@ namespace functions
 	namespace stringcheck
 	{
 		bool VectorContains(std::vector<std::string> vector, std::string string);
+		bool IsJungleMonsterObject(std::string spellName);
+		bool IsMinionObject(std::string spellName);
 		bool IsAttackWindupSpell(std::string spellName);
 	}
 }

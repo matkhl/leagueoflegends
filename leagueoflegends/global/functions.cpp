@@ -46,9 +46,10 @@ namespace functions
 	{
 		typedef void(__thiscall* fnPrintChat)(QWORD* chatClient, const char* message, int colorId);
 		fnPrintChat _fnSendChat = (fnPrintChat)(globals::moduleBase + oPrintChat);
-		std::string formattedText = "[" + ConvertTime(GetGameTime()) + "] " + text;
-		std::string coloredText = CHAT_COLOR_("#" + GetHexString((DWORD)COLOR_GREEN >> 2), formattedText);
-		_fnSendChat((QWORD*)(*(QWORD*)(globals::moduleBase + oChatInstance)), coloredText.c_str(), 0);
+		std::string timeMarkString = "[" + ConvertTime(GetGameTime()) + "] ";
+		std::string coloredTimeMarkString = CHAT_COLOR_("#7ce9ff", timeMarkString);
+		std::string formattedText = coloredTimeMarkString + text;
+		_fnSendChat((QWORD*)(*(QWORD*)(globals::moduleBase + oChatInstance)), formattedText.c_str(), 4);
 	}
 
 	void PrintChat(int number)
