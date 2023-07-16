@@ -227,6 +227,7 @@ namespace scripts
 		void Init()
 		{
 			AddSetting("debug", "draw object data", false);
+			AddSetting("debug", "draw bounding radius", false);
 		}
 	}
 }
