@@ -37,6 +37,7 @@ namespace functions::stringcheck
 	};
 
 	static std::vector<std::string> attackWindupSpells = {
+		ATTACK_WINDUP_SPELL_AATROX,
 		ATTACK_WINDUP_SPELL_ASHE,
 		ATTACK_WINDUP_SPELL_KOGMAW
 	};

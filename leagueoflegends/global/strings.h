@@ -31,5 +31,6 @@
 #define MINION_SUPER_RED std::string("SRU_ChaosMinionSuper")
 #define MINION_SENNA_SOUL std::string("SennaSoul")
 
+#define ATTACK_WINDUP_SPELL_AATROX std::string("AatroxPassiveAttack")
 #define ATTACK_WINDUP_SPELL_ASHE std::string("AsheQAttack")
 #define ATTACK_WINDUP_SPELL_KOGMAW std::string("KogMawBioArcaneBarrageAttack")
