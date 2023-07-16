@@ -69,7 +69,7 @@ bool SpellCast::IsAutoAttack()
 	return *(int*)((QWORD)this + oActiveSpellCastSpellType) == -1;
 }
 
-int Object::GetNetId()
+unsigned int Object::GetNetId()
 {
 	return *(int*)((QWORD)this + oObjNetId);
 }
@@ -189,7 +189,7 @@ float Object::GetRealAttackRange()
 
 bool Object::IsInRange(Vector3 pos, float radius)
 {
-	return radius >= render::Distance(pos, this->GetPosition());
+	return radius + this->GetBoundingRadius() >= render::Distance(pos, this->GetPosition());
 }
 
 int ObjectManager::GetListSize()

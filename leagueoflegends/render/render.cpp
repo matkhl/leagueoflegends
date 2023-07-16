@@ -175,27 +175,32 @@ namespace render
 				}
 			}
 
-			void DrawBoundingRadius()
+			void DrawBoundingRadius(Object* obj)
 			{
-				for (int i = 0; i < globals::minionManager->GetListSize(); i++)
-				{
-					auto obj = globals::minionManager->GetIndex(i);
-					if (obj->IsAlive() && obj->IsVisible())
-						RenderCircleWorld(obj->GetPosition(), 20, obj->GetBoundingRadius(), COLOR_WHITE, 1.0f);
-				}
+				Vector2 screenPos = functions::WorldToScreen(obj->GetPosition());
+				if (!IsOnScreen(screenPos)) return;
+				RenderCircleWorld(obj->GetPosition(), 20, obj->GetBoundingRadius(), COLOR_WHITE, 1.0f);
+			}
 
-				for (int i = 0; i < globals::heroManager->GetListSize(); i++)
+			void DrawObjectBoundingRadius()
+			{
+				auto pool = globals::minionManager;
+				for (int i = 0; i < 2; ++i)
 				{
-					auto obj = globals::heroManager->GetIndex(i);
-					if (obj->IsAlive() && obj->IsVisible())
-						RenderCircleWorld(obj->GetPosition(), 20, obj->GetBoundingRadius(), COLOR_WHITE, 1.0f);
+					for (int i = 0; i < pool->GetListSize(); i++)
+					{
+						auto obj = pool->GetIndex(i);
+						if (obj->IsAlive() && obj->IsVisible())
+							DrawBoundingRadius(obj);
+					}
+					pool = globals::heroManager;
 				}
 			}
 
 			void Update()
 			{
 				if (settings::GetBool("debug", "draw object data")) DrawObjectData();
-				if (settings::GetBool("debug", "draw bounding radius")) DrawBoundingRadius();
+				if (settings::GetBool("debug", "draw bounding radius")) DrawObjectBoundingRadius();
 			}
 		}
 	}

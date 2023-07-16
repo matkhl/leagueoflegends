@@ -12,7 +12,11 @@ namespace scripts
 
 	namespace targetselector
 	{
+		bool ShouldChooseSelectedObject(Object* selectedObject, Object* checkObj);
+
 		Object* GetEnemyChampionInRange(float range);
+
+		void Init();
 	}
 
 	namespace orbwalker

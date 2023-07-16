@@ -36,6 +36,8 @@ namespace functions
 	Vector3 GetBaseDrawPosition(Object* obj);
 	Vector2 GetHpBarPosition(Object* obj);
 
+	Object* GetSelectedObject();
+
 	void TryRightClick(Vector2 pos);
 	void IssueOrder(Vector2 pos);
 	void IssueMove(Vector2 pos);

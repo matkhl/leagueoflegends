@@ -145,6 +145,18 @@ namespace functions
 		return screenPos;
 	}
 
+	Object* GetSelectedObject()
+	{
+		typedef Object* (__fastcall* fnGetObjectFromNetId)(QWORD* a1, unsigned int netId);
+		fnGetObjectFromNetId _fnGetObjectFromNetId = (fnGetObjectFromNetId)(globals::moduleBase + oGetObjectFromNetId);
+
+		QWORD* hudInstance = (QWORD*)(*(QWORD*)(globals::moduleBase + oHudInstance));
+		unsigned int targetNetId = *(unsigned int*)(*(QWORD*)((QWORD)hudInstance + oHudInstanceUserData) + oHudInstanceUserDataSelectedObjectNetId);
+		if (!targetNetId) return 0;
+
+		return _fnGetObjectFromNetId((QWORD*)(*(QWORD*)(globals::moduleBase + oGetObjectFromNetIdParam)), targetNetId);
+	}
+
 	void TryRightClick(Vector2 pos)
 	{
 		*(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck1) = 0.0f;

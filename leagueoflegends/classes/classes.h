@@ -45,7 +45,7 @@ public:
 class Object
 {
 public:
-	int GetNetId();
+	unsigned int GetNetId();
 	int GetTeam();
     Vector3 GetPosition();
     bool IsVisible();

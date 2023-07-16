@@ -11,6 +11,7 @@
 #define oGetBoundingRadius 0x1F32A0
 #define oGetAttackDelay 0x3ABB70
 #define oGetAttackWindup 0x3ABA70
+#define oGetObjectFromNetId 0x3AD560
 
 //variables
 #define oGameTime 0x521EE00
@@ -22,6 +23,7 @@
 #define oZoomInstance 0x521B180
 #define oChatClient 0x522B928
 #define oChatInstance 0x39CDF10
+#define oGetObjectFromNetIdParam 0x2173220
 
 #define oManagerList 0x8
 #define oManagerListSize 0x10
@@ -30,11 +32,14 @@
 
 #define oHudInstanceCamera 0x18
 #define oHudInstanceInput 0x28
+#define oHudInstanceUserData 0x60
 #define oHudInstanceSpellInfo 0x68
+
+#define oHudInstanceCameraZoom 0x2B8
 
 #define oHudInstanceInputMouseWorldPos 0x20
 
-#define oHudInstanceCameraZoom 0x2B8
+#define oHudInstanceUserDataSelectedObjectNetId 0x28
 
 #define oZoomInstanceMaxZoom 0x28
 

@@ -30,6 +30,7 @@ namespace scripts
 		cooldowns::Init();
 		recalls::Init();
 		orbwalker::Init();
+		targetselector::Init();
 		debug::Init();
 	}
 
