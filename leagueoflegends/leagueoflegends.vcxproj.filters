@@ -35,6 +35,9 @@
     <Filter Include="scripts">
       <UniqueIdentifier>{85eba398-4002-457b-a719-ff583cd85b6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scripts\champions">
+      <UniqueIdentifier>{5a45deb9-074c-4900-9f80-84a3b603b3b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="global\globals.h">
@@ -142,6 +145,9 @@
     <ClInclude Include="global\strings.h">
       <Filter>global</Filter>
     </ClInclude>
+    <ClInclude Include="scripts\champions.h">
+      <Filter>scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="global\globals.cpp">
@@ -227,6 +233,9 @@
     </ClCompile>
     <ClCompile Include="scripts\targetselector.cpp">
       <Filter>scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="scripts\champions\syndra.cpp">
+      <Filter>scripts\champions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

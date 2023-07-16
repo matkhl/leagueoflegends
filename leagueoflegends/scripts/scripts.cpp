@@ -32,10 +32,12 @@ namespace scripts
 		orbwalker::Init();
 		targetselector::Init();
 		debug::Init();
+		champions::Init();
 	}
 
 	void Update()
 	{
+		champions::Update();
 		if (settings::GetBool("orbwalker", "enabled")) orbwalker::Update();
 		if (settings::GetBool("recalls", "enabled")) recalls::Update();
 	}
@@ -229,6 +231,33 @@ namespace scripts
 		{
 			AddSetting("debug", "draw object data", false);
 			AddSetting("debug", "draw bounding radius", false);
+		}
+	}
+
+	namespace champions
+	{
+		static ChampionModule* activeChampModule = nullptr;
+
+		void Init()
+		{
+			activeChampModule = ChampionModuleManager::GetModule(globals::localPlayer->GetName());
+			if (!activeChampModule) return;
+
+			activeChampModule->Init();
+		}
+
+		void Update()
+		{
+			if (!activeChampModule) return;
+
+			activeChampModule->Update();
+
+			switch (globals::scripts::orbwalker::orbwalkState)
+			{
+			case OrbwalkState::ATTACK:
+				activeChampModule->Attack();
+				break;
+			}
 		}
 	}
 }

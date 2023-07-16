@@ -57,4 +57,10 @@ namespace scripts
 	{
 		void Init();
 	}
+
+	namespace champions
+	{
+		void Init();
+		void Update();
+	}
 }
