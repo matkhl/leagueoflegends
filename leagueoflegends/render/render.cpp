@@ -153,6 +153,7 @@ namespace render
 			void DrawData(Object* obj, int index)
 			{
 				Vector2 screenPos = functions::WorldToScreen(obj->GetPosition());
+				if (!IsOnScreen(screenPos)) return;
 				RenderText(obj->GetName(), (screenPos - Vector2(0.0f, 22.0f)).ToImVec(), 18.0f, COLOR_WHITE, true);
 				RenderText("List id: " + std::to_string(index), functions::WorldToScreen(obj->GetPosition()).ToImVec(), 18.0f, COLOR_WHITE, true);
 			}
@@ -165,6 +166,13 @@ namespace render
 					if (obj->IsAlive() && obj->IsVisible())
 						DrawData(obj, i);
 				}
+
+				for (int i = 0; i < globals::heroManager->GetListSize(); i++)
+				{
+					auto obj = globals::heroManager->GetIndex(i);
+					if (obj->IsAlive() && obj->IsVisible())
+						DrawData(obj, i);
+				}
 			}
 
 			void DrawBoundingRadius()
@@ -172,6 +180,13 @@ namespace render
 				for (int i = 0; i < globals::minionManager->GetListSize(); i++)
 				{
 					auto obj = globals::minionManager->GetIndex(i);
+					if (obj->IsAlive() && obj->IsVisible())
+						RenderCircleWorld(obj->GetPosition(), 20, obj->GetBoundingRadius(), COLOR_WHITE, 1.0f);
+				}
+
+				for (int i = 0; i < globals::heroManager->GetListSize(); i++)
+				{
+					auto obj = globals::heroManager->GetIndex(i);
 					if (obj->IsAlive() && obj->IsVisible())
 						RenderCircleWorld(obj->GetPosition(), 20, obj->GetBoundingRadius(), COLOR_WHITE, 1.0f);
 				}
