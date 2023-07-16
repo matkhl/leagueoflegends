@@ -124,7 +124,10 @@ namespace menu
 		ImRect totalBoundingBox(currentWindow->DC.CursorPos, currentWindow->DC.CursorPos + ImVec2(widgetWidth, widgetHeight));
 
 		if (!ImGui::ItemAdd(totalBoundingBox, id))
+		{
+			ImGui::TextColored(ImVec4(0.41f, 1.0f, 0.93f, 1.0f), std::to_string(id).c_str());
 			return false;
+		}
 
 		bool isHovered, isHeld;
 		bool isPressed = ImGui::InvisibleButton(label, ImVec2(widgetWidth - 30.0f, widgetHeight));
