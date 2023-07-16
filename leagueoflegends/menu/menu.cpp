@@ -114,10 +114,10 @@ namespace menu
 		const ImGuiID id = currentWindow->GetID(label);
 
 		ImVec2 labelSize = ImGui::CalcTextSize(label, NULL, true);
-		ImVec2 valueSize = ImGui::CalcTextSize(*isChecked ? "On" : "Off", NULL, true);
+		ImVec2 valueSize = ImGui::CalcTextSize("Off", NULL, true);
 
 		const float minWidgetWidth = 180.0f;
-		const float widgetWidth = ImMax(ImMax(minWidgetWidth, labelSize.x + valueSize.x + 20.0f), ImGui::GetWindowSize().x);
+		const float widgetWidth = ImMax(ImMax(minWidgetWidth, labelSize.x + valueSize.x + 60.0f), ImGui::GetWindowSize().x);
 
 		const float widgetHeight = ImMax(labelSize.y, valueSize.y);
 
@@ -130,14 +130,14 @@ namespace menu
 		}
 
 		bool isHovered, isHeld;
-		bool isPressed = ImGui::InvisibleButton(label, ImVec2(widgetWidth - 30.0f, widgetHeight));
+		bool isPressed = ImGui::InvisibleButton(label, ImVec2(widgetWidth - 25.0f, widgetHeight));
 		if (isPressed)
 			*isChecked = !(*isChecked);
 
 		ImVec2 textPosition = totalBoundingBox.Min;
 		ImGui::RenderText(textPosition, label);
 
-		textPosition.x += widgetWidth - valueSize.x - 30.0f - ((*isChecked) ? 18.0f : 0.0f);
+		textPosition.x += widgetWidth - valueSize.x - 30.0f - ((*isChecked) ? 18.0f : 0.0f) + ((widgetWidth == ImGui::GetWindowSize().x) ? 1.0f : 0.0f);
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(*isChecked ? 0.2f : 8.0f, *isChecked ? 8.0f : 0.2f, 0.2f, 1.0f));
 		ImGui::RenderText(textPosition, *isChecked ? "On" : "Off");
 		ImGui::PopStyleColor();
@@ -161,9 +161,6 @@ namespace menu
 				if (it != group.second.end())
 				{
 					std::pair<std::string, settings::SettingValue> setting = *it;
-
-					if (id == 1)
-						ImGui::Separator();
 
 					const std::string& key = setting.first;
 					const settings::SettingValue& value = setting.second;
@@ -195,6 +192,12 @@ namespace menu
 						ImGui::Text("%.3f", floatValue);
 
 						settings::Set(group.first, setting.first, floatValue);
+					}
+
+					if (!id && groupOrder.second.size() > 1)
+					{
+						ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
+						ImGui::Separator();
 					}
 
 					++id;
