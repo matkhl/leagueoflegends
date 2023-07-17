@@ -36,29 +36,18 @@ namespace functions::stringcheck
 		MINION_SUPER_RED
 	};
 
-	static std::vector<std::string> attackWindupSpells = {
-		ATTACK_WINDUP_SPELL_AATROX,
-		ATTACK_WINDUP_SPELL_ASHE,
-		ATTACK_WINDUP_SPELL_KOGMAW
-	};
-
 	bool VectorContains(std::vector<std::string> vector, std::string string)
 	{
 		return std::find(vector.begin(), vector.end(), string) != vector.end();
 	}
 
-	bool IsJungleMonsterObject(std::string spellName)
+	bool IsJungleMonsterObject(std::string objectName)
 	{
-		return VectorContains(attackWindupSpells, spellName);
+		return VectorContains(jungleMonsterObjects, objectName);
 	}
 
-	bool IsMinionObject(std::string spellName)
+	bool IsMinionObject(std::string objectName)
 	{
-		return VectorContains(attackWindupSpells, spellName);
-	}
-
-	bool IsAttackWindupSpell(std::string spellName)
-	{
-		return VectorContains(attackWindupSpells, spellName);
+		return VectorContains(minionObjects, objectName);
 	}
 }

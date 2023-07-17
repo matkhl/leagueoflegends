@@ -37,6 +37,10 @@ namespace functions
 	Vector2 GetHpBarPosition(Object* obj);
 
 	Object* GetSelectedObject();
+	unsigned int GetCollisionFlags(Vector3 pos);
+	bool IsBrush(Vector3 pos);
+	bool IsWall(Vector3 pos);
+	bool IsAttackWindupSpell(int spellId);
 
 	void TryRightClick(Vector2 pos);
 	void IssueOrder(Vector2 pos);
@@ -53,6 +57,5 @@ namespace functions
 		bool VectorContains(std::vector<std::string> vector, std::string string);
 		bool IsJungleMonsterObject(std::string spellName);
 		bool IsMinionObject(std::string spellName);
-		bool IsAttackWindupSpell(std::string spellName);
 	}
 }

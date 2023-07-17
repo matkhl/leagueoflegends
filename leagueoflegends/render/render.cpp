@@ -200,7 +200,14 @@ namespace render
 			void DrawCursorWorld()
 			{
 				if (!IsOnScreen(functions::GetMousePos())) return;
-				RenderCircleWorld(functions::GetMouseWorldPos(), 12, 30.0f, COLOR_WHITE, 2.0f);
+
+				Vector3 mouseWorldPos = functions::GetMouseWorldPos();
+				Vector2 mouseWorldScreenPos = functions::WorldToScreen(mouseWorldPos);
+
+				if (functions::IsWall(mouseWorldPos))
+					RenderText("wall", (mouseWorldScreenPos - Vector2(0.0f, 58.0f)).ToImVec(), 18.0f, COLOR_WHITE, true);
+
+				RenderCircleWorld(mouseWorldPos, 12, 30.0f, COLOR_WHITE, 2.0f);
 			}
 
 			void Update()

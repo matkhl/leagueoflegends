@@ -45,7 +45,8 @@
 #include "global/settings.h"
 #include "global/globals.h"
 #include "global/targetver.h"
-#include "scripts/champions.h"
+#include "scripts/championmodule.h"
+#include "scripts/spelldatabase.h"
 #include "scripts/scripts.h"
 
 #include "hooks/hooks.h"

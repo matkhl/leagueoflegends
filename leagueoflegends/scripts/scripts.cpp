@@ -105,7 +105,7 @@ namespace scripts
 			if (spellCast)
 			{
 				if ((spellCast->IsAutoAttack() ||
-					functions::stringcheck::IsAttackWindupSpell(spellCast->GetSpellInfo()->GetSpellData()->GetName())) &&
+					functions::IsAttackWindupSpell(spellCast->GetSpellId())) &&
 					(QWORD)spellCast != lastSpellCastAddress)
 				{
 					lastAttackTime = gameTime;

@@ -12,6 +12,7 @@
 #define oGetAttackDelay 0x3ABB70
 #define oGetAttackWindup 0x3ABA70
 #define oGetObjectFromNetId 0x3AD560
+#define oGetCollisionFlags 0xD6ACD0
 
 //variables
 #define oGameTime 0x521EE00
@@ -84,7 +85,7 @@
 
 #define oActiveSpellCastSpellInfo 0x8
 #define oActiveSpellCastSpellType 0x10
-#define oActiveSpellCastStartTime 0x16C
+#define oActiveSpellCastSpellId 0x124
 
 #define oObjCharDataData 0x28
 #define oObjCharDataDataSize 0xC4

@@ -106,3 +106,14 @@ enum OrbwalkState
 	CLEAR,
 	HARASS
 };
+
+enum CollisionFlags
+{
+    None = 0,
+    Grass = 1,
+    Wall = 2,
+    Building = 64,
+    Tower = 70,
+    Prop = 128,
+    GlobalVision = 256
+};

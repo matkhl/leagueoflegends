@@ -16,7 +16,6 @@ public:
 
 class SpellInput
 {
-public:
 };
 
 class Spell
@@ -37,7 +36,7 @@ class SpellCast
 {
 public:
     SpellInfo* GetSpellInfo();
-    float GetStartTime();
+    int GetSpellId();
 public:
     bool IsAutoAttack();
 };

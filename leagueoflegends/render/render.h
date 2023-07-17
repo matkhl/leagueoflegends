@@ -57,6 +57,9 @@ namespace render
 		{
 			void DrawData(Object* obj, int index);
 			void DrawObjectData();
+			void DrawBoundingRadius(Object* obj);
+			void DrawObjectBoundingRadius();
+			void DrawCursorWorld();
 			void Update();
 		}
 	}

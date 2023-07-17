@@ -59,9 +59,9 @@ SpellInfo* SpellCast::GetSpellInfo()
 	return *(SpellInfo**)((QWORD)this + oActiveSpellCastSpellInfo);
 }
 
-float SpellCast::GetStartTime()
+int SpellCast::GetSpellId()
 {
-	return *(float*)((QWORD)this + oActiveSpellCastStartTime);
+	return *(int*)((QWORD)this + oActiveSpellCastSpellId);
 }
 
 bool SpellCast::IsAutoAttack()

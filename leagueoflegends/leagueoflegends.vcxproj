@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.Windows.CppWinRT.2.0.210806.1\build\native\Microsoft.Windows.CppWinRT.props" Condition="Exists('..\packages\Microsoft.Windows.CppWinRT.2.0.210806.1\build\native\Microsoft.Windows.CppWinRT.props')" />
   <ItemGroup Label="ProjectConfigurations">
@@ -203,8 +203,9 @@
     <ClInclude Include="mem\spoof_call.h" />
     <ClInclude Include="menu\menu.h" />
     <ClInclude Include="render\render.h" />
-    <ClInclude Include="scripts\champions.h" />
+    <ClInclude Include="scripts\championmodule.h" />
     <ClInclude Include="scripts\scripts.h" />
+    <ClInclude Include="scripts\spelldatabase.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
@@ -235,6 +236,7 @@
     <ClCompile Include="render\renderfunctions.cpp" />
     <ClCompile Include="scripts\champions\syndra.cpp" />
     <ClCompile Include="scripts\scripts.cpp" />
+    <ClCompile Include="scripts\spelldatabase.cpp" />
     <ClCompile Include="scripts\targetselector.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>

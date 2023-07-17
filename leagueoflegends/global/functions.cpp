@@ -157,6 +157,29 @@ namespace functions
 		return _fnGetObjectFromNetId((QWORD*)(*(QWORD*)(globals::moduleBase + oGetObjectFromNetIdParam)), targetNetId);
 	}
 
+	unsigned int GetCollisionFlags(Vector3 pos)
+	{
+		typedef unsigned int(__fastcall* fnGetCollisionFlags)(Vector3 pos);
+		fnGetCollisionFlags _fnGetCollisionFlags = (fnGetCollisionFlags)(globals::moduleBase + oGetCollisionFlags);
+
+		return _fnGetCollisionFlags(pos);
+	}
+
+	bool IsBrush(Vector3 pos)
+	{
+		return GetCollisionFlags(pos) & CollisionFlags::Grass;
+	}
+
+	bool IsWall(Vector3 pos)
+	{
+		return GetCollisionFlags(pos) & CollisionFlags::Wall;
+	}
+
+	bool IsAttackWindupSpell(int spellId)
+	{
+		return spellId >= 14;
+	}
+
 	void TryRightClick(Vector2 pos)
 	{
 		*(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck1) = 0.0f;
