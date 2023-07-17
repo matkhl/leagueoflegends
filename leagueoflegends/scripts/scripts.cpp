@@ -231,6 +231,7 @@ namespace scripts
 		{
 			AddSetting("debug", "draw object data", false);
 			AddSetting("debug", "draw bounding radius", false);
+			AddSetting("debug", "draw cursor world", false);
 		}
 	}
 

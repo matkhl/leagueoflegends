@@ -194,7 +194,7 @@ namespace menu
 						settings::Set(group.first, setting.first, floatValue);
 					}
 
-					if (!id && groupOrder.second.size() > 1)
+					if (!id && groupOrder.second.size() > 1 && key == "enabled")
 					{
 						ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
 						ImGui::Separator();

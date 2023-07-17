@@ -197,10 +197,17 @@ namespace render
 				}
 			}
 
+			void DrawCursorWorld()
+			{
+				if (!IsOnScreen(functions::GetMousePos())) return;
+				RenderCircleWorld(functions::GetMouseWorldPos(), 12, 30.0f, COLOR_WHITE, 2.0f);
+			}
+
 			void Update()
 			{
 				if (settings::GetBool("debug", "draw object data")) DrawObjectData();
 				if (settings::GetBool("debug", "draw bounding radius")) DrawObjectBoundingRadius();
+				if (settings::GetBool("debug", "draw cursor world")) DrawCursorWorld();
 			}
 		}
 	}

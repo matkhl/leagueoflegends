@@ -1,5 +1,7 @@
 #include "../../stdafx.h"
 
+using namespace scripts;
+
 class Module : public ChampionModule
 {
 private:
