@@ -206,6 +206,8 @@
     <ClInclude Include="scripts\championmodule.h" />
     <ClInclude Include="scripts\scripts.h" />
     <ClInclude Include="scripts\spelldatabase.h" />
+    <ClInclude Include="selfprotection\strings\obfuscator.hpp" />
+    <ClInclude Include="selfprotection\utils.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>

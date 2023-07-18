@@ -38,6 +38,12 @@
     <Filter Include="scripts\champions">
       <UniqueIdentifier>{5a45deb9-074c-4900-9f80-84a3b603b3b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="selfprotection">
+      <UniqueIdentifier>{125d59fd-ffc8-4544-af9a-9a866a161c7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="selfprotection\strings">
+      <UniqueIdentifier>{3ef579aa-f315-4b58-ab9e-6a1b2d6e7508}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="global\globals.h">
@@ -136,17 +142,24 @@
     <ClInclude Include="scripts\scripts.h">
       <Filter>scripts</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>main</Filter>
-    </ClInclude>
     <ClInclude Include="mem\spoof_call.h">
       <Filter>mem</Filter>
     </ClInclude>
     <ClInclude Include="global\strings.h">
       <Filter>global</Filter>
     </ClInclude>
-    <ClInclude Include="scripts\champions.h">
+    <ClInclude Include="selfprotection\strings\obfuscator.hpp">
+      <Filter>selfprotection\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="scripts\championmodule.h">
       <Filter>scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="scripts\spelldatabase.h">
+      <Filter>scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="selfprotection\utils.h">
+      <Filter>selfprotection</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -225,9 +238,6 @@
     <ClCompile Include="main\dllmain.cpp">
       <Filter>main</Filter>
     </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>main</Filter>
-    </ClCompile>
     <ClCompile Include="global\stringcheck.cpp">
       <Filter>global</Filter>
     </ClCompile>
@@ -237,6 +247,10 @@
     <ClCompile Include="scripts\champions\syndra.cpp">
       <Filter>scripts\champions</Filter>
     </ClCompile>
+    <ClCompile Include="scripts\spelldatabase.cpp">
+      <Filter>scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

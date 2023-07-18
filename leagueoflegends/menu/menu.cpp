@@ -86,7 +86,7 @@ namespace menu
 
 		ImGui::GetIO().MouseDrawCursor = false;
 
-		std::cout << "Menu initialized" << std::endl;
+		std::cout << SP_STRING("Menu initialized") << std::endl;
 	}
 
 	void SaveSoon()

@@ -1,8 +1,5 @@
 #pragma once
 
-#define WIN32_LEAN_AND_MEAN
-#define GLFW_EXPOSE_NATIVE_WGL
-
 #include <windows.h>
 #include <iostream>
 #include <iomanip>
@@ -23,6 +20,8 @@
 #include <d3d11.h>
 #include <d3d10.h>
 #include <d3d9.h>
+
+#include "selfprotection/utils.h"
 
 #include "kiero/kiero.h"
 #include "kiero/minhook/include/MinHook.h"

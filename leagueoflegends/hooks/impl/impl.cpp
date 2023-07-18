@@ -27,7 +27,7 @@ namespace hooks
 				globals::windowHeight = abs(windowRect.bottom - windowRect.top);
 			}
 
-			functions::PrintChat(CHAT_COLOR_("#72ff72", "Loaded"));
+			functions::PrintChat(CHAT_COLOR_("#72ff72", SP_STRING("Loaded")));
 
 			globals::hookResponse = true;
 		}
@@ -103,7 +103,7 @@ namespace hooks
 
 				Inits();
 
-				std::cout << globals::renderType << " hooked and ImGui initialized" << std::endl;
+				std::cout << globals::renderType << SP_STRING(" hooked and ImGui initialized") << std::endl;
 
 				_init = true;
 			}
@@ -127,7 +127,7 @@ namespace hooks
 
 					globals::eject = true;
 
-					functions::PrintChat(CHAT_COLOR_("#ff5b5b", "Ejected"));
+					functions::PrintChat(CHAT_COLOR_("#ff5b5b", SP_STRING("Ejected")));
 
 					return result;
 				}
@@ -153,8 +153,8 @@ namespace hooks
 			//hook methods in /kiero/METHODSTABLE.txt
 			if (globals::renderType == "D3D9")
 			{
-				if (kiero::bind(16, (void**)&o_resetDX9, Reset) != kiero::Status::Success) std::cout << globals::renderType << " bind failed" << std::endl;
-				if (kiero::bind(42, (void**)&o_endSceneDX9, EndScene) != kiero::Status::Success) std::cout << globals::renderType << " bind failed" << std::endl;
+				if (kiero::bind(16, (void**)&o_resetDX9, Reset) != kiero::Status::Success) std::cout << globals::renderType << SP_STRING(" bind failed") << std::endl;
+				if (kiero::bind(42, (void**)&o_endSceneDX9, EndScene) != kiero::Status::Success) std::cout << globals::renderType << SP_STRING(" bind failed") << std::endl;
 			}
 		}
 	}

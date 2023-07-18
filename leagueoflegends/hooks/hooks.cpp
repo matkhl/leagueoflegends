@@ -13,13 +13,13 @@ namespace hooks
 		
 		if (globals::renderType)
 		{
-			std::cout << "Using " << globals::renderType << std::endl;
+			std::cout << SP_STRING("Using ") << globals::renderType << std::endl;
 			hooks::impl::Init();
 			return 1;
 		}
 		else
 		{
-			std::cout << "RenderType not supported\n(press detach key)" << std::endl;
+			std::cout << SP_STRING("RenderType not supported\n(press detach key)") << std::endl;
 			return 0;
 		}
 	}

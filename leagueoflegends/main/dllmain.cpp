@@ -20,12 +20,12 @@ DWORD __stdcall OnInject(LPVOID lpReserved)
 	freopen_s(&f, "CONOUT$", "w", stdout);
 #endif
 
-	std::cout << "Injected" << std::endl;
+	std::cout << SP_STRING("Injected") << std::endl;
 
 	globals::moduleBase = (uintptr_t)GetModuleHandle(nullptr);
 	if (!GetModuleInformation(GetCurrentProcess(), (HMODULE)globals::moduleBase, &globals::moduleInfo, sizeof(MODULEINFO)))
 	{
-		std::cout << "Failed to get module information." << std::endl;
+		std::cout << SP_STRING("Failed to get module information.") << std::endl;
 		return 0;
 	}
 
@@ -44,12 +44,11 @@ DWORD __stdcall OnInject(LPVOID lpReserved)
 	Sleep(1000);
 
 	if (!globals::hookResponse && hooked == 1)
-		std::cout << "Hook function not called by process\n(press detach key)" << std::endl;
+		std::cout << SP_STRING("Hook function not called by process\n(press detach key)") << std::endl;
 
 	while (!globals::eject)
 	{
 		Sleep(5);
-		//if game rendertype is not supported
 		if (!globals::hookResponse && GetAsyncKeyState(VK_DELETE))
 			globals::eject = true;
 	}
