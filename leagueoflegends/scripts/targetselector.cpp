@@ -4,7 +4,7 @@ namespace scripts
 {
 	namespace targetselector
 	{
-		bool ShouldChooseSelectedObject(Object* selectedObject, Object* checkObj)
+		bool ChooseSelectedObject(Object* selectedObject, Object* checkObj)
 		{
 			return selectedObject == checkObj && SETTINGS_BOOL("targetselector", "always focus selected");
 		}
@@ -21,7 +21,7 @@ namespace scripts
 
 				if (!obj->IsInRange(playerPos, range)) continue;
 
-				if (ShouldChooseSelectedObject(selectedObject, obj)) return obj;
+				if (ChooseSelectedObject(selectedObject, obj)) return obj;
 				
 				if (!best) {
 					best = obj;

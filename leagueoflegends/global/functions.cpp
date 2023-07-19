@@ -74,9 +74,9 @@ namespace functions
 
 	std::string ConvertTime(float seconds) {
 		int minutes = (int)(seconds / 60);
-		seconds = fmod(seconds, 60);
+		seconds = (float)fmod(seconds, 60);
 		int secs = (int)seconds;
-		int milliseconds = round((seconds - secs) * 1000);
+		int milliseconds = (int)round((seconds - secs) * 1000);
 
 		std::stringstream ss;
 		ss << std::setw(2) << std::setfill('0') << minutes << ":";
@@ -101,7 +101,7 @@ namespace functions
 		if (!IsGameFocused()) return Vector2();
 		POINT curMouse;
 		bool getMouse = GetCursorPos(&curMouse);
-		return Vector2(curMouse.x, curMouse.y);
+		return Vector2((float)curMouse.x, (float)curMouse.y);
 	}
 
 	Vector3 GetMouseWorldPos()

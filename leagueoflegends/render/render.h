@@ -49,7 +49,7 @@ namespace render
 		namespace recalls
 		{
 			void DrawRecallFrame();
-			void DrawRecall(float relativePositionOffset, std::string name, uintptr_t color, bool teleport);
+			void DrawRecall(float relativePositionOffset, std::string name, uint32_t color, bool teleport);
 			void Update();
 		}
 

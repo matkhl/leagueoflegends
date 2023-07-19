@@ -114,7 +114,7 @@ namespace render
 				RenderRect(topLeft.ToImVec(), bottomRight.ToImVec(), COLOR_WHITE, 0.0f, NULL, 2.0f);
 			}
 
-			void DrawRecall(float relativePositionOffset, std::string name, uintptr_t color, bool teleport)
+			void DrawRecall(float relativePositionOffset, std::string name, uint32_t color, bool teleport)
 			{
 				Vector2 bottomPos = Vector2(topLeft.x + width * relativePositionOffset, bottomRight.y);
 				Vector2 topPos = Vector2(bottomPos.x, bottomPos.y - height);
@@ -141,7 +141,7 @@ namespace render
 					float maxRecallTime = (recallInfo.state == RecallState::RECALLING || recallInfo.state == RecallState::RECALLING_FINISHED) ? 8.0f : 4.0f;
 					maxRecallTime -= timeBuffer;
 					float relativePositionOffset = max(0.0f, 1.0f - ((gameTime - recallInfo.startTime) / maxRecallTime));
-					uintptr_t recallColor = (recallInfo.state == RecallState::RECALLING || recallInfo.state == RecallState::TELEPORTING) ? COLOR_WHITE : COLOR_RED;
+					uint32_t recallColor = (recallInfo.state == RecallState::RECALLING || recallInfo.state == RecallState::TELEPORTING) ? COLOR_WHITE : COLOR_RED;
 					bool teleporting = (recallInfo.state == RecallState::TELEPORTING || recallInfo.state == RecallState::TELEPORTING_FINISHED) ? true : false;
 					DrawRecall(relativePositionOffset, recallInfo.name, recallColor, teleporting);
 				}

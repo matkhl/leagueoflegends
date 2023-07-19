@@ -115,10 +115,10 @@ namespace render
 	{
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 
-		float a = (color >> 24) & 0xff;
-		float r = (color >> 16) & 0xff;
-		float g = (color >> 8) & 0xff;
-		float b = (color) & 0xff;
+		float a = (float)((color >> 24) & 0xff);
+		float r = (float)((color >> 16) & 0xff);
+		float g = (float)((color >> 8) & 0xff);
+		float b = (float)((color) & 0xff);
 
 		ImVec2 textSize = imFont->CalcTextSizeA(size, FLT_MAX, 0.0f, text.c_str());
 
@@ -136,10 +136,10 @@ namespace render
 	{
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 
-		float a = (color >> 24) & 0xff;
-		float r = (color >> 16) & 0xff;
-		float g = (color >> 8) & 0xff;
-		float b = (color) & 0xff;
+		float a = (float)((color >> 24) & 0xff);
+		float r = (float)((color >> 16) & 0xff);
+		float g = (float)((color >> 8) & 0xff);
+		float b = (float)((color) & 0xff);
 
 		window->DrawList->AddLine(from, to, ImGui::GetColorU32({ r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f }), thickness);
 	}
@@ -148,10 +148,10 @@ namespace render
 	{
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 
-		float a = (color >> 24) & 0xff;
-		float r = (color >> 16) & 0xff;
-		float g = (color >> 8) & 0xff;
-		float b = (color) & 0xff;
+		float a = (float)((color >> 24) & 0xff);
+		float r = (float)((color >> 16) & 0xff);
+		float g = (float)((color >> 8) & 0xff);
+		float b = (float)((color) & 0xff);
 
 		window->DrawList->AddCircle(position, radius, ImGui::GetColorU32({ r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f }), segments, thickness);
 	}
@@ -160,10 +160,10 @@ namespace render
 	{
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 
-		float a = (color >> 24) & 0xff;
-		float r = (color >> 16) & 0xff;
-		float g = (color >> 8) & 0xff;
-		float b = (color) & 0xff;
+		float a = (float)((color >> 24) & 0xff);
+		float r = (float)((color >> 16) & 0xff);
+		float g = (float)((color >> 8) & 0xff);
+		float b = (float)((color) & 0xff);
 
 		window->DrawList->AddCircleFilled(position, radius, ImGui::GetColorU32({ r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f }), segments);
 	}
@@ -172,10 +172,10 @@ namespace render
 	{
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 
-		float a = (color >> 24) & 0xFF;
-		float r = (color >> 16) & 0xFF;
-		float g = (color >> 8) & 0xFF;
-		float b = (color) & 0xFF;
+		float a = (float)((color >> 24) & 0xff);
+		float r = (float)((color >> 16) & 0xff);
+		float g = (float)((color >> 8) & 0xff);
+		float b = (float)((color) & 0xff);
 
 		window->DrawList->AddRect(from, to, ImGui::GetColorU32({ r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f }), rounding, roundingCornersFlags, thickness);
 	}
@@ -184,10 +184,10 @@ namespace render
 	{
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 
-		float a = (color >> 24) & 0xFF;
-		float r = (color >> 16) & 0xFF;
-		float g = (color >> 8) & 0xFF;
-		float b = (color) & 0xFF;
+		float a = (float)((color >> 24) & 0xff);
+		float r = (float)((color >> 16) & 0xff);
+		float g = (float)((color >> 8) & 0xff);
+		float b = (float)((color) & 0xff);
 
 		window->DrawList->AddRectFilled(from, to, ImGui::GetColorU32({ r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f }), rounding, roundingCornersFlags);
 	}
@@ -196,10 +196,10 @@ namespace render
 	{
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 
-		float a = (color >> 24) & 0xFF;
-		float r = (color >> 16) & 0xFF;
-		float g = (color >> 8) & 0xFF;
-		float b = (color) & 0xFF;
+		float a = (float)((color >> 24) & 0xff);
+		float r = (float)((color >> 16) & 0xff);
+		float g = (float)((color >> 8) & 0xff);
+		float b = (float)((color) & 0xff);
 
 		window->DrawList->AddImage(pTexture, from, to, { 0.0f, 0.0f }, { 1.0f, 1.0f }, ImGui::GetColorU32({ r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f }));
 	}
@@ -208,10 +208,10 @@ namespace render
 	{
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 
-		float a = (color >> 24) & 0xFF;
-		float r = (color >> 16) & 0xFF;
-		float g = (color >> 8) & 0xFF;
-		float b = (color) & 0xFF;
+		float a = (float)((color >> 24) & 0xff);
+		float r = (float)((color >> 16) & 0xff);
+		float g = (float)((color >> 8) & 0xff);
+		float b = (float)((color) & 0xff);
 
 		window->DrawList->AddImageRounded(pTexture, from, to, { 0.0f, 0.0f }, { 1.0f, 1.0f }, ImGui::GetColorU32({ r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f }), rounding, roundingCornersFlags);
 	}
@@ -220,10 +220,10 @@ namespace render
 	{
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 
-		float a = (color >> 24) & 0xFF;
-		float r = (color >> 16) & 0xFF;
-		float g = (color >> 8) & 0xFF;
-		float b = (color) & 0xFF;
+		float a = (float)((color >> 24) & 0xff);
+		float r = (float)((color >> 16) & 0xff);
+		float g = (float)((color >> 8) & 0xff);
+		float b = (float)((color) & 0xff);
 
 		numPoints = min(numPoints, 49);
 		ImVec2 points[50];

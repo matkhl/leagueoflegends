@@ -23,8 +23,8 @@ namespace hooks
 			RECT windowRect;
 			if (GetWindowRect(windowDX, &windowRect))
 			{
-				globals::windowWidth = abs(windowRect.right - windowRect.left);
-				globals::windowHeight = abs(windowRect.bottom - windowRect.top);
+				globals::windowWidth = (float)abs(windowRect.right - windowRect.left);
+				globals::windowHeight = (float)abs(windowRect.bottom - windowRect.top);
 			}
 
 			functions::PrintChat(CHAT_COLOR("#72ff72", "Loaded"));

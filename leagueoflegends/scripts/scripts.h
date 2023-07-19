@@ -15,7 +15,7 @@ namespace scripts
 
 	namespace targetselector
 	{
-		bool ShouldChooseSelectedObject(Object* selectedObject, Object* checkObj);
+		bool ChooseSelectedObject(Object* selectedObject, Object* checkObj);
 
 		Object* GetEnemyChampionInRange(float range);
 
@@ -38,6 +38,7 @@ namespace scripts
 
 		bool StopOrbwalk();
 		bool IsReloading();
+		void RefreshBuffer();
 		void CheckActiveAttack();
 		void Init();
 		void Update();

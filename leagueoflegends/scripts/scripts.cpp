@@ -27,6 +27,8 @@ namespace scripts
 
 	void Init()
 	{
+		srand(static_cast <unsigned> (time(0)));
+
 		cooldowns::Init();
 		recalls::Init();
 		orbwalker::Init();
@@ -50,12 +52,14 @@ namespace scripts
 
 		float gameTime = 0.0f;
 
+		float nextRngBuffer = 0.0f;
+
 		namespace actions
 		{
 			bool CanDoAction()
 			{
 				if (!lastActionTime) lastActionTime = gameTime;
-				if (gameTime < lastActionTime + SETTINGS_FLOAT("orbwalker", "clickdelay")) return false;
+				if (gameTime < lastActionTime + SETTINGS_FLOAT("orbwalker", "clickdelay") + nextRngBuffer) return false;
 				lastActionTime = gameTime;
 				return true;
 			}
@@ -64,12 +68,14 @@ namespace scripts
 			{
 				if (!CanDoAction()) return;
 				functions::MoveToMousePos();
+				RefreshBuffer();
 			}
 
 			void AttackObject(Object* obj)
 			{
 				if (!CanDoAction()) return;
 				functions::AttackObject(obj);
+				RefreshBuffer();
 			}
 		}
 
@@ -99,6 +105,16 @@ namespace scripts
 			return gameTime < lastAttackTime + globals::localPlayer->GetAttackDelay() - SETTINGS_FLOAT("orbwalker", "attack before can attack");
 		}
 
+		void RefreshBuffer()
+		{
+			if (!SETTINGS_BOOL("orbwalker", "random click delay"))
+			{
+				nextRngBuffer = 0.0f;
+				return;
+			}
+			nextRngBuffer = static_cast <float> (rand()) / static_cast <float> (RAND_MAX / 0.01f);
+		}
+
 		void CheckActiveAttack()
 		{
 			auto spellCast = globals::localPlayer->GetActiveSpellCast();
@@ -118,6 +134,7 @@ namespace scripts
 		{
 			ADD_SETTING("orbwalker", "enabled", true);
 			ADD_SETTING_RANGE("orbwalker", "clickdelay", 0.05f, 0.03f, 1.0f);
+			ADD_SETTING("orbwalker", "random click delay", true);
 			ADD_SETTING_RANGE("orbwalker", "windupbuffer", 0.03f, 0.01f, 0.2f);
 			ADD_SETTING_RANGE("orbwalker", "attack before can attack", 0.01f, 0.0f, 0.2f);
 		}

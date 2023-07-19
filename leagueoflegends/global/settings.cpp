@@ -72,9 +72,7 @@ namespace settings
 									value = floatValue;
 								}
 							}
-							catch (const std::exception& e)
-							{
-							}
+							catch (...) {}
 						}
 
 						auto groupIt = data.find(currentGroup);

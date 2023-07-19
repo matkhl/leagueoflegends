@@ -129,7 +129,6 @@ namespace menu
 			return false;
 		}
 
-		bool isHovered, isHeld;
 		bool isPressed = ImGui::InvisibleButton(label, ImVec2(widgetWidth - 25.0f, widgetHeight));
 		if (isPressed)
 			*isChecked = !(*isChecked);
