@@ -6,7 +6,7 @@ namespace scripts
 	{
 		bool ShouldChooseSelectedObject(Object* selectedObject, Object* checkObj)
 		{
-			return selectedObject == checkObj && settings::GetBool("targetselector", "always focus selected");
+			return selectedObject == checkObj && SETTINGS_BOOL("targetselector", "always focus selected");
 		}
 
 		Object* GetEnemyChampionInRange(float range)
@@ -39,7 +39,7 @@ namespace scripts
 
 		void Init()
 		{
-			AddSetting("targetselector", "always focus selected", true);
+			ADD_SETTING("targetselector", "always focus selected", true);
 		}
 	}
 }

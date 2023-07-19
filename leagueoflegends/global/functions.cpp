@@ -47,7 +47,7 @@ namespace functions
 		typedef void(__thiscall* fnPrintChat)(QWORD* chatClient, const char* message, int colorId);
 		fnPrintChat _fnSendChat = (fnPrintChat)(globals::moduleBase + oPrintChat);
 		std::string timeMarkString = "[" + ConvertTime(GetGameTime()) + "] ";
-		std::string coloredTimeMarkString = CHAT_COLOR_("#7ce9ff", timeMarkString);
+		std::string coloredTimeMarkString = CHAT_COLOR_DT("#7ce9ff", timeMarkString);
 		std::string formattedText = coloredTimeMarkString + text;
 		_fnSendChat((QWORD*)(*(QWORD*)(globals::moduleBase + oChatInstance)), formattedText.c_str(), 4);
 	}
@@ -141,7 +141,7 @@ namespace functions
 		float zoomDelta = maxZoom / currentZoom;
 
 		screenPos.y -= (((globals::windowHeight) * 0.00083333335f * zoomDelta) * hpBarHeight);
-		 
+		
 		return screenPos;
 	}
 

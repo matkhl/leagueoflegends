@@ -1,30 +1,30 @@
 #pragma once
 
 //functions
-#define oGetBaseDrawPosition 0x1F5AB0
-#define oWorldToScreen 0xDF2D10
-#define oTryRightClick 0x884700
-#define oIssueOrder 0x899380
-#define oIssueMove 0x883AE0
-#define oCastSpellWrapper 0x890320
-#define oPrintChat 0x844850
-#define oGetBoundingRadius 0x1F32A0
-#define oGetAttackDelay 0x3ABB70
-#define oGetAttackWindup 0x3ABA70
-#define oGetObjectFromNetId 0x3AD560
-#define oGetCollisionFlags 0xD6ACD0
+#define oGetBaseDrawPosition 0x1F8920
+#define oWorldToScreen 0xDF0950
+#define oTryRightClick 0x882A20
+#define oIssueOrder 0x898580
+#define oIssueMove 0x881E00
+#define oCastSpellWrapper 0x88E890
+#define oPrintChat 0x841720
+#define oGetBoundingRadius 0x1F6110
+#define oGetAttackDelay 0x3AFB90
+#define oGetAttackWindup 0x3AFA90
+#define oGetObjectFromNetId 0x38D860
+#define oGetCollisionFlags 0xD67930
 
 //variables
-#define oGameTime 0x521EE00
-#define oLocalPlayer 0x522B768
-#define oHeroManager 0x2173340
-#define oMinionManager 0x39CDCE0
-#define oViewport 0x39CDCA0
-#define oHudInstance 0x2173230
-#define oZoomInstance 0x521B180
-#define oChatClient 0x522B928
-#define oChatInstance 0x39CDF10
-#define oGetObjectFromNetIdParam 0x2173220
+#define oGameTime 0x4213710
+#define oLocalPlayer 0x421F828
+#define oHeroManager 0x2171780
+#define oMinionManager 0x31C45B8
+#define oViewport 0x31C4578
+#define oHudInstance 0x2171670
+#define oZoomInstance 0x4211A90
+#define oChatClient 0x4220618
+#define oChatInstance 0x31C47D0
+#define oGetObjectFromNetIdParam 0x2171660
 
 #define oManagerList 0x8
 #define oManagerListSize 0x10
@@ -57,15 +57,15 @@
 #define oObjAlive 0x328
 #define oObjTargetable 0xEB0
 #define oObjRecallState 0xF40
-#define oObjHealth 0x1068
-#define oObjScale 0x1694
-#define oObjArmor 0x16A4
-#define oObjMagicResist 0x16AC
-#define oObjAttackRange 0x16C4
-#define oObjSpellBook 0x29F8
-#define oObjActiveSpellCast 0x2A30
-#define oObjCharData 0x3538
-#define oObjName 0x35E8
+#define oObjHealth 0x1070
+#define oObjScale 0x1684
+#define oObjArmor 0x1694
+#define oObjMagicResist 0x169C
+#define oObjAttackRange 0x16B4
+#define oObjSpellBook 0x29E8
+#define oObjActiveSpellCast 0x2A20
+#define oObjCharData 0x3528
+#define oObjName 0x35D8
 
 #define oObjSpellBookSpellSlot 0x6D0
 

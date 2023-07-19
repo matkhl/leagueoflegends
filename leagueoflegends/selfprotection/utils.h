@@ -4,6 +4,8 @@
 
 #include "strings/obfuscator.hpp"
 
+#define SP_STRING(str) obfs::make_string<xor_<0x50>, xor_<0x50>>(str).decode()
+
 template <char key>
 constexpr char xor_(char c) {
     return c ^ key;
@@ -18,5 +20,3 @@ template <char(*f)(char), char(*g)(char)>
 constexpr char comp(char c) {
     return f(g(c));
 }
-
-#define SP_STRING(str) obfs::make_string<xor_<0x50>, xor_<0x50>>(str).decode()

@@ -8,4 +8,5 @@ typedef unsigned long long QWORD;
 
 #define PI 3.1415927f
 
-#define CHAT_COLOR_(color, text) std::string("<font color='" + std::string(color) + "'>" + std::string(text) + "</font>")
+#define CHAT_COLOR(color, text) std::string(SP_STRING("<font color='") + std::string(SP_STRING(color)) + SP_STRING("'>") + std::string(SP_STRING(text)) + SP_STRING("</font>"))
+#define CHAT_COLOR_DT(color, text) std::string(SP_STRING("<font color='") + std::string(SP_STRING(color)) + SP_STRING("'>") + std::string(text) + SP_STRING("</font>"))

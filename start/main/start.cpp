@@ -14,6 +14,8 @@
 
 #include "Injection.h"
 
+#define NAMED_PIPE
+
 DWORD GetProcId(const wchar_t* procName)
 {
 	DWORD procId = 0;
@@ -85,9 +87,10 @@ int main()
 	pathBuf.resize(copied);
 	std::string path(pathBuf.begin(), pathBuf.end() - 0x9);
 
+#ifdef NAMED_PIPE
 	setlocale(LC_CTYPE, ".OCP");
 	std::wstring wPath(path.begin(), path.end());
-	std::cout << "----PATH----:" << wPath.c_str() << std::endl;
+	std::cout << "Launching named pipe server" << wPath.c_str() << std::endl;
 
 	try
 	{
@@ -97,6 +100,7 @@ int main()
 		}
 	}
 	catch (...) {};
+#endif
 
 	INJECTIONDATAA data =
 	{

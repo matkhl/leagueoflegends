@@ -2,6 +2,10 @@
 
 #include "../stdafx.h"
 
+#define SETTINGS_BOOL(group, key) settings::GetBool(SP_STRING(group), SP_STRING(key))
+#define SETTINGS_INT(group, key) settings::GetInt(SP_STRING(group), SP_STRING(key))
+#define SETTINGS_FLOAT(group, key) settings::GetFloat(SP_STRING(group), SP_STRING(key))
+
 namespace settings
 {
 	typedef std::variant<bool, int, float> SettingValue;

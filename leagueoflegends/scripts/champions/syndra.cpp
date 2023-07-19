@@ -5,7 +5,7 @@ using namespace scripts;
 class Module : public ChampionModule
 {
 private:
-    std::string name = "Syndra";
+    std::string name = SP_STRING("Syndra");
 
 public:
     Module() {

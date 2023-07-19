@@ -27,7 +27,7 @@ namespace hooks
 				globals::windowHeight = abs(windowRect.bottom - windowRect.top);
 			}
 
-			functions::PrintChat(CHAT_COLOR_("#72ff72", SP_STRING("Loaded")));
+			functions::PrintChat(CHAT_COLOR("#72ff72", "Loaded"));
 
 			globals::hookResponse = true;
 
@@ -48,7 +48,7 @@ namespace hooks
 				settings::Save();
 				globals::eject = true;
 
-				functions::PrintChat(CHAT_COLOR_("#ff5b5b", SP_STRING("Ejected")));
+				functions::PrintChat(CHAT_COLOR("#ff5b5b", "Ejected"));
 
 				return true;
 			}
@@ -113,9 +113,9 @@ namespace hooks
 				IMGUI_CHECKVERSION();
 				ImGui::CreateContext();
 				ImGuiIO& io = ImGui::GetIO(); (void)io;
-				io.IniFilename = globals::imguiFileName;
+				io.IniFilename = SP_STRING("settings-metadata-window.ini");
 				io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
-				io.Fonts->AddFontFromFileTTF(globals::fontPath, 14);
+				io.Fonts->AddFontFromFileTTF(SP_STRING("C:\\Windows\\Fonts\\Arial.ttf"), 14);
 
 				ImGui_ImplWin32_Init(windowDX);
 				ImGui_ImplDX9_Init(pDevice);
@@ -182,9 +182,9 @@ namespace hooks
 					IMGUI_CHECKVERSION();
 					ImGui::CreateContext();
 					ImGuiIO& io = ImGui::GetIO(); (void)io;
-					io.IniFilename = globals::imguiFileName;
+					io.IniFilename = SP_STRING("settings-metadata-window.ini");
 					io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
-					io.Fonts->AddFontFromFileTTF(globals::fontPath, 14);
+					io.Fonts->AddFontFromFileTTF(SP_STRING("C:\\Windows\\Fonts\\Arial.ttf"), 14);
 
 					DXGI_SWAP_CHAIN_DESC desc;
 					pSwapChain->GetDesc(&desc);

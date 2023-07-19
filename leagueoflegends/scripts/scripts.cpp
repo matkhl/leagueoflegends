@@ -38,8 +38,8 @@ namespace scripts
 	void Update()
 	{
 		champions::Update();
-		if (settings::GetBool("orbwalker", "enabled")) orbwalker::Update();
-		if (settings::GetBool("recalls", "enabled")) recalls::Update();
+		if (SETTINGS_BOOL("orbwalker", "enabled")) orbwalker::Update();
+		if (SETTINGS_BOOL("recalls", "enabled")) recalls::Update();
 	}
 
 	namespace orbwalker
@@ -55,7 +55,7 @@ namespace scripts
 			bool CanDoAction()
 			{
 				if (!lastActionTime) lastActionTime = gameTime;
-				if (gameTime < lastActionTime + settings::GetFloat("orbwalker", "clickdelay")) return false;
+				if (gameTime < lastActionTime + SETTINGS_FLOAT("orbwalker", "clickdelay")) return false;
 				lastActionTime = gameTime;
 				return true;
 			}
@@ -90,13 +90,13 @@ namespace scripts
 		{
 			return (
 				!functions::CanSendInput() ||
-				gameTime < lastAttackTime + globals::localPlayer->GetAttackWindup() + settings::GetFloat("orbwalker", "windupbuffer")
+				gameTime < lastAttackTime + globals::localPlayer->GetAttackWindup() + SETTINGS_FLOAT("orbwalker", "windupbuffer")
 			);
 		}
 
 		bool IsReloading()
 		{
-			return gameTime < lastAttackTime + globals::localPlayer->GetAttackDelay() - settings::GetFloat("orbwalker", "attack before can attack");
+			return gameTime < lastAttackTime + globals::localPlayer->GetAttackDelay() - SETTINGS_FLOAT("orbwalker", "attack before can attack");
 		}
 
 		void CheckActiveAttack()
@@ -116,10 +116,10 @@ namespace scripts
 
 		void Init()
 		{
-			AddSetting("orbwalker", "enabled", true);
-			AddSetting("orbwalker", "clickdelay", 0.05f, 0.03f, 1.0f);
-			AddSetting("orbwalker", "windupbuffer", 0.03f, 0.01f, 0.2f);
-			AddSetting("orbwalker", "attack before can attack", 0.01f, 0.0f, 0.2f);
+			ADD_SETTING("orbwalker", "enabled", true);
+			ADD_SETTING_RANGE("orbwalker", "clickdelay", 0.05f, 0.03f, 1.0f);
+			ADD_SETTING_RANGE("orbwalker", "windupbuffer", 0.03f, 0.01f, 0.2f);
+			ADD_SETTING_RANGE("orbwalker", "attack before can attack", 0.01f, 0.0f, 0.2f);
 		}
 
 		void Update()
@@ -148,7 +148,7 @@ namespace scripts
 	{
 		void Init()
 		{
-			AddSetting("cooldowns", "enabled", true);
+			ADD_SETTING("cooldowns", "enabled", true);
 		}
 	}
 
@@ -172,7 +172,7 @@ namespace scripts
 
 		void Init()
 		{
-			AddSetting("recalls", "enabled", true);
+			ADD_SETTING("recalls", "enabled", true);
 		}
 
 		void Update()
@@ -229,9 +229,9 @@ namespace scripts
 	{
 		void Init()
 		{
-			AddSetting("debug", "draw object data", false);
-			AddSetting("debug", "draw bounding radius", false);
-			AddSetting("debug", "draw cursor world", false);
+			ADD_SETTING("debug", "draw object data", false);
+			ADD_SETTING("debug", "draw bounding radius", false);
+			ADD_SETTING("debug", "draw cursor world", false);
 		}
 	}
 

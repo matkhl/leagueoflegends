@@ -155,9 +155,7 @@ namespace obfs {
         template <std::size_t... Idx>
         constexpr String(char const* str,
                          std::index_sequence<Idx...>):
-            str{ encoder(str[Idx])... } {
-            // Do Nothing
-        }
+            str{ encoder(str[Idx])... } {}
 
         inline char const* decode() const {
             for (char& chr : str) {

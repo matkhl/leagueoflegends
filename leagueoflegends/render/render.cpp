@@ -19,7 +19,7 @@ namespace render
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, { 0.0f, 0.0f, 0.0f, 0.0f });
-		ImGui::Begin("transparentwindow", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs);
+		ImGui::Begin(SP_STRING("transparentwindow"), nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs);
 
 		ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Always);
 		ImGui::SetWindowSize(ImVec2(io.DisplaySize.x, io.DisplaySize.y), ImGuiCond_Always);
@@ -38,8 +38,8 @@ namespace render
 	{
 		void Update()
 		{
-			if (settings::GetBool("cooldowns", "enabled")) cooldowns::Update();
-			if (settings::GetBool("recalls", "enabled")) recalls::Update();
+			if (SETTINGS_BOOL("cooldowns", "enabled")) cooldowns::Update();
+			if (SETTINGS_BOOL("recalls", "enabled")) recalls::Update();
 			debug::Update();
 		}
 		
@@ -123,7 +123,7 @@ namespace render
 
 				RenderLine(topPos.ToImVec(), bottomPos.ToImVec(), color, 2.0f);
 				RenderText(name, namePos.ToImVec(), nameSize, color, true);
-				if (teleport) RenderText("TP", teleportPos.ToImVec(), nameSize, color, true);
+				if (teleport) RenderText(SP_STRING("TP"), teleportPos.ToImVec(), nameSize, color, true);
 			}
 
 			void Update()
@@ -155,7 +155,7 @@ namespace render
 				Vector2 screenPos = functions::WorldToScreen(obj->GetPosition());
 				if (!IsOnScreen(screenPos)) return;
 				RenderText(obj->GetName(), (screenPos - Vector2(0.0f, 22.0f)).ToImVec(), 18.0f, COLOR_WHITE, true);
-				RenderText("List id: " + std::to_string(index), functions::WorldToScreen(obj->GetPosition()).ToImVec(), 18.0f, COLOR_WHITE, true);
+				RenderText(SP_STRING("List id: ") + std::to_string(index), functions::WorldToScreen(obj->GetPosition()).ToImVec(), 18.0f, COLOR_WHITE, true);
 			}
 
 			void DrawObjectData()
@@ -205,16 +205,18 @@ namespace render
 				Vector2 mouseWorldScreenPos = functions::WorldToScreen(mouseWorldPos);
 
 				if (functions::IsWall(mouseWorldPos))
-					RenderText("wall", (mouseWorldScreenPos - Vector2(0.0f, 58.0f)).ToImVec(), 18.0f, COLOR_WHITE, true);
+					RenderText(SP_STRING("wall"), (mouseWorldScreenPos - Vector2(0.0f, 58.0f)).ToImVec(), 18.0f, COLOR_WHITE, true);
+				if (functions::IsBrush(mouseWorldPos))
+					RenderText(SP_STRING("grass"), (mouseWorldScreenPos - Vector2(0.0f, 58.0f)).ToImVec(), 18.0f, COLOR_WHITE, true);
 
 				RenderCircleWorld(mouseWorldPos, 12, 30.0f, COLOR_WHITE, 2.0f);
 			}
 
 			void Update()
 			{
-				if (settings::GetBool("debug", "draw object data")) DrawObjectData();
-				if (settings::GetBool("debug", "draw bounding radius")) DrawObjectBoundingRadius();
-				if (settings::GetBool("debug", "draw cursor world")) DrawCursorWorld();
+				if (SETTINGS_BOOL("debug", "draw object data")) DrawObjectData();
+				if (SETTINGS_BOOL("debug", "draw bounding radius")) DrawObjectBoundingRadius();
+				if (SETTINGS_BOOL("debug", "draw cursor world")) DrawCursorWorld();
 			}
 		}
 	}

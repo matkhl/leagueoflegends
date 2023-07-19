@@ -2,6 +2,9 @@
 
 #include "../stdafx.h"
 
+#define ADD_SETTING(group, key, value) AddSetting(SP_STRING(group), SP_STRING(key), value)
+#define ADD_SETTING_RANGE(group, key, value, min, max) AddSetting(SP_STRING(group), SP_STRING(key), value, min, max)
+
 namespace scripts
 {
 	extern std::vector<std::pair<std::string, std::vector<std::string>>> settingsOrder;

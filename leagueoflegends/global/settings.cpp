@@ -15,14 +15,12 @@ namespace settings
 		return os;
 	}
 
-	std::string fileName = globals::settingsFileName;
-
 	SettingsData data = {};
 	SettingsBounds bounds = {};
 
 	void Save()
 	{
-		std::ofstream file(fileName);
+		std::ofstream file(SP_STRING("settings-metadata.ini"));
 		if (file.is_open()) {
 			for (const auto& group : data) {
 				file << "[" << group.first << "]\n";
@@ -37,7 +35,7 @@ namespace settings
 
 	void Load()
 	{
-		std::ifstream file(fileName);
+		std::ifstream file(SP_STRING("settings-metadata.ini"));
 		if (file.is_open())
 		{
 			std::string line;
