@@ -15,7 +15,7 @@ namespace settings
 		return os;
 	}
 
-	std::string fileName = "settings-metadata.ini";
+	std::string fileName = globals::settingsFileName;
 
 	SettingsData data = {};
 	SettingsBounds bounds = {};

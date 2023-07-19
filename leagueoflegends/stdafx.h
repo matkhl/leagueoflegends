@@ -22,6 +22,7 @@
 #include <d3d9.h>
 
 #include "selfprotection/utils.h"
+#include "selfprotection/pipe/namedpipeclient.h"
 
 #include "kiero/kiero.h"
 #include "kiero/minhook/include/MinHook.h"
@@ -29,6 +30,7 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_internal.h"
 #include "imgui/imgui_impl_dx9.h"
+#include "imgui/imgui_impl_dx11.h"
 #include "imgui/imgui_impl_win32.h"
 
 #include "mem/mem.h"

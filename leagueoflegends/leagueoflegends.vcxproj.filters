@@ -44,6 +44,9 @@
     <Filter Include="selfprotection\strings">
       <UniqueIdentifier>{3ef579aa-f315-4b58-ab9e-6a1b2d6e7508}</UniqueIdentifier>
     </Filter>
+    <Filter Include="selfprotection\pipe">
+      <UniqueIdentifier>{ef0fdef9-4f46-485b-beb6-e77e4500d2ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="global\globals.h">
@@ -161,6 +164,12 @@
     <ClInclude Include="selfprotection\utils.h">
       <Filter>selfprotection</Filter>
     </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_dx11.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="selfprotection\pipe\namedpipeclient.h">
+      <Filter>selfprotection\pipe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="global\globals.cpp">
@@ -251,6 +260,9 @@
       <Filter>scripts</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

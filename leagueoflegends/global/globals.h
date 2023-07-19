@@ -4,6 +4,10 @@
 
 namespace globals
 {
+	extern const char* imguiFileName;
+	extern const char* settingsFileName;
+	extern const char* fontPath;
+
 	extern QWORD moduleBase;
 	extern MODULEINFO moduleInfo;
 

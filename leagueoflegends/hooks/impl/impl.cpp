@@ -30,6 +30,8 @@ namespace hooks
 			functions::PrintChat(CHAT_COLOR_("#72ff72", SP_STRING("Loaded")));
 
 			globals::hookResponse = true;
+
+			LOG("Hooked and ImGui initialized");
 		}
 
 		void Updates()
@@ -39,8 +41,18 @@ namespace hooks
 			menu::Update();
 		}
 
-		void KeyChecks()
+		bool KeyChecks()
 		{
+			if (GetAsyncKeyState(VK_DELETE) & 1)
+			{
+				settings::Save();
+				globals::eject = true;
+
+				functions::PrintChat(CHAT_COLOR_("#ff5b5b", SP_STRING("Ejected")));
+
+				return true;
+			}
+
 			if (GetAsyncKeyState(VK_SHIFT)) {
 				globals::menuOpen = true;
 			} else {
@@ -50,7 +62,13 @@ namespace hooks
 			globals::scripts::orbwalker::orbwalkState = OrbwalkState::OFF;
 			if (GetAsyncKeyState(VK_SPACE))
 				globals::scripts::orbwalker::orbwalkState = OrbwalkState::ATTACK;
+
+			return false;
 		}
+
+		//DX
+		typedef HRESULT(__stdcall* Present) (IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags);
+		static Present o_presentDX;
 
 		typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
 
@@ -80,6 +98,7 @@ namespace hooks
 			return result;
 		}
 
+		//DX9
 		HRESULT __stdcall EndScene(LPDIRECT3DDEVICE9 pDevice)
 		{
 			if (globals::eject) return o_endSceneDX9(pDevice);
@@ -94,26 +113,22 @@ namespace hooks
 				IMGUI_CHECKVERSION();
 				ImGui::CreateContext();
 				ImGuiIO& io = ImGui::GetIO(); (void)io;
-				io.IniFilename = "settings-metadata-window.ini";
+				io.IniFilename = globals::imguiFileName;
 				io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
-				io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 14);
+				io.Fonts->AddFontFromFileTTF(globals::fontPath, 14);
 
 				ImGui_ImplWin32_Init(windowDX);
 				ImGui_ImplDX9_Init(pDevice);
 
 				Inits();
 
-				std::cout << globals::renderType << SP_STRING(" hooked and ImGui initialized") << std::endl;
-
 				_init = true;
 			}
 
 			if (functions::IsGameFocused())
 			{
-				if (GetAsyncKeyState(VK_DELETE) & 1)
+				if (KeyChecks())
 				{
-					settings::Save();
-
 					SetWindowLongPtr(windowDX, GWLP_WNDPROC, (LONG_PTR)o_wndProcDX);
 
 					ImGui_ImplDX9_Shutdown();
@@ -125,14 +140,8 @@ namespace hooks
 					kiero::shutdown();
 					pDevice->Release();
 
-					globals::eject = true;
-
-					functions::PrintChat(CHAT_COLOR_("#ff5b5b", SP_STRING("Ejected")));
-
 					return result;
 				}
-
-				KeyChecks();
 			}
 
 			ImGui_ImplDX9_NewFrame();
@@ -148,13 +157,100 @@ namespace hooks
 			return o_endSceneDX9(pDevice);
 		}
 
+		//DX11
+		ID3D11Device* pDeviceDX11 = nullptr;
+		ID3D11DeviceContext* pContextDX11 = nullptr;
+		ID3D11RenderTargetView* mainRenderTargetViewDX11;
+
+		HRESULT __stdcall presentDX11(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags)
+		{
+			if (!_init)
+			{
+				if (SUCCEEDED(pSwapChain->GetDevice(__uuidof(ID3D11Device), (void**)&pDeviceDX11)))
+				{
+					pDeviceDX11->GetImmediateContext(&pContextDX11);
+					DXGI_SWAP_CHAIN_DESC sd;
+					pSwapChain->GetDesc(&sd);
+					windowDX = sd.OutputWindow;
+					ID3D11Texture2D* pBackBuffer;
+					pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+					if (!pBackBuffer) return o_presentDX(pSwapChain, SyncInterval, Flags);
+					pDeviceDX11->CreateRenderTargetView(pBackBuffer, NULL, &mainRenderTargetViewDX11);
+					pBackBuffer->Release();
+					o_wndProcDX = (WNDPROC)SetWindowLongPtr(windowDX, GWLP_WNDPROC, (LONG_PTR)wndProcDX);
+
+					IMGUI_CHECKVERSION();
+					ImGui::CreateContext();
+					ImGuiIO& io = ImGui::GetIO(); (void)io;
+					io.IniFilename = globals::imguiFileName;
+					io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
+					io.Fonts->AddFontFromFileTTF(globals::fontPath, 14);
+
+					DXGI_SWAP_CHAIN_DESC desc;
+					pSwapChain->GetDesc(&desc);
+
+					ID3D11Device* device;
+					pSwapChain->GetDevice(__uuidof(ID3D11Device), (void**)&device);
+
+					ID3D11DeviceContext* context;
+					device->GetImmediateContext(&context);
+
+					ImGui_ImplWin32_Init(windowDX);
+					ImGui_ImplDX11_Init(device, context);
+
+					Inits();
+
+					_init = true;
+				}
+				else
+					return o_presentDX(pSwapChain, SyncInterval, Flags);
+			}
+
+			if (functions::IsGameFocused())
+			{
+				if (KeyChecks())
+				{
+					SetWindowLongPtr(windowDX, GWLP_WNDPROC, (LONG_PTR)o_wndProcDX);
+
+					ImGui_ImplDX11_Shutdown();
+					ImGui_ImplWin32_Shutdown();
+					ImGui::DestroyContext();
+
+					HRESULT result = o_presentDX(pSwapChain, SyncInterval, Flags);
+
+					kiero::shutdown();
+					pDeviceDX11->Release();
+
+					globals::eject = true;
+
+					return result;
+				}
+			}
+
+			ImGui_ImplDX11_NewFrame();
+			ImGui_ImplWin32_NewFrame();
+			ImGui::NewFrame();
+
+			Updates();
+
+			ImGui::EndFrame();
+			ImGui::Render();
+			pContextDX11->OMSetRenderTargets(1, &mainRenderTargetViewDX11, NULL);
+			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+			return o_presentDX(pSwapChain, SyncInterval, Flags);
+		}
+
 		void Init()
 		{
-			//hook methods in /kiero/METHODSTABLE.txt
 			if (globals::renderType == "D3D9")
 			{
-				if (kiero::bind(16, (void**)&o_resetDX9, Reset) != kiero::Status::Success) std::cout << globals::renderType << SP_STRING(" bind failed") << std::endl;
-				if (kiero::bind(42, (void**)&o_endSceneDX9, EndScene) != kiero::Status::Success) std::cout << globals::renderType << SP_STRING(" bind failed") << std::endl;
+				if (kiero::bind(16, (void**)&o_resetDX9, Reset) != kiero::Status::Success) LOG(" bind failed");
+				if (kiero::bind(42, (void**)&o_endSceneDX9, EndScene) != kiero::Status::Success) LOG(" bind failed");
+			}
+			else if (globals::renderType == "D3D11")
+			{
+				if (kiero::bind(8, (void**)&o_presentDX, presentDX11) != kiero::Status::Success) LOG(" bind failed");
 			}
 		}
 	}

@@ -2,6 +2,10 @@
 
 namespace globals
 {
+	const char* imguiFileName = SP_STRING("settings-metadata-window.ini");
+	const char* settingsFileName = SP_STRING("settings-metadata.ini");
+	const char* fontPath = SP_STRING("C:\\Windows\\Fonts\\Arial.ttf");
+
 	QWORD moduleBase;
 	MODULEINFO moduleInfo;
 

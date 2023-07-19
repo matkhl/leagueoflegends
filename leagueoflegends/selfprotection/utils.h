@@ -1,8 +1,8 @@
 #pragma once
 
-#include "strings/obfuscator.hpp"
-
 #include <iostream>
+
+#include "strings/obfuscator.hpp"
 
 template <char key>
 constexpr char xor_(char c) {
@@ -19,10 +19,4 @@ constexpr char comp(char c) {
     return f(g(c));
 }
 
-using table = obfs::make_pair_table<
-    obfs::encoder_pair<xor_<0x50>, xor_<0x50>>,
-    obfs::encoder_pair<add<10>, add<-10>>,
-    obfs::encoder_pair<comp<xor_<0x50>, add<10>>, comp<add<-10>, xor_<0x50>>>
->;
-
-#define SP_STRING(str) obfs::make_string<table>(str).decode()
+#define SP_STRING(str) obfs::make_string<xor_<0x50>, xor_<0x50>>(str).decode()

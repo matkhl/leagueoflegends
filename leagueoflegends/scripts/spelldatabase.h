@@ -17,6 +17,16 @@ public:
 
 class ChampionSpellManager
 {
+private:
+	std::map<std::string, std::map<int, ChampionSpell*>> spells;
+
+	static ChampionSpellManager& GetInstance() {
+		static ChampionSpellManager instance;
+		return instance;
+	}
+
+	ChampionSpellManager() {}
+
 public:
 	static void RegisterSpell(const std::string& name, const int& spellId, ChampionSpell* spell) {
 		GetInstance().spells[name][spellId] = spell;
@@ -33,14 +43,4 @@ public:
 		}
 		return nullptr;
 	}
-
-private:
-	std::map<std::string, std::map<int, ChampionSpell*>> spells;
-
-	static ChampionSpellManager& GetInstance() {
-		static ChampionSpellManager instance;
-		return instance;
-	}
-
-	ChampionSpellManager() {}
 };

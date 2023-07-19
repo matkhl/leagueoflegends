@@ -13,6 +13,16 @@ public:
 
 class ChampionModuleManager
 {
+private:
+	std::map<std::string, ChampionModule*> modules;
+
+	static ChampionModuleManager& GetInstance() {
+		static ChampionModuleManager instance;
+		return instance;
+	}
+
+	ChampionModuleManager() {}
+
 public:
 	static void RegisterModule(const std::string& name, ChampionModule* module) {
 		GetInstance().modules[name] = module;
@@ -28,14 +38,4 @@ public:
 			return nullptr;
 		}
 	}
-
-private:
-	std::map<std::string, ChampionModule*> modules;
-
-	static ChampionModuleManager& GetInstance() {
-		static ChampionModuleManager instance;
-		return instance;
-	}
-
-	ChampionModuleManager() {}
 };
