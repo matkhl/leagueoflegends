@@ -172,6 +172,26 @@ float Object::GetAttackWindup()
 	return _fnGetAttackWindup(this, 0x40);
 }
 
+unsigned short Object::GetActionState()
+{
+	return *(unsigned short*)((QWORD)this + oObjActionState);
+}
+
+bool Object::CanAttack()
+{
+	return this->GetActionState() & characterstate::CanAttack;
+}
+
+bool Object::CanCast()
+{
+	return this->GetActionState() & characterstate::CanCast;
+}
+
+bool Object::CanMove()
+{
+	return this->GetActionState() & characterstate::CanMove;
+}
+
 bool Object::IsEnemy()
 {
 	return this->GetTeam() != globals::localPlayer->GetTeam();

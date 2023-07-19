@@ -58,6 +58,7 @@
 #define oObjTargetable 0xEB0
 #define oObjRecallState 0xF40
 #define oObjHealth 0x1070
+#define oObjActionState 0x13C0
 #define oObjScale 0x1684
 #define oObjArmor 0x1694
 #define oObjMagicResist 0x169C

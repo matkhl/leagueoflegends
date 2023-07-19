@@ -65,6 +65,10 @@ public:
     float GetAttackDelay();
     float GetAttackWindup();
 public:
+    unsigned short GetActionState();
+    bool CanAttack();
+    bool CanCast();
+    bool CanMove();
     bool IsEnemy();
     bool IsValidTarget();
     float GetRealAttackRange();

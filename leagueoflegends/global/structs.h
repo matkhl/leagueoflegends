@@ -63,22 +63,29 @@ struct Vector2
     }
 };
 
+enum OrbwalkState
+{
+    OFF,
+    ATTACK,
+    CLEAR,
+    HARASS
+};
 
 enum RecallState
 {
-	RECALLING,
-	TELEPORTING,
-	RECALLING_FINISHED,
-	TELEPORTING_FINISHED
+    RECALLING,
+    TELEPORTING,
+    RECALLING_FINISHED,
+    TELEPORTING_FINISHED
 };
 
 struct RecallInfo
 {
-	int state;
-	std::string name;
-	float startTime;
-	RecallInfo() { state = RecallState::RECALLING; name = ""; startTime = 0.0f; }
-	RecallInfo(int _state, std::string _name, float _startTime) { state = _state; name = _name; startTime = _startTime; }
+    int state;
+    std::string name;
+    float startTime;
+    RecallInfo() { state = RecallState::RECALLING; name = ""; startTime = 0.0f; }
+    RecallInfo(int _state, std::string _name, float _startTime) { state = _state; name = _name; startTime = _startTime; }
 };
 
 enum SpellIndex
@@ -99,13 +106,52 @@ enum SpellIndex
 	Recall
 };
 
-enum OrbwalkState
+namespace spellstate
 {
-	OFF,
-	ATTACK,
-	CLEAR,
-	HARASS
-};
+    enum SpellState
+    {
+        Ready = 0,
+        DoesNotExist = 2,
+        NotAvailable = 4,
+        Supressed = 8,
+        NotLearned = 12,
+        Frozen = 16,
+        Processing = 24,
+        Stasis = 28,
+        Cooldown = 32,
+        InZhonyas = 48,
+        NoMana = 64
+    };
+}
+
+namespace characterstate
+{
+    enum CharacterState
+    {
+        CanAttack = 1,
+        CanCast = 2,
+        CanMove = 4,
+        Immovable = 8,
+        Unknownz = 16,
+        IsStealth = 32,
+        Taunted = 64,
+        Feared = 128,
+        Fleeing = 256,
+        Supressed = 512,
+        Asleep = 1024,
+        NearSight = 2048,
+        Ghosted = 4096,
+        HasGhost = 8192,
+        Charmed = 16384,
+        NoRender = 32768,
+        DodgePiercing = 131072,
+        DisableAmbientGold = 262144,
+        DisableAmbientXP = 524288,
+        ForceRenderParticles = 65536,
+        IsCombatEnchanced = 1048576,
+        IsSelectable = 16777216
+    };
+}
 
 enum CollisionFlags
 {

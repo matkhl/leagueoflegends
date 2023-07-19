@@ -155,7 +155,7 @@ namespace render
 				Vector2 screenPos = functions::WorldToScreen(obj->GetPosition());
 				if (!IsOnScreen(screenPos)) return;
 				RenderText(obj->GetName(), (screenPos - Vector2(0.0f, 22.0f)).ToImVec(), 18.0f, COLOR_WHITE, true);
-				RenderText(SP_STRING("List id: ") + std::to_string(index), functions::WorldToScreen(obj->GetPosition()).ToImVec(), 18.0f, COLOR_WHITE, true);
+				RenderText(SP_STRING("List id: ") + std::to_string(index), screenPos.ToImVec(), 18.0f, COLOR_WHITE, true);
 			}
 
 			void DrawObjectData()
