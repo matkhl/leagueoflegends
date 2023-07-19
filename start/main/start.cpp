@@ -90,7 +90,7 @@ int main()
 #ifdef NAMED_PIPE
 	setlocale(LC_CTYPE, ".OCP");
 	std::wstring wPath(path.begin(), path.end());
-	std::cout << "Launching named pipe server" << wPath.c_str() << std::endl;
+	std::cout << "Launching named pipe server" << std::endl;
 
 	try
 	{
