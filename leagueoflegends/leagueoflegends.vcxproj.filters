@@ -151,7 +151,7 @@
     <ClInclude Include="global\strings.h">
       <Filter>global</Filter>
     </ClInclude>
-    <ClInclude Include="selfprotection\strings\obfuscator.hpp">
+    <ClInclude Include="selfprotection\strings\obfuscator.h">
       <Filter>selfprotection\strings</Filter>
     </ClInclude>
     <ClInclude Include="scripts\championmodule.h">

@@ -1,5 +1,66 @@
 #include "../stdafx.h"
 
+Vector3 AiManager::GetTargetPosition()
+{
+	return functions::ReadVector3((QWORD)this + oObjAiManagerManagerTargetPosition);
+}
+
+bool AiManager::IsMoving()
+{
+	return *(bool*)((QWORD)this + oObjAiManagerManagerIsMoving);
+}
+
+int AiManager::GetCurrentSegment()
+{
+	return *(int*)((QWORD)this + oObjAiManagerManagerCurrentSegment);
+}
+
+Vector3 AiManager::GetPathStart()
+{
+	return functions::ReadVector3((QWORD)this + oObjAiManagerManagerPathStart);
+}
+
+Vector3 AiManager::GetPathEnd()
+{
+	return functions::ReadVector3((QWORD)this + oObjAiManagerManagerPathEnd);
+}
+
+int AiManager::GetSegmentsCount()
+{
+	return *(int*)((QWORD)this + oObjAiManagerManagerSegmentsCount);
+}
+
+float AiManager::GetDashSpeed()
+{
+	return *(float*)((QWORD)this + oObjAiManagerManagerDashSpeed);
+}
+
+bool AiManager::IsDashing()
+{
+	return *(bool*)((QWORD)this + oObjAiManagerManagerIsDashing);
+}
+
+Vector3 AiManager::GetPosition()
+{
+	return functions::ReadVector3((QWORD)this + oObjAiManagerManagerPosition);
+}
+
+Vector3 AiManager::GetSegment(int index)
+{
+	return functions::ReadVector3(*(QWORD*)((QWORD)this + oObjAiManagerManagerSegments) + (min(index, this->GetSegmentsCount() - 1) * sizeof(Vector3)));
+}
+
+std::vector<Vector3> AiManager::GetFutureSegments()
+{
+	std::vector<Vector3> segments;
+	int segmentsCount = this->GetSegmentsCount();
+	for (int i = this->GetCurrentSegment(); i < segmentsCount; i++)
+	{
+		segments.push_back(this->GetSegment(i));
+	}
+	return segments;
+}
+
 float CharacterData::GetSize()
 {
 	return *(float*)((QWORD)this + oObjCharDataDataSize);
@@ -159,7 +220,7 @@ CharacterData* Object::GetCharacterData()
 AiManager* Object::GetAiManager()
 {
 	LeagueObfuscation<QWORD> aiManagerObf = *(LeagueObfuscation<QWORD>*)((QWORD)this + oObjAiManager);
-	return (AiManager*)Decrypt(aiManagerObf);
+	return (AiManager*)(*(QWORD*)(Decrypt(aiManagerObf) + 0x10));
 }
 
 Spell* Object::GetSpellById(int id)
@@ -195,17 +256,17 @@ unsigned short Object::GetActionState()
 
 bool Object::CanAttack()
 {
-	return this->GetActionState() & object::CanAttack;
+	return this->GetActionState() & CharacterState::CanAttack;
 }
 
 bool Object::CanCast()
 {
-	return this->GetActionState() & object::CanCast;
+	return this->GetActionState() & CharacterState::CanCast;
 }
 
 bool Object::CanMove()
 {
-	return this->GetActionState() & object::CanMove;
+	return this->GetActionState() & CharacterState::CanMove;
 }
 
 bool Object::IsEnemy()
@@ -218,6 +279,11 @@ bool Object::IsValidTarget()
 	return this->IsVisible() && this->IsAlive() && this->IsEnemy() && this->IsTargetable();
 }
 
+bool Object::IsHero()
+{
+	return this->GetCharacterData()->GetObjectTypeHash() == ObjectType::Champion;
+}
+
 float Object::GetRealAttackRange()
 {
 	return this->GetAttackRange() + this->GetBoundingRadius();
@@ -226,6 +292,17 @@ float Object::GetRealAttackRange()
 bool Object::IsInRange(Vector3 pos, float radius)
 {
 	return radius + this->GetBoundingRadius() >= render::Distance(pos, this->GetPosition());
+}
+
+Vector3 Object::GetServerPosition()
+{
+	if (this->IsHero())
+	{
+		auto pos = this->GetAiManager()->GetPosition();
+		if (pos.IsValid()) return pos;
+	}
+
+	return this->GetPosition();
 }
 
 int ObjectManager::GetListSize()

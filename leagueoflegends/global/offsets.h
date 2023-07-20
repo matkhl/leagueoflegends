@@ -94,3 +94,15 @@
 #define oObjCharDataDataSize 0xC4
 #define oObjCharDataDataObjType 0x768
 
+#define oObjAiManagerManager 0x10
+
+#define oObjAiManagerManagerTargetPosition 0x14
+#define oObjAiManagerManagerIsMoving 0x2BC
+#define oObjAiManagerManagerCurrentSegment 0x2C0
+#define oObjAiManagerManagerPathStart 0x2D0
+#define oObjAiManagerManagerPathEnd 0x2DC
+#define oObjAiManagerManagerSegments 0x2E8
+#define oObjAiManagerManagerSegmentsCount 0x2F0
+#define oObjAiManagerManagerDashSpeed 0x300
+#define oObjAiManagerManagerIsDashing 0x324
+#define oObjAiManagerManagerPosition 0x414

@@ -154,6 +154,7 @@ namespace render
 			{
 				Vector2 screenPos = functions::WorldToScreen(obj->GetPosition());
 				if (!IsOnScreen(screenPos)) return;
+
 				RenderText(obj->GetName(), (screenPos - Vector2(0.0f, 22.0f)).ToImVec(), 18.0f, COLOR_WHITE, true);
 				RenderText(SP_STRING("List id: ") + std::to_string(index), screenPos.ToImVec(), 18.0f, COLOR_WHITE, true);
 			}
@@ -212,11 +213,34 @@ namespace render
 				RenderCircleWorld(mouseWorldPos, 12, 30.0f, COLOR_WHITE, 2.0f);
 			}
 
+			void DrawPlayerPaths()
+			{
+				for (int i = 0; i < globals::heroManager->GetListSize(); i++)
+				{
+					auto obj = globals::heroManager->GetIndex(i);
+					if (obj->IsAlive() && obj->IsVisible())
+					{
+						auto path = obj->GetAiManager()->GetFutureSegments();
+						int countSegments = (int)path.size();
+						if (countSegments)
+						{
+							for (int i = -1; i < countSegments - 1; i++)
+							{
+								Vector2 screenPos1 = functions::WorldToScreen((i < 0) ? obj->GetPosition() : path[i]);
+								Vector2 screenPos2 = functions::WorldToScreen(path[i + 1]);
+								RenderLine(screenPos1.ToImVec(), screenPos2.ToImVec(), COLOR_WHITE, 1.0f);
+							}
+						}
+					}
+				}
+			}
+
 			void Update()
 			{
 				if (SETTINGS_BOOL("debug", "draw object data")) DrawObjectData();
 				if (SETTINGS_BOOL("debug", "draw bounding radius")) DrawObjectBoundingRadius();
 				if (SETTINGS_BOOL("debug", "draw cursor world")) DrawCursorWorld();
+				if (SETTINGS_BOOL("debug", "draw player paths")) DrawPlayerPaths();
 			}
 		}
 	}

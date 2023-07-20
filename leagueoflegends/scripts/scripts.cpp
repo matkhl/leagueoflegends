@@ -66,9 +66,11 @@ namespace scripts
 
 			void Idle()
 			{
-				if (!CanDoAction()) return;
+				if (!(CanDoAction() && globals::localPlayer->CanMove())) return;
 				functions::MoveToMousePos();
 				RefreshBuffer();
+
+				LOG("%p", globals::localPlayer->GetAiManager());
 			}
 
 			void AttackObject(Object* obj)
@@ -83,10 +85,12 @@ namespace scripts
 		{
 			void Attack()
 			{
-				if (Object* obj = targetselector::GetEnemyChampionInRange(globals::localPlayer->GetRealAttackRange()))
-				{
-					actions::AttackObject(obj);
-					return;
+				if (globals::localPlayer->CanAttack()) {
+					if (Object* obj = targetselector::GetEnemyChampionInRange(globals::localPlayer->GetRealAttackRange()))
+					{
+						actions::AttackObject(obj);
+						return;
+					}
 				}
 				actions::Idle();
 			}
@@ -95,7 +99,7 @@ namespace scripts
 		bool StopOrbwalk()
 		{
 			return (
-				!functions::CanSendInput() ||
+				!functions::CanSendInput() || 
 				gameTime < lastAttackTime + globals::localPlayer->GetAttackWindup() + SETTINGS_FLOAT("orbwalker", "windupbuffer")
 			);
 		}
@@ -249,6 +253,7 @@ namespace scripts
 			ADD_SETTING("debug", "draw object data", false);
 			ADD_SETTING("debug", "draw bounding radius", false);
 			ADD_SETTING("debug", "draw cursor world", false);
+			ADD_SETTING("debug", "draw player paths", false);
 		}
 	}
 

@@ -9,6 +9,11 @@ struct Vector3
     Vector3() : x(0.0f), y(0.0f), z(0.0f) {}
     Vector3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
 
+    bool IsValid()
+    {
+        return !(this->x == 0.0f && this->y == 0.0f && this->z == 0.0f) && (this->x > (-1 * 10 ^ 6)) && (this->y > (-1 * 10 ^ 6)) && (this->z > (-1 * 10 ^ 6)) && (this->x < (1 * 10 ^ 6)) && (this->y < (1 * 10 ^ 6)) && (this->z < (1 * 10 ^ 6));
+    }
+
     Vector3 operator+(const Vector3& rhs) const
     {
         return Vector3(x + rhs.x, y + rhs.y, z + rhs.z);
@@ -28,6 +33,11 @@ struct Vector3
     {
         return Vector3(x / scalar, y / scalar, z / scalar);
     }
+
+    bool operator==(const Vector3& rhs) const
+	{
+		return x == rhs.x && y == rhs.y && z == rhs.z;
+	}
 };
 
 struct Vector2
@@ -56,6 +66,11 @@ struct Vector2
     {
         return Vector2(x / scalar, y / scalar);
     }
+
+    bool operator==(const Vector2& rhs) const
+    {
+        return x == rhs.x && y == rhs.y;
+	}
 
     ImVec2 ToImVec() const
     {
@@ -106,70 +121,60 @@ enum SpellIndex
 	Recall
 };
 
-namespace spell
+enum SpellState
 {
-    enum SpellState
-    {
-        Ready = 0,
-        DoesNotExist = 2,
-        NotAvailable = 4,
-        Supressed = 8,
-        NotLearned = 12,
-        Frozen = 16,
-        Processing = 24,
-        Stasis = 28,
-        Cooldown = 32,
-        InZhonyas = 48,
-        NoMana = 64
-    };
-}
+    Ready = 0,
+    DoesNotExist = 2,
+    NotAvailable = 4,
+    NotLearned = 12,
+    Processing = 24,
+    Cooldown = 32,
+    NoMana = 64
+};
 
-namespace object
+enum CharacterState
 {
-    enum CharacterState
-    {
-        CanAttack = 1,
-        CanCast = 2,
-        CanMove = 4,
-        Immovable = 8,
-        Unknownz = 16,
-        IsStealth = 32,
-        Taunted = 64,
-        Feared = 128,
-        Fleeing = 256,
-        Supressed = 512,
-        Asleep = 1024,
-        NearSight = 2048,
-        Ghosted = 4096,
-        HasGhost = 8192,
-        Charmed = 16384,
-        NoRender = 32768,
-        DodgePiercing = 131072,
-        DisableAmbientGold = 262144,
-        DisableAmbientXP = 524288,
-        ForceRenderParticles = 65536,
-        IsCombatEnchanced = 1048576,
-        IsSelectable = 16777216
-    };
+    CanAttack = 1,
+    CanCast = 2,
+    CanMove = 4,
+    Immovable = 8,
+    Unknownz = 16,
+    IsStealth = 32,
+    Taunted = 64,
+    Feared = 128,
+    Fleeing = 256,
+    Supressed = 512,
+    Asleep = 1024,
+    NearSight = 2048,
+    Ghosted = 4096,
+    HasGhost = 8192,
+    Charmed = 16384,
+    NoRender = 32768,
+    DodgePiercing = 131072,
+    DisableAmbientGold = 262144,
+    DisableAmbientXP = 524288,
+    ForceRenderParticles = 65536,
+    IsCombatEnchanced = 1048576,
+    IsSelectable = 16777216
+};
 
-    enum ObjectType : unsigned long long
-    {
-        Champion = 7957694998179309635,
-        Special = 2336349411965497427,
-        Ward = 5989923982968774999,
-        Minion_Lane = 8944270284747073869,
-        Minion_Lane_Siege = 7306920423476651374,
-        Minion_Lane_Ranged = 7306930284704785774,
-        Minion_Lane_Melee = 7306365152824092014,
-        Minion_Lane_Super = 8243118342183806318,
-        Monster = 2338042707385937741,
-        Monster_Epic = 2340781521963538015,
-        Monster_Dragon = 2336927746459059295,
-        Special_Void = 2340781521963538015,
-        Structure_Turret = 4294967297,
-        UNKNOWN = 5980780305148018688
-    };
-}
+enum ObjectType : unsigned long long
+{
+    Champion = 7957694998179309635,
+    Special = 2336349411965497427,
+    Ward = 5989923982968774999,
+    Minion_Lane = 8944270284747073869,
+    Minion_Lane_Siege = 7306920423476651374,
+    Minion_Lane_Ranged = 7306930284704785774,
+    Minion_Lane_Melee = 7306365152824092014,
+    Minion_Lane_Super = 8243118342183806318,
+    Monster = 2338042707385937741,
+    Monster_Epic = 2340781521963538015,
+    Monster_Dragon = 2336927746459059295,
+    Special_Void = 2340781521963538015,
+    Structure_Turret = 4294967297,
+    UNKNOWN = 5980780305148018688
+};
 
 enum CollisionFlags
 {
@@ -180,4 +185,21 @@ enum CollisionFlags
     Tower = 70,
     Prop = 128,
     GlobalVision = 256
+};
+
+enum SkillshotType
+{
+    SkillshotLine,
+    SkillshotCircle,
+    SkillshotCone
+};
+
+enum CollidableObjects
+{
+    Minions,
+    Heroes,
+    YasuoWall,
+    Walls,
+    Allies,
+    Buildings
 };

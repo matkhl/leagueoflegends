@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "strings/obfuscator.hpp"
+#include "strings/obfuscator.h"
 
 #define SP_STRING(str) obfs::make_string<xor_<0x50>, xor_<0x50>>(str).decode()
 

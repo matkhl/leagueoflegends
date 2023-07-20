@@ -60,6 +60,7 @@ namespace render
 			void DrawBoundingRadius(Object* obj);
 			void DrawObjectBoundingRadius();
 			void DrawCursorWorld();
+			void DrawPlayerPaths();
 			void Update();
 		}
 	}

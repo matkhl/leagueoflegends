@@ -5,7 +5,18 @@
 class AiManager
 {
 public:
-
+    Vector3 GetTargetPosition();
+    bool IsMoving();
+    int GetCurrentSegment();
+    Vector3 GetPathStart();
+    Vector3 GetPathEnd();
+    int GetSegmentsCount();
+    float GetDashSpeed();
+    bool IsDashing();
+    Vector3 GetPosition();
+public:
+    Vector3 GetSegment(int index);
+    std::vector<Vector3> GetFutureSegments();
 };
 
 class CharacterData
@@ -85,8 +96,10 @@ public:
     bool CanMove();
     bool IsEnemy();
     bool IsValidTarget();
+    bool IsHero();
     float GetRealAttackRange();
     bool IsInRange(Vector3 pos, float radius);
+    Vector3 GetServerPosition();
 };
 
 class ObjectManager

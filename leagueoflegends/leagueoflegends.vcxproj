@@ -209,7 +209,7 @@
     <ClInclude Include="scripts\scripts.h" />
     <ClInclude Include="scripts\spelldatabase.h" />
     <ClInclude Include="selfprotection\pipe\namedpipeclient.h" />
-    <ClInclude Include="selfprotection\strings\obfuscator.hpp" />
+    <ClInclude Include="selfprotection\strings\obfuscator.h" />
     <ClInclude Include="selfprotection\utils.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
