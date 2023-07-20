@@ -1,5 +1,15 @@
 #include "../stdafx.h"
 
+float CharacterData::GetSize()
+{
+	return *(float*)((QWORD)this + oObjCharDataDataSize);
+}
+
+QWORD CharacterData::GetObjectTypeHash()
+{
+	return *(QWORD*)(*(QWORD*)((QWORD)this + oObjCharDataDataObjType));
+}
+
 std::string SpellData::GetName()
 {
 	return *(char**)((QWORD)this + oSpellDataSpellName);
@@ -141,9 +151,15 @@ SpellCast* Object::GetActiveSpellCast()
 	return *(SpellCast**)(activeSpellCastOffset);
 }
 
-QWORD Object::GetCharacterData()
+CharacterData* Object::GetCharacterData()
 {
-	return *(QWORD*)(*(QWORD*)((QWORD)this + oObjCharData) + oObjCharDataData);
+	return (CharacterData*)(*(QWORD*)(*(QWORD*)((QWORD)this + oObjCharData) + oObjCharDataData));
+}
+
+AiManager* Object::GetAiManager()
+{
+	LeagueObfuscation<QWORD> aiManagerObf = *(LeagueObfuscation<QWORD>*)((QWORD)this + oObjAiManager);
+	return (AiManager*)Decrypt(aiManagerObf);
 }
 
 Spell* Object::GetSpellById(int id)
@@ -179,17 +195,17 @@ unsigned short Object::GetActionState()
 
 bool Object::CanAttack()
 {
-	return this->GetActionState() & characterstate::CanAttack;
+	return this->GetActionState() & object::CanAttack;
 }
 
 bool Object::CanCast()
 {
-	return this->GetActionState() & characterstate::CanCast;
+	return this->GetActionState() & object::CanCast;
 }
 
 bool Object::CanMove()
 {
-	return this->GetActionState() & characterstate::CanMove;
+	return this->GetActionState() & object::CanMove;
 }
 
 bool Object::IsEnemy()

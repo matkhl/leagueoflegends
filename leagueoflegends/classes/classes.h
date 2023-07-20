@@ -2,6 +2,19 @@
 
 #include "../stdafx.h"
 
+class AiManager
+{
+public:
+
+};
+
+class CharacterData
+{
+public:
+    float GetSize();
+    QWORD GetObjectTypeHash();
+};
+
 class SpellData
 {
 public:
@@ -59,7 +72,8 @@ public:
 	std::string GetName();
     SpellCast* GetActiveSpellCast();
 	Spell* GetSpellById(int id);
-    QWORD GetCharacterData();
+    CharacterData* GetCharacterData();
+    AiManager* GetAiManager();
 public:
     float GetBoundingRadius();
     float GetAttackDelay();

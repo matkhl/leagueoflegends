@@ -170,6 +170,9 @@
     <ClInclude Include="selfprotection\pipe\namedpipeclient.h">
       <Filter>selfprotection\pipe</Filter>
     </ClInclude>
+    <ClInclude Include="global\leagueobfuscation.h">
+      <Filter>global</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="global\globals.cpp">

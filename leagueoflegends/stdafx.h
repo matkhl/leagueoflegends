@@ -41,6 +41,7 @@
 #include "global/offsets.h"
 #include "global/structs.h"
 #include "global/utils.h"
+#include "global/leagueobfuscation.h"
 #include "classes/classes.h"
 #include "global/functions.h"
 #include "render/render.h"

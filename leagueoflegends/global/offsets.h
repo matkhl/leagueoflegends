@@ -67,6 +67,7 @@
 #define oObjActiveSpellCast 0x2A20
 #define oObjCharData 0x3528
 #define oObjName 0x35D8
+#define oObjAiManager 0x36F0
 
 #define oObjSpellBookSpellSlot 0x6D0
 
@@ -89,4 +90,7 @@
 #define oActiveSpellCastSpellId 0x124
 
 #define oObjCharDataData 0x28
+
 #define oObjCharDataDataSize 0xC4
+#define oObjCharDataDataObjType 0x768
+

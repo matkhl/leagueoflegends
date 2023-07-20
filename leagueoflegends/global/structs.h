@@ -106,7 +106,7 @@ enum SpellIndex
 	Recall
 };
 
-namespace spellstate
+namespace spell
 {
     enum SpellState
     {
@@ -124,7 +124,7 @@ namespace spellstate
     };
 }
 
-namespace characterstate
+namespace object
 {
     enum CharacterState
     {
@@ -150,6 +150,24 @@ namespace characterstate
         ForceRenderParticles = 65536,
         IsCombatEnchanced = 1048576,
         IsSelectable = 16777216
+    };
+
+    enum ObjectType : unsigned long long
+    {
+        Champion = 7957694998179309635,
+        Special = 2336349411965497427,
+        Ward = 5989923982968774999,
+        Minion_Lane = 8944270284747073869,
+        Minion_Lane_Siege = 7306920423476651374,
+        Minion_Lane_Ranged = 7306930284704785774,
+        Minion_Lane_Melee = 7306365152824092014,
+        Minion_Lane_Super = 8243118342183806318,
+        Monster = 2338042707385937741,
+        Monster_Epic = 2340781521963538015,
+        Monster_Dragon = 2336927746459059295,
+        Special_Void = 2340781521963538015,
+        Structure_Turret = 4294967297,
+        UNKNOWN = 5980780305148018688
     };
 }
 

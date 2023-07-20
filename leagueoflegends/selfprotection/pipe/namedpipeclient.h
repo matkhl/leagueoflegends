@@ -2,6 +2,18 @@
 
 #include "../../stdafx.h"
 
+// %d or % i: Signed integer
+// %u : Unsigned integer
+// %f : Decimal floating point
+// %e : Scientific - notation floating point
+// %g : General format floating point
+// %x : Unsigned hexadecimal integer
+// %o : Unsigned octal integer
+// %s : String of characters
+// %c : Single character
+// %p : Pointer address
+// %% : A single % character
+
 #define LOG(format, ...) PipeClient::WriteFormatted(SP_STRING(format), ##__VA_ARGS__)
 
 class PipeClient
