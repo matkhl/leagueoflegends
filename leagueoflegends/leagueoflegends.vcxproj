@@ -207,7 +207,7 @@
     <ClInclude Include="render\render.h" />
     <ClInclude Include="scripts\championmodule.h" />
     <ClInclude Include="scripts\scripts.h" />
-    <ClInclude Include="scripts\spelldatabase.h" />
+    <ClInclude Include="scripts\skillshotdatabase.h" />
     <ClInclude Include="selfprotection\pipe\namedpipeclient.h" />
     <ClInclude Include="selfprotection\strings\obfuscator.h" />
     <ClInclude Include="selfprotection\utils.h" />
@@ -241,8 +241,9 @@
     <ClCompile Include="render\render.cpp" />
     <ClCompile Include="render\renderfunctions.cpp" />
     <ClCompile Include="scripts\champions\syndra.cpp" />
+    <ClCompile Include="scripts\prediction.cpp" />
     <ClCompile Include="scripts\scripts.cpp" />
-    <ClCompile Include="scripts\spelldatabase.cpp" />
+    <ClCompile Include="scripts\skillshotdatabase.cpp" />
     <ClCompile Include="scripts\targetselector.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>

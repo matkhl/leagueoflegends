@@ -222,7 +222,7 @@ namespace functions
 		fnCastSpellWrapper _fnCastSpellWrapper = (fnCastSpellWrapper)(globals::moduleBase + oCastSpellWrapper);
 
 		if (spellId < 0 || spellId >= 14) return;
-		Spell* spell = globals::localPlayer->GetSpellById(spellId);
+		Spell* spell = globals::localPlayer->GetSpellBySlotId(spellId);
 		SpellInfo* spellInfo = spell->GetSpellInfo();
 
 		if (target && target->GetNetId())

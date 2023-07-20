@@ -76,6 +76,11 @@ std::string SpellData::GetName()
 	return *(char**)((QWORD)this + oSpellDataSpellName);
 }
 
+float SpellData::GetManaCostByLevel(int level)
+{
+	return *(float*)((QWORD)this + oSpellDataManaCost + ((level - 1) * sizeof(float)));
+}
+
 SpellData* SpellInfo::GetSpellData()
 {
 	return *(SpellData**)((QWORD)this + oSpellInfoSpellData);
@@ -107,7 +112,7 @@ float Spell::GetRelativeCooldown()
 {
 	if (!this->GetLevel()) return 1.0f;
 	if (this->GetLevel() && this->GetCooldownTimer() < 1.0f) return 0.0f;
-	return min(this->GetCooldown() / this->GetTotalCooldown(), 1.0f);
+	return this->GetTotalCooldown() ? min(this->GetCooldown() / this->GetTotalCooldown(), 1.0f) : 0.0f;
 }
 
 SpellInput* Spell::GetSpellInput()
@@ -120,9 +125,19 @@ SpellInfo* Spell::GetSpellInfo()
 	return *(SpellInfo**)((QWORD)this + oSpellSlotSpellInfo);
 }
 
+bool Spell::IsReady()
+{
+	return this->GetRelativeCooldown() == 0.0f;
+};
+
 std::string Spell::GetName()
 {
 	return this->GetSpellInfo()->GetSpellData()->GetName();
+}
+
+float Spell::GetManaCost()
+{
+	return this->GetSpellInfo()->GetSpellData()->GetManaCostByLevel(this->GetLevel());
 }
 
 SpellInfo* SpellCast::GetSpellInfo()
@@ -165,6 +180,11 @@ bool Object::IsAlive()
 	return !(*(int*)((QWORD)this + oObjAlive) % 2);
 }
 
+float Object::GetMana()
+{
+	return *(float*)((QWORD)this + oObjMana);
+}
+
 bool Object::IsTargetable()
 {
 	return *(bool*)((QWORD)this + oObjTargetable);
@@ -180,9 +200,34 @@ float Object::GetHealth()
 	return *(float*)((QWORD)this + oObjHealth);
 }
 
+unsigned short Object::GetActionState()
+{
+	return *(unsigned short*)((QWORD)this + oObjActionState);
+}
+
+float Object::GetBaseAttackDamage()
+{
+	return *(float*)((QWORD)this + oObjBaseAttackDamage);
+}
+
+float Object::GetAbilityPower()
+{
+	return *(float*)((QWORD)this + oObjAbilityPower);
+}
+
+float Object::GetBonusAttackDamage()
+{
+	return *(float*)((QWORD)this + oObjBonusAttackDamage);
+}
+
 float Object::GetScale()
 {
 	return *(float*)((QWORD)this + oObjScale);
+}
+
+float Object::GetMovementSpeed()
+{
+	return *(float*)((QWORD)this + oObjMovementSpeed);
 }
 
 float Object::GetArmor()
@@ -223,9 +268,9 @@ AiManager* Object::GetAiManager()
 	return (AiManager*)(*(QWORD*)(Decrypt(aiManagerObf) + 0x10));
 }
 
-Spell* Object::GetSpellById(int id)
+Spell* Object::GetSpellBySlotId(int slotId)
 {
-	return *(Spell**)((QWORD)this + oObjSpellBook + oObjSpellBookSpellSlot + id * 0x8);
+	return *(Spell**)((QWORD)this + oObjSpellBook + oObjSpellBookSpellSlot + (sizeof(QWORD) * slotId));
 }
 
 float Object::GetBoundingRadius()
@@ -247,11 +292,6 @@ float Object::GetAttackWindup()
 	typedef float(__cdecl* fnGetAttackWindup)(Object* obj, int flags);
 	fnGetAttackWindup _fnGetAttackWindup = (fnGetAttackWindup)(globals::moduleBase + oGetAttackWindup);
 	return _fnGetAttackWindup(this, 0x40);
-}
-
-unsigned short Object::GetActionState()
-{
-	return *(unsigned short*)((QWORD)this + oObjActionState);
 }
 
 bool Object::CanAttack()
@@ -284,6 +324,16 @@ bool Object::IsHero()
 	return this->GetCharacterData()->GetObjectTypeHash() == ObjectType::Champion;
 }
 
+float Object::GetAttackDamage()
+{
+	return this->GetBaseAttackDamage() + this->GetBonusAttackDamage();
+}
+
+float Object::GetEffectiveHealth(int damageType)
+{
+	return this->GetHealth() * (1 + (damageType == DamageType::Physical ? this->GetArmor() : this->GetAbilityPower()) / 100);
+}
+
 float Object::GetRealAttackRange()
 {
 	return this->GetAttackRange() + this->GetBoundingRadius();
@@ -292,6 +342,12 @@ float Object::GetRealAttackRange()
 bool Object::IsInRange(Vector3 pos, float radius)
 {
 	return radius + this->GetBoundingRadius() >= render::Distance(pos, this->GetPosition());
+}
+
+bool Object::CanCastSpell(int slotId)
+{
+	auto spell = this->GetSpellBySlotId(slotId);
+	return this->CanCast() && spell->IsReady() && spell->GetManaCost() <= this->GetMana();
 }
 
 Vector3 Object::GetServerPosition()
@@ -313,5 +369,5 @@ int ObjectManager::GetListSize()
 Object* ObjectManager::GetIndex(int index)
 {
 	index = min(index, this->GetListSize());
-	return *(Object**)(*(QWORD*)((QWORD)this + oManagerList) + 0x8 * index);
+	return *(Object**)(*(QWORD*)((QWORD)this + oManagerList) + (sizeof(QWORD) * index));
 }

@@ -9,7 +9,7 @@ struct Vector3
     Vector3() : x(0.0f), y(0.0f), z(0.0f) {}
     Vector3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
 
-    bool IsValid()
+    bool IsValid() const
     {
         return !(this->x == 0.0f && this->y == 0.0f && this->z == 0.0f) && (this->x > (-1 * 10 ^ 6)) && (this->y > (-1 * 10 ^ 6)) && (this->z > (-1 * 10 ^ 6)) && (this->x < (1 * 10 ^ 6)) && (this->y < (1 * 10 ^ 6)) && (this->z < (1 * 10 ^ 6));
     }
@@ -38,6 +38,35 @@ struct Vector3
 	{
 		return x == rhs.x && y == rhs.y && z == rhs.z;
 	}
+
+    Vector3 Extend(Vector3 const& to, float distance) const
+    {
+        const auto from = *this;
+        const auto result = from + (to - from).Normalized() * distance;
+        return result;
+    }
+
+    float Distance(const Vector3& to) const
+    {
+        return sqrtf(powf(to.x - x, 2) + powf(to.z - z, 2) + powf(to.y - y, 2));
+    }
+
+    float Length() const
+    {
+        return sqrtf(this->x * this->x + this->y * this->y + this->z * this->z);
+    }
+
+    Vector3 Normalized() const
+    {
+        auto const length = this->Length();
+        if (length != 0)
+        {
+            auto const inv = 1.0f / length;
+            return { this->x * inv, this->y * inv, this->z * inv };
+        }
+
+        return *this;
+    }
 };
 
 struct Vector2
@@ -80,18 +109,18 @@ struct Vector2
 
 enum OrbwalkState
 {
-    OFF,
-    ATTACK,
-    CLEAR,
-    HARASS
+    Off,
+    Attack,
+    Clear,
+    Harass
 };
 
 enum RecallState
 {
-    RECALLING,
-    TELEPORTING,
-    RECALLING_FINISHED,
-    TELEPORTING_FINISHED
+    Recalling,
+    Teleporting,
+    RecallingFinished,
+    TeleportingFinished,
 };
 
 struct RecallInfo
@@ -99,8 +128,15 @@ struct RecallInfo
     int state;
     std::string name;
     float startTime;
-    RecallInfo() { state = RecallState::RECALLING; name = ""; startTime = 0.0f; }
+    RecallInfo() { state = RecallState::Recalling; name = ""; startTime = 0.0f; }
     RecallInfo(int _state, std::string _name, float _startTime) { state = _state; name = _name; startTime = _startTime; }
+};
+
+enum DamageType
+{
+	Physical,
+	Magical,
+	True
 };
 
 enum SpellIndex
@@ -196,10 +232,6 @@ enum SkillshotType
 
 enum CollidableObjects
 {
-    Minions,
-    Heroes,
-    YasuoWall,
-    Walls,
-    Allies,
-    Buildings
+    Objects,
+    Walls
 };

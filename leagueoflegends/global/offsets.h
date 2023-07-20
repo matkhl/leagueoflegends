@@ -55,13 +55,18 @@
 #define oObjPosition 0x220
 #define oObjVisible 0x310
 #define oObjAlive 0x328
+#define oObjMana 0x340
 #define oObjTargetable 0xEB0
 #define oObjRecallState 0xF40
 #define oObjHealth 0x1070
 #define oObjActionState 0x13C0
+#define oObjBonusAttackDamage 0x15D8
+#define oObjAbilityPower 0x15E8
+#define oObjBaseAttackDamage 0x1670
 #define oObjScale 0x1684
 #define oObjArmor 0x1694
 #define oObjMagicResist 0x169C
+#define oObjMovementSpeed 0x16AC
 #define oObjAttackRange 0x16B4
 #define oObjSpellBook 0x29E8
 #define oObjActiveSpellCast 0x2A20
@@ -84,6 +89,7 @@
 #define oSpellInfoSpellData 0x60
 
 #define oSpellDataSpellName 0x80
+#define oSpellDataManaCost 0x5F4
 
 #define oActiveSpellCastSpellInfo 0x8
 #define oActiveSpellCastSpellType 0x10

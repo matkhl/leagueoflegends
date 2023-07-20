@@ -69,8 +69,6 @@ namespace scripts
 				if (!(CanDoAction() && globals::localPlayer->CanMove())) return;
 				functions::MoveToMousePos();
 				RefreshBuffer();
-
-				LOG("%p", globals::localPlayer->GetAiManager());
 			}
 
 			void AttackObject(Object* obj)
@@ -86,7 +84,7 @@ namespace scripts
 			void Attack()
 			{
 				if (globals::localPlayer->CanAttack()) {
-					if (Object* obj = targetselector::GetEnemyChampionInRange(globals::localPlayer->GetRealAttackRange()))
+					if (auto obj = targetselector::GetEnemyChampionInRange(globals::localPlayer->GetRealAttackRange()))
 					{
 						actions::AttackObject(obj);
 						return;
@@ -158,7 +156,7 @@ namespace scripts
 
 			switch (globals::scripts::orbwalker::orbwalkState)
 			{
-			case OrbwalkState::ATTACK:
+			case OrbwalkState::Attack:
 				states::Attack();
 				break;
 			}
@@ -205,19 +203,19 @@ namespace scripts
 				RecallInfo recallInfo = recallList[i];
 				switch (recallInfo.state)
 				{
-				case RecallState::RECALLING:
+				case RecallState::Recalling:
 					if (gameTime > recallInfo.startTime + 8.0f - timeBuffer)
 					{
-						recallList[i].state = RecallState::RECALLING_FINISHED;
+						recallList[i].state = RecallState::RecallingFinished;
 					}
 					break;
-				case RecallState::TELEPORTING:
-					if (gameTime > recallInfo.startTime + 4.0f - timeBuffer) recallList[i].state = RecallState::TELEPORTING_FINISHED;
+				case RecallState::Teleporting:
+					if (gameTime > recallInfo.startTime + 4.0f - timeBuffer) recallList[i].state = RecallState::TeleportingFinished;
 					break;
-				case RecallState::RECALLING_FINISHED:
+				case RecallState::RecallingFinished:
 					if (gameTime > recallInfo.startTime + 11.0f) RemoveRecall(i);
 					break;
-				case RecallState::TELEPORTING_FINISHED:
+				case RecallState::TeleportingFinished:
 					if (gameTime > recallInfo.startTime + 7.0f) RemoveRecall(i);
 					break;
 				}
@@ -233,11 +231,11 @@ namespace scripts
 				bool isInList = recallIndex != 999;
 				if (!isInList && (state == 6 || state == 8))
 				{
-					recallList.push_back(RecallInfo((state == 6) ? RecallState::RECALLING : RecallState::TELEPORTING, obj->GetName(), gameTime));
+					recallList.push_back(RecallInfo((state == 6) ? RecallState::Recalling : RecallState::Teleporting, obj->GetName(), gameTime));
 					continue;
 				}
 				if (isInList && (state != 6 && state != 8) &&
-					(recallList[recallIndex].state != RecallState::RECALLING_FINISHED && recallList[recallIndex].state != RecallState::TELEPORTING_FINISHED))
+					(recallList[recallIndex].state != RecallState::RecallingFinished && recallList[recallIndex].state != RecallState::TeleportingFinished))
 				{
 					RemoveRecall(recallIndex);
 					continue;
@@ -277,7 +275,7 @@ namespace scripts
 
 			switch (globals::scripts::orbwalker::orbwalkState)
 			{
-			case OrbwalkState::ATTACK:
+			case OrbwalkState::Attack:
 				activeChampModule->Attack();
 				break;
 			}

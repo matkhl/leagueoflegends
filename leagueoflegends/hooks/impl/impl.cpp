@@ -59,9 +59,9 @@ namespace hooks
 				globals::menuOpen = false;
 			}
 
-			globals::scripts::orbwalker::orbwalkState = OrbwalkState::OFF;
+			globals::scripts::orbwalker::orbwalkState = OrbwalkState::Off;
 			if (GetAsyncKeyState(VK_SPACE))
-				globals::scripts::orbwalker::orbwalkState = OrbwalkState::ATTACK;
+				globals::scripts::orbwalker::orbwalkState = OrbwalkState::Attack;
 
 			return false;
 		}

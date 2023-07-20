@@ -76,7 +76,7 @@ namespace render
 					Vector2 spellAngle1 = Vector2(innerBorderAngle1.x + i * (cdWidth + 1.0f) + 1.0f, innerBorderAngle1.y + 1.0f);
 					Vector2 spellAngle2 = Vector2(innerBorderAngle1.x + (i + 1) * (cdWidth + 1.0f), innerBorderAngle1.y + cdHeight);
 
-					Spell* spell = obj->GetSpellById(i);
+					Spell* spell = obj->GetSpellBySlotId(i);
 					float relativeCooldown = spell->GetRelativeCooldown();
 
 					spellAngle2.x -= relativeCooldown * cdWidth;
@@ -138,11 +138,11 @@ namespace render
 
 				for (RecallInfo recallInfo : recallList)
 				{
-					float maxRecallTime = (recallInfo.state == RecallState::RECALLING || recallInfo.state == RecallState::RECALLING_FINISHED) ? 8.0f : 4.0f;
+					float maxRecallTime = (recallInfo.state == RecallState::Recalling || recallInfo.state == RecallState::RecallingFinished) ? 8.0f : 4.0f;
 					maxRecallTime -= timeBuffer;
 					float relativePositionOffset = max(0.0f, 1.0f - ((gameTime - recallInfo.startTime) / maxRecallTime));
-					uint32_t recallColor = (recallInfo.state == RecallState::RECALLING || recallInfo.state == RecallState::TELEPORTING) ? COLOR_WHITE : COLOR_RED;
-					bool teleporting = (recallInfo.state == RecallState::TELEPORTING || recallInfo.state == RecallState::TELEPORTING_FINISHED) ? true : false;
+					uint32_t recallColor = (recallInfo.state == RecallState::Recalling || recallInfo.state == RecallState::Teleporting) ? COLOR_WHITE : COLOR_RED;
+					bool teleporting = (recallInfo.state == RecallState::Teleporting || recallInfo.state == RecallState::TeleportingFinished) ? true : false;
 					DrawRecall(relativePositionOffset, recallInfo.name, recallColor, teleporting);
 				}
 			}

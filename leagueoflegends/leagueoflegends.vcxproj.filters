@@ -157,7 +157,7 @@
     <ClInclude Include="scripts\championmodule.h">
       <Filter>scripts</Filter>
     </ClInclude>
-    <ClInclude Include="scripts\spelldatabase.h">
+    <ClInclude Include="scripts\skillshotdatabase.h">
       <Filter>scripts</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h" />
@@ -259,12 +259,15 @@
     <ClCompile Include="scripts\champions\syndra.cpp">
       <Filter>scripts\champions</Filter>
     </ClCompile>
-    <ClCompile Include="scripts\spelldatabase.cpp">
+    <ClCompile Include="scripts\skillshotdatabase.cpp">
       <Filter>scripts</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="imgui\imgui_impl_dx11.cpp">
       <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="scripts\prediction.cpp">
+      <Filter>scripts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

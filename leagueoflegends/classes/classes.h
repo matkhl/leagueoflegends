@@ -30,6 +30,7 @@ class SpellData
 {
 public:
 	std::string GetName();
+    float GetManaCostByLevel(int level);
 };
 
 class SpellInfo
@@ -53,7 +54,9 @@ public:
 	SpellInput* GetSpellInput();
 	SpellInfo* GetSpellInfo();
 public:
+    bool IsReady();
 	std::string GetName();
+    float GetManaCost();
 };
 
 class SpellCast
@@ -73,16 +76,22 @@ public:
     Vector3 GetPosition();
     bool IsVisible();
 	bool IsAlive();
+    float GetMana();
     bool IsTargetable();
     int GetRecallState();
     float GetHealth();
+    unsigned short GetActionState();
+    float GetBonusAttackDamage();
+    float GetAbilityPower();
+    float GetBaseAttackDamage();
 	float GetScale();
+    float GetMovementSpeed();
 	float GetArmor();
 	float GetMagicResist();
     float GetAttackRange();
 	std::string GetName();
     SpellCast* GetActiveSpellCast();
-	Spell* GetSpellById(int id);
+	Spell* GetSpellBySlotId(int slotId);
     CharacterData* GetCharacterData();
     AiManager* GetAiManager();
 public:
@@ -90,15 +99,17 @@ public:
     float GetAttackDelay();
     float GetAttackWindup();
 public:
-    unsigned short GetActionState();
     bool CanAttack();
     bool CanCast();
     bool CanMove();
     bool IsEnemy();
     bool IsValidTarget();
     bool IsHero();
+    float GetAttackDamage();
+    float GetEffectiveHealth(int damageType);
     float GetRealAttackRange();
     bool IsInRange(Vector3 pos, float radius);
+    bool CanCastSpell(int slotId);
     Vector3 GetServerPosition();
 };
 
