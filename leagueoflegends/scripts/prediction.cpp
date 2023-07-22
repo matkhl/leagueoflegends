@@ -2,6 +2,45 @@
 
 namespace scripts::prediction
 {
+	bool IsObjectInWay(Vector3 sourcePos, Vector3 targetPos, Object* targetObject, float projectileRadius)
+	{
+		auto objectInWay = [&](auto& objectManager) {
+			auto sourceToTarget = targetPos - sourcePos;
+			sourceToTarget.y = 0.0f;
+			auto distance = sourceToTarget.Length();
+
+			for (auto obj : objectManager)
+			{
+				if (obj == targetObject) continue;
+				if (!obj->IsValidTarget()) continue;
+
+				auto objPos = obj->GetPosition();
+				auto sourceToObj = objPos - sourcePos;
+				sourceToObj.y = 0.0f;
+				if (sourceToObj.Length() > distance) continue;
+
+				float dot1 = sourceToObj.DotProduct(sourceToTarget);
+				float dot2 = sourceToTarget.DotProduct(sourceToTarget);
+
+				if (dot1 < 0.0f) continue;
+
+				float t = dot1 / dot2;
+
+				Vector3 projection = sourcePos + (sourceToTarget * t);
+				projection.y = 0.0;
+
+				Vector3 distVector = objPos - projection;
+				distVector.y = 0.0;
+
+				if (distVector.Length() <= projectileRadius + obj->GetBoundingRadius())
+					return true;
+			}
+			return false;
+		};
+
+		return objectInWay(*globals::minionManager) || objectInWay(*globals::heroManager);
+	}
+
 	Vector3 GetObjectPositionAfterTime(Object* obj, float time, float distanceBuffer)
 	{
 		const auto aiManager = obj->GetAiManager();
@@ -98,6 +137,9 @@ namespace scripts::prediction
 
 			missileTime = (distance / skillshot.GetSpeed()) + skillshot.GetCastTime();
 		}
+
+		if (skillshot.IsCollidableWith(CollidableObjects::Objects) && IsObjectInWay(sourcePos, predictedPos, targetObj, skillshot.GetRadius()))
+			return false;
 
 		out.position = predictedPos;
 		return true;

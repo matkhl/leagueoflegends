@@ -34,6 +34,8 @@ namespace scripts
 			Vector3 position;
 		};
 
+		bool IsObjectInWay(Vector3 sourcePos, Vector3 targetPos, Object* targetObject, float projectileRadius);
+
 		Vector3 GetObjectPositionAfterTime(Object* obj, float time, float distanceBuffer = 0.0f);
 
 		bool GetPrediction(Skillshot &spell, PredictionOutput& out);
