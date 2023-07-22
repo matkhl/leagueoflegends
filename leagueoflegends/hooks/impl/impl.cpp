@@ -31,7 +31,7 @@ namespace hooks
 
 			globals::hookResponse = true;
 
-			LOG("Hooked and ImGui initialized");
+			LOG("%s hooked", globals::renderType);
 		}
 
 		void Updates()
@@ -245,12 +245,12 @@ namespace hooks
 		{
 			if (globals::renderType == "D3D9")
 			{
-				if (kiero::bind(16, (void**)&o_resetDX9, Reset) != kiero::Status::Success) LOG(" bind failed");
-				if (kiero::bind(42, (void**)&o_endSceneDX9, EndScene) != kiero::Status::Success) LOG(" bind failed");
+				kiero::bind(16, (void**)&o_resetDX9, Reset);
+				kiero::bind(42, (void**)&o_endSceneDX9, EndScene);
 			}
 			else if (globals::renderType == "D3D11")
 			{
-				if (kiero::bind(8, (void**)&o_presentDX, presentDX11) != kiero::Status::Success) LOG(" bind failed");
+				kiero::bind(8, (void**)&o_presentDX, presentDX11);
 			}
 		}
 	}

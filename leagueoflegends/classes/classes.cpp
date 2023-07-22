@@ -1,5 +1,12 @@
 #include "../stdafx.h"
 
+void CharacterDataStack::Update(bool change)
+{
+	typedef void(__thiscall* fnUpdate)(QWORD, bool);
+	fnUpdate _update = (fnUpdate)(globals::moduleBase + oCharacterDataStackUpdate);
+	spoof_call(functions::spoof_trampoline, _update, (QWORD)this, change);
+}
+
 Vector3 AiManager::GetTargetPosition()
 {
 	return functions::ReadVector3((QWORD)this + oObjAiManagerManagerTargetPosition);
@@ -52,7 +59,7 @@ Vector3 AiManager::GetSegment(int index)
 
 std::vector<Vector3> AiManager::GetFutureSegments()
 {
-	std::vector<Vector3> segments;
+	std::vector<Vector3> segments = {};
 	int segmentsCount = this->GetSegmentsCount();
 	for (int i = this->GetCurrentSegment(); i < segmentsCount; i++)
 	{
@@ -69,6 +76,11 @@ float CharacterData::GetSize()
 QWORD CharacterData::GetObjectTypeHash()
 {
 	return *(QWORD*)(*(QWORD*)((QWORD)this + oObjCharDataDataObjType));
+}
+
+QWORD CharacterData::GetObjectTypeHashDetailed()
+{
+	return *(QWORD*)(*(QWORD*)((QWORD)this + oObjCharDataDataObjType) + oObjCharDataDataObjTypeDetailed);
 }
 
 std::string SpellData::GetName()
@@ -101,6 +113,11 @@ float Spell::GetCooldown()
 	float cooldownTimer = this->GetCooldownTimer();
 	if (cooldownTimer == 0.0f) return cooldownTimer;
 	return max(cooldownTimer - functions::GetGameTime(), 0.0f);
+}
+
+int Spell::GetStacks()
+{
+	return *(int*)((QWORD)this + oSpellSlotStacks);
 }
 
 float Spell::GetTotalCooldown()
@@ -153,6 +170,52 @@ int SpellCast::GetSpellId()
 bool SpellCast::IsAutoAttack()
 {
 	return *(int*)((QWORD)this + oActiveSpellCastSpellType) == -1;
+}
+
+std::string Buff::GetName()
+{
+	QWORD* namePtr = (QWORD*)(*(QWORD*)((QWORD)this + oBuffNamePtr));
+	if (!IsValidPtr(namePtr)) return "";
+	return (char*)((QWORD)namePtr + oBuffNamePtrName);
+}
+
+float Buff::GetStartTime()
+{
+	return *(float*)((QWORD)this + oBuffStartTime);
+}
+
+float Buff::GetEndTime()
+{
+	return *(float*)((QWORD)this + oBuffEndTime);
+}
+
+int Buff::GetStacksAlt()
+{
+	return *(int*)((QWORD)this + oBuffStacksAlt);
+}
+
+int Buff::GetStacks()
+{
+	return *(int*)((QWORD)this + oBuffStacks);
+}
+
+int Buff::GetMaxStacks()
+{
+	return max(this->GetStacksAlt(), this->GetStacks());
+}
+
+Buff* BuffEntry::GetBuff()
+{
+	Buff* buff = (Buff*)(*(QWORD*)((QWORD)this + oBuffEntryBuff));
+	if (!IsValidPtr(buff)) return nullptr;
+	return buff;
+}
+
+BuffEntry* BuffManager::GetBuffEntryByIndex(int index)
+{
+	BuffEntry* address = (BuffEntry*)(*(QWORD*)((QWORD)this + (sizeof(QWORD) * index)));
+	if (!IsValidPtr(address)) return nullptr;
+	return address;
 }
 
 unsigned int Object::GetNetId()
@@ -250,11 +313,21 @@ std::string Object::GetName()
 	return *(char**)((QWORD)this + oObjName);
 }
 
+BuffManager* Object::GetBuffManager()
+{
+	return (BuffManager*)(*(QWORD*)((QWORD)this + oObjBuffManager));
+}
+
+QWORD* Object::GetBuffManagerEntriesEnd()
+{
+	return *(QWORD**)((QWORD)this + oObjBuffManager + oObjBuffManagerEntriesEnd);
+}
+
 SpellCast* Object::GetActiveSpellCast()
 {
-	QWORD* activeSpellCastOffset = (QWORD*)((QWORD)this + oObjActiveSpellCast);
-	if (!IsValidPtr(activeSpellCastOffset)) return 0;
-	return *(SpellCast**)(activeSpellCastOffset);
+	QWORD* activeSpellCastOffset = *(QWORD**)((QWORD)this + oObjActiveSpellCast);
+	if (!IsValidPtr(activeSpellCastOffset)) return nullptr;
+	return (SpellCast*)activeSpellCastOffset;
 }
 
 CharacterData* Object::GetCharacterData()
@@ -331,12 +404,18 @@ float Object::GetAttackDamage()
 
 float Object::GetEffectiveHealth(int damageType)
 {
+	if (damageType == DamageType::True) return this->GetHealth();
 	return this->GetHealth() * (1 + (damageType == DamageType::Physical ? this->GetArmor() : this->GetAbilityPower()) / 100);
 }
 
 float Object::GetRealAttackRange()
 {
 	return this->GetAttackRange() + this->GetBoundingRadius();
+}
+
+float Object::GetDistanceTo(Object* obj)
+{
+	return this->GetPosition().Distance(obj->GetPosition());
 }
 
 bool Object::IsInRange(Vector3 pos, float radius)
@@ -359,6 +438,36 @@ Vector3 Object::GetServerPosition()
 	}
 
 	return this->GetPosition();
+}
+
+int Object::GetBuffListSize()
+{
+	return (int)((QWORD)this->GetBuffManagerEntriesEnd() - (QWORD)this->GetBuffManager()) / (int)sizeof(QWORD);
+}
+
+Buff* Object::GetBuffByName(std::string name)
+{
+	for (int i = 0; i < this->GetBuffListSize(); i++)
+	{
+		auto buffEntry = this->GetBuffManager()->GetBuffEntryByIndex(i);
+		if (!buffEntry) return nullptr;
+		auto buff = buffEntry->GetBuff();
+		if (buff && buff->GetEndTime() >= functions::GetGameTime() && buff->GetName() == name) return buff;
+	}
+	return nullptr;
+}
+
+CharacterDataStack* Object::GetCharacterDataStack()
+{
+	return (CharacterDataStack*)((QWORD)this + oObjCharacterDataStack);
+}
+
+void Object::ChangeSkin(int skinId)
+{
+	const auto stack{ this->GetCharacterDataStack() };
+	stack->base_skin.skin = skinId;
+
+	stack->Update(true);
 }
 
 int ObjectManager::GetListSize()

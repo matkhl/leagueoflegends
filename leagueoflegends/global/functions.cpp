@@ -182,6 +182,10 @@ namespace functions
 
 	void TryRightClick(Vector2 pos)
 	{
+		float floatCheck1 = *(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck1);
+		float floatCheck2 = *(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck2);
+		DWORD check = *(DWORD*)((QWORD)globals::localPlayer + oObjIssueOrderCheck);
+
 		*(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck1) = 0.0f;
 		*(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck2) = 0.0f;
 		*(DWORD*)((QWORD)globals::localPlayer + oObjIssueOrderCheck) = 0x0;
@@ -195,10 +199,18 @@ namespace functions
 		params[19] = 2;
 
 		spoof_call(spoof_trampoline, _fnTryRightClick, (QWORD*)globals::localPlayer, params);
+
+		*(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck1) = floatCheck1;
+		*(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck2) = floatCheck2;
+		*(DWORD*)((QWORD)globals::localPlayer + oObjIssueOrderCheck) = check;
 	}
 
 	void IssueOrder(Vector2 pos)
 	{
+		float floatCheck1 = *(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck1);
+		float floatCheck2 = *(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck2);
+		DWORD check = *(DWORD*)((QWORD)globals::localPlayer + oObjIssueOrderCheck);
+
 		*(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck1) = 0.0f;
 		*(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck2) = 0.0f;
 		*(DWORD*)((QWORD)globals::localPlayer + oObjIssueOrderCheck) = 0x0;
@@ -206,6 +218,10 @@ namespace functions
 		typedef bool(__fastcall* fnIssueOrder)(QWORD* player, int order, bool isAttackMove, bool isMinion, int screenX, int screenY, int unknown);
 		fnIssueOrder _fnIssueOrder = (fnIssueOrder)(globals::moduleBase + oIssueOrder);
 		spoof_call(spoof_trampoline, _fnIssueOrder, (QWORD*)globals::localPlayer, 2, false, false, (int)pos.x, (int)pos.y, 0);
+
+		*(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck1) = floatCheck1;
+		*(float*)((QWORD)globals::localPlayer + oObjIssueOrderFloatCheck2) = floatCheck2;
+		*(DWORD*)((QWORD)globals::localPlayer + oObjIssueOrderCheck) = check;
 	}
 
 	void IssueMove(Vector2 pos)
@@ -216,7 +232,7 @@ namespace functions
 		spoof_call(spoof_trampoline, _fnIssueMove, (QWORD*)(*(QWORD*)(*(QWORD*)(globals::moduleBase + oHudInstance) + oHudInstanceInput)), (int)pos.x, (int)pos.y, false, 0, 0);
 	}
 
-	void CastSpell(int spellId, Object* target, Vector3 pos)
+	void CastSpell(int spellId, Vector3 pos)
 	{
 		typedef bool(__fastcall* fnCastSpellWrapper)(QWORD* hudSpellInfo, QWORD* spellInfo);
 		fnCastSpellWrapper _fnCastSpellWrapper = (fnCastSpellWrapper)(globals::moduleBase + oCastSpellWrapper);
@@ -224,19 +240,28 @@ namespace functions
 		if (spellId < 0 || spellId >= 14) return;
 		Spell* spell = globals::localPlayer->GetSpellBySlotId(spellId);
 		SpellInfo* spellInfo = spell->GetSpellInfo();
+		
+		QWORD spellInput = (QWORD)spell->GetSpellInput();
 
-		if (target && target->GetNetId())
-			*(int*)((QWORD)spell->GetSpellInput() + oSpellInputTargetNetId) = target->GetNetId();
+		auto spellInputStartPos = ReadVector3(spellInput + oSpellInputStartPos);
+		auto spellInputEndPos = ReadVector3(spellInput + oSpellInputEndPos);
+		auto spellInputEndPos2 = ReadVector3(spellInput + oSpellInputEndPos + sizeof(Vector3));
+		auto spellInputEndPos3 = ReadVector3(spellInput + oSpellInputEndPos + sizeof(Vector3) * 0x2);
 
 		if (pos.x || pos.y || pos.z)
 		{
-			WriteVector3(((QWORD)spell->GetSpellInput() + oSpellInputStartPos), globals::localPlayer->GetPosition());
-			WriteVector3(((QWORD)spell->GetSpellInput() + oSpellInputEndPos), pos);
-			WriteVector3(((QWORD)spell->GetSpellInput() + oSpellInputEndPos + sizeof(Vector3)), pos);
-			WriteVector3(((QWORD)spell->GetSpellInput() + oSpellInputEndPos + sizeof(Vector3) * 0x2), pos);
+			WriteVector3((spellInput + oSpellInputStartPos), globals::localPlayer->GetPosition());
+			WriteVector3((spellInput + oSpellInputEndPos), pos);
+			WriteVector3((spellInput + oSpellInputEndPos + sizeof(Vector3)), pos);
+			WriteVector3((spellInput + oSpellInputEndPos + sizeof(Vector3) * 0x2), pos);
 		}
 
 		spoof_call(spoof_trampoline, _fnCastSpellWrapper, (QWORD*)(*(QWORD*)(*(QWORD*)(globals::moduleBase + oHudInstance) + oHudInstanceSpellInfo)), (QWORD*)spellInfo);
+
+		WriteVector3((spellInput + oSpellInputStartPos), spellInputStartPos);
+		WriteVector3((spellInput + oSpellInputEndPos), spellInputEndPos);
+		WriteVector3((spellInput + oSpellInputEndPos + sizeof(Vector3)), spellInputEndPos2);
+		WriteVector3((spellInput + oSpellInputEndPos + sizeof(Vector3) * 0x2), spellInputEndPos3);
 	}
 
 	bool CanSendInput()

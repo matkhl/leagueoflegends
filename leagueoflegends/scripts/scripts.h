@@ -7,9 +7,12 @@
 
 namespace scripts
 {
+	extern float gameTime;
+
 	extern std::vector<std::pair<std::string, std::vector<std::string>>> settingsOrder;
 
 	void AddSetting(std::string group, std::string key, settings::SettingValue value, settings::SettingValue min = 0, settings::SettingValue max = 1);
+	void RefreshBuffer();
 	void Init();
 	void Update();
 
@@ -19,6 +22,7 @@ namespace scripts
 
 		Object* GetEnemyChampionInRange(float range);
 		Object* GetEnemyChampionInRange(float range, int damageType);
+		Object* GetObjectInRange(float range, std::string name = "", std::vector<QWORD> includefilterTypeHashes = {}, std::vector<QWORD> excludeFilterTypeHashesDetailed = {}, bool isSpecial = false);
 
 		void Init();
 	}
@@ -36,14 +40,16 @@ namespace scripts
 		bool GetPrediction(Object* sourceObj, Object* targetObj, Skillshot &spell, PredictionOutput &out);
 	}
 
+	namespace actions
+	{
+		bool CanDoAction();
+		void Idle();
+		void AttackObject(Object* obj);
+		void CastSpell(int spellId, Vector3 pos);
+	}
+
 	namespace orbwalker
 	{
-		namespace actions
-		{
-			bool CanDoAction();
-			void Idle();
-			void AttackObject(Object* obj);
-		}
 
 		namespace states
 		{
@@ -52,7 +58,6 @@ namespace scripts
 
 		bool StopOrbwalk();
 		bool IsReloading();
-		void RefreshBuffer();
 		void CheckActiveAttack();
 		void Init();
 		void Update();
@@ -71,6 +76,11 @@ namespace scripts
 		void Update();
 	}
 
+	namespace skinchanger
+	{
+		void Init();
+	}
+
 	namespace debug
 	{
 		void Init();
@@ -80,5 +90,6 @@ namespace scripts
 	{
 		void Init();
 		void Update();
+		void RenderUpdate();
 	}
 }

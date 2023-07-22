@@ -2,32 +2,24 @@
 
 namespace hooks
 {
+	std::vector<const char*> renderTypeNames = { "D3D9", "D3D11" };
+	std::vector<int> renderTypesIds = { 1, 3 };
+
 	void CheckType(int renderType, const char* typeName)
 	{
 		if (kiero::init((kiero::RenderType::Enum)renderType) == kiero::Status::Success) globals::renderType = typeName;
 	}
 
-	int Init()
+	int Init(int index)
 	{
-		std::vector<int> renderTypes = { 3, 1 };
-		std::vector<const char*> renderTypeNames = { "D3D11", "D3D9" };
+		CheckType(renderTypesIds[index], renderTypeNames[index]);
 
-		for (int i = 0; i < renderTypes.size(); i++)
-		{
-			CheckType(renderTypes[i], renderTypeNames[i]);
-			if (globals::renderType)
-				break;
-		}
-		
 		if (globals::renderType)
 		{
 			hooks::impl::Init();
 			return 1;
 		}
-		else
-		{
-			LOG("RenderType not supported (press detach key)");
-			return 0;
-		}
+
+		return 0;
 	}
 }

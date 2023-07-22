@@ -218,7 +218,6 @@
     <ClCompile Include="global\functions.cpp" />
     <ClCompile Include="global\globals.cpp" />
     <ClCompile Include="global\settings.cpp" />
-    <ClCompile Include="global\stringcheck.cpp" />
     <ClCompile Include="hooks\hooks.cpp" />
     <ClCompile Include="hooks\impl\impl.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />

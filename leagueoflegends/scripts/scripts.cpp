@@ -2,6 +2,9 @@
 
 namespace scripts
 {
+	static float gameTime = 0.0f;
+	static float nextRngBuffer = 0.0f;
+
 	std::vector<std::pair<std::string, std::vector<std::string>>> settingsOrder = {};
 
 	void AddSetting(std::string group, std::string key, settings::SettingValue value, settings::SettingValue min, settings::SettingValue max)
@@ -25,6 +28,16 @@ namespace scripts
 			settings::AddBounds(group, key, std::get<float>(min), std::get<float>(max));
 	}
 
+	void RefreshBuffer()
+	{
+		if (!SETTINGS_BOOL("orbwalker", "random action delay"))
+		{
+			nextRngBuffer = 0.0f;
+			return;
+		}
+		nextRngBuffer = static_cast <float> (rand()) / static_cast <float> (RAND_MAX / 0.01f);
+	}
+
 	void Init()
 	{
 		srand(static_cast <unsigned> (time(0)));
@@ -33,51 +46,56 @@ namespace scripts
 		recalls::Init();
 		orbwalker::Init();
 		targetselector::Init();
+		skinchanger::Init();
 		debug::Init();
 		champions::Init();
 	}
 
 	void Update()
 	{
+		gameTime = functions::GetGameTime();
 		champions::Update();
 		if (SETTINGS_BOOL("orbwalker", "enabled")) orbwalker::Update();
 		if (SETTINGS_BOOL("recalls", "enabled")) recalls::Update();
 	}
 
-	namespace orbwalker
+	namespace actions
 	{
 		float lastActionTime = 0.0f;
+
+		bool CanDoAction()
+		{
+			if (!lastActionTime) lastActionTime = gameTime;
+			if (gameTime < lastActionTime + SETTINGS_FLOAT("orbwalker", "clickdelay") + nextRngBuffer) return false;
+			lastActionTime = gameTime;
+			return true;
+		}
+
+		void Idle()
+		{
+			if (!(CanDoAction() && globals::localPlayer->CanMove())) return;
+			functions::MoveToMousePos();
+			RefreshBuffer();
+		}
+
+		void AttackObject(Object* obj)
+		{
+			if (!CanDoAction()) return;
+			functions::AttackObject(obj);
+			RefreshBuffer();
+		}
+
+		void CastSpell(int spellId, Vector3 pos)
+		{
+			if (!CanDoAction()) return;
+			functions::CastSpell(spellId, pos);
+		}
+	}
+
+	namespace orbwalker
+	{
 		float lastAttackTime = 0.0f;
 		QWORD lastSpellCastAddress = 0;
-
-		float gameTime = 0.0f;
-
-		float nextRngBuffer = 0.0f;
-
-		namespace actions
-		{
-			bool CanDoAction()
-			{
-				if (!lastActionTime) lastActionTime = gameTime;
-				if (gameTime < lastActionTime + SETTINGS_FLOAT("orbwalker", "clickdelay") + nextRngBuffer) return false;
-				lastActionTime = gameTime;
-				return true;
-			}
-
-			void Idle()
-			{
-				if (!(CanDoAction() && globals::localPlayer->CanMove())) return;
-				functions::MoveToMousePos();
-				RefreshBuffer();
-			}
-
-			void AttackObject(Object* obj)
-			{
-				if (!CanDoAction()) return;
-				functions::AttackObject(obj);
-				RefreshBuffer();
-			}
-		}
 
 		namespace states
 		{
@@ -107,16 +125,6 @@ namespace scripts
 			return gameTime < lastAttackTime + globals::localPlayer->GetAttackDelay() - SETTINGS_FLOAT("orbwalker", "attack before can attack");
 		}
 
-		void RefreshBuffer()
-		{
-			if (!SETTINGS_BOOL("orbwalker", "random click delay"))
-			{
-				nextRngBuffer = 0.0f;
-				return;
-			}
-			nextRngBuffer = static_cast <float> (rand()) / static_cast <float> (RAND_MAX / 0.01f);
-		}
-
 		void CheckActiveAttack()
 		{
 			auto spellCast = globals::localPlayer->GetActiveSpellCast();
@@ -136,14 +144,13 @@ namespace scripts
 		{
 			ADD_SETTING("orbwalker", "enabled", true);
 			ADD_SETTING_RANGE("orbwalker", "clickdelay", 0.05f, 0.03f, 1.0f);
-			ADD_SETTING("orbwalker", "random click delay", true);
+			ADD_SETTING("orbwalker", "random action delay", true);
 			ADD_SETTING_RANGE("orbwalker", "windupbuffer", 0.03f, 0.01f, 0.2f);
 			ADD_SETTING_RANGE("orbwalker", "attack before can attack", 0.01f, 0.0f, 0.2f);
 		}
 
 		void Update()
 		{
-			gameTime = functions::GetGameTime();
 			CheckActiveAttack();
 
 			if (StopOrbwalk()) return;
@@ -196,8 +203,6 @@ namespace scripts
 
 		void Update()
 		{
-			float gameTime = functions::GetGameTime();
-
 			for (int i = 0; i < recallList.size(); i++)
 			{
 				RecallInfo recallInfo = recallList[i];
@@ -244,6 +249,14 @@ namespace scripts
 		}
 	}
 
+	namespace skinchanger
+	{
+		void Init()
+		{
+			ADD_SETTING("skinchanger", "skin id", 0);
+		}
+	}
+
 	namespace debug
 	{
 		void Init()
@@ -279,6 +292,13 @@ namespace scripts
 				activeChampModule->Attack();
 				break;
 			}
+		}
+
+		void RenderUpdate()
+		{
+			if (!activeChampModule) return;
+
+			activeChampModule->Render();
 		}
 	}
 }

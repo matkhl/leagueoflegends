@@ -1,5 +1,10 @@
 #include "../stdafx.h"
 
+void Skillshot::SetSlotIndex(int slotId)
+{
+	this->slotIndex = slotId;
+}
+
 float Skillshot::GetRange()
 {
 	return this->range;
@@ -12,7 +17,7 @@ float Skillshot::GetRadius()
 
 float Skillshot::GetSpeed()
 {
-	return this->castTime;
+	return this->speed;
 }
 
 float Skillshot::GetCastTime()
@@ -32,5 +37,20 @@ float Skillshot::IsCollidableWith(int type)
 
 float Skillshot::GetMaxRange()
 {
-	return (this->type == SkillshotType::SkillshotCircle) ? this->range + this->radius : this->range;
+	return (this->type == SkillshotType::SkillshotCircle) ? this->range + (this->radius - min(this->radius, 70.0f)) : this->range;
+}
+
+std::string Skillshot::GetName()
+{
+	return globals::localPlayer->GetSpellBySlotId(this->slotIndex)->GetName();
+}
+
+bool Skillshot::IsCastable()
+{
+	return globals::localPlayer->CanCastSpell(this->slotIndex);
+}
+
+int Skillshot::GetStacks()
+{
+	return globals::localPlayer->GetSpellBySlotId(this->slotIndex)->GetStacks();
 }

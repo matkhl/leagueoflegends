@@ -38,6 +38,7 @@ namespace render
 	{
 		void Update()
 		{
+			scripts::champions::RenderUpdate();
 			if (SETTINGS_BOOL("cooldowns", "enabled")) cooldowns::Update();
 			if (SETTINGS_BOOL("recalls", "enabled")) recalls::Update();
 			debug::Update();

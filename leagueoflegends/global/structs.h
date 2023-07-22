@@ -11,7 +11,7 @@ struct Vector3
 
     bool IsValid() const
     {
-        return !(this->x == 0.0f && this->y == 0.0f && this->z == 0.0f) && (this->x > (-1 * 10 ^ 6)) && (this->y > (-1 * 10 ^ 6)) && (this->z > (-1 * 10 ^ 6)) && (this->x < (1 * 10 ^ 6)) && (this->y < (1 * 10 ^ 6)) && (this->z < (1 * 10 ^ 6));
+        return !(this->x == 0.0f && this->y == 0.0f && this->z == 0.0f) && (this->x > (-1000000)) && (this->y > (-1000000)) && (this->z > (-1000000)) && (this->x < (1000000)) && (this->y < (1000000)) && (this->z < (1000000));
     }
 
     Vector3 operator+(const Vector3& rhs) const
@@ -39,7 +39,7 @@ struct Vector3
 		return x == rhs.x && y == rhs.y && z == rhs.z;
 	}
 
-    Vector3 Extend(Vector3 const& to, float distance) const
+    Vector3 Extend(const Vector3& to, float distance) const
     {
         const auto from = *this;
         const auto result = from + (to - from).Normalized() * distance;
@@ -54,6 +54,11 @@ struct Vector3
     float Length() const
     {
         return sqrtf(this->x * this->x + this->y * this->y + this->z * this->z);
+    }
+
+    float DotProduct(const Vector3& other) const
+    {
+        return this->x * other.x + this->y * other.y + this->z * other.z;
     }
 
     Vector3 Normalized() const
@@ -168,7 +173,7 @@ enum SpellState
     NoMana = 64
 };
 
-enum CharacterState
+enum CharacterState : unsigned short
 {
     CanAttack = 1,
     CanCast = 2,
@@ -185,13 +190,7 @@ enum CharacterState
     Ghosted = 4096,
     HasGhost = 8192,
     Charmed = 16384,
-    NoRender = 32768,
-    DodgePiercing = 131072,
-    DisableAmbientGold = 262144,
-    DisableAmbientXP = 524288,
-    ForceRenderParticles = 65536,
-    IsCombatEnchanced = 1048576,
-    IsSelectable = 16777216
+    NoRender = 32768
 };
 
 enum ObjectType : unsigned long long
@@ -209,7 +208,8 @@ enum ObjectType : unsigned long long
     Monster_Dragon = 2336927746459059295,
     Special_Void = 2340781521963538015,
     Structure_Turret = 4294967297,
-    UNKNOWN = 5980780305148018688
+    UNKNOWN = 5980780305148018688,
+    Less = 126939457912832
 };
 
 enum CollisionFlags

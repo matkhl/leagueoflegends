@@ -15,7 +15,10 @@ namespace scripts::prediction
 		const auto waypoints = aiManager->GetFutureSegments();
 		const int waypointsSize = (int)waypoints.size();
 
-		if (waypointsSize <= 1 || !aiManager->IsMoving())
+		if (!waypointsSize)
+			return obj->GetServerPosition();
+
+		if (!time || waypointsSize == 1 || !aiManager->IsMoving())
 			return waypoints.front();
 
 		float distance = (speed * time) - distanceBuffer;
@@ -31,6 +34,7 @@ namespace scripts::prediction
 				return waypoints[i];
 			distance = distance - waydistance;
 		}
+		
 		return waypoints.front();
 	}
 
@@ -49,25 +53,34 @@ namespace scripts::prediction
 		const float spellRadius = skillshot.GetRadius();
 
 		float distance = sourcePos.Distance(targetObj->GetServerPosition());
+		float distanceBuffer = skillshot.GetType() == SkillshotType::SkillshotCircle ? max(spellRadius - 70.0f, 0.0f) : 0.0f;
 
 		if (distance > skillshot.GetMaxRange())
 			return false;
 
-		if (skillshot.GetSpeed() >= 9999.0f)
+		if (!skillshot.GetSpeed())
 		{
 			out.position = GetObjectPositionAfterTime(targetObj, skillshot.GetCastTime(), 0.0f);
 			return true;
 		}
-
+		
 		auto waypoints = targetAiManager->GetFutureSegments();
-		if (waypoints.size() <= 1 || !targetAiManager->IsMoving())
+		const int waypointsSize = (int)waypoints.size();
+
+		if (!waypointsSize)
+		{
+			out.position = targetObj->GetServerPosition();
+			return true;
+		}
+
+		if (waypointsSize == 1 || !targetAiManager->IsMoving())
 		{
 			out.position = waypoints.front();
 			return true;
 		}
 
 		float travelTime = (distance / skillshot.GetSpeed()) + skillshot.GetCastTime();
-		auto predictedPos = GetObjectPositionAfterTime(targetObj, travelTime, spellRadius);
+		auto predictedPos = GetObjectPositionAfterTime(targetObj, travelTime, distanceBuffer);
 
 		distance = predictedPos.Distance(sourcePos);
 		float missileTime = (distance / skillshot.GetSpeed()) + skillshot.GetCastTime();
@@ -75,16 +88,15 @@ namespace scripts::prediction
 		while (std::abs(travelTime - missileTime) > 0.01f)
 		{
 			travelTime = missileTime;
-			predictedPos = GetObjectPositionAfterTime(targetObj, travelTime, spellRadius);
+			predictedPos = GetObjectPositionAfterTime(targetObj, travelTime, distanceBuffer);
 
 			distance = predictedPos.Distance(sourcePos);
-			if (distance > skillshot.GetRange())
+			if (distance > skillshot.GetMaxRange())
 			{
-				out.position = waypoints.front();
-				return true;
+				return false;
 			}
 
-			missileTime = (distance / skillshot.GetSpeed()) + spellRadius;
+			missileTime = (distance / skillshot.GetSpeed()) + skillshot.GetCastTime();
 		}
 
 		out.position = predictedPos;

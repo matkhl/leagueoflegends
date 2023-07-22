@@ -4,7 +4,8 @@
 
 class Skillshot
 {
-public:
+private:
+	int slotIndex;
 	float range;
 	float radius;
 	float speed;
@@ -13,9 +14,10 @@ public:
 	std::vector<int> collidableWith;
 
 public:
-	Skillshot() : range(0), radius(0), speed(0), castTime(0), type(SkillshotType::SkillshotLine) {}
+	Skillshot() : slotIndex(0), range(0.0f), radius(0.0f), speed(0.0f), castTime(0.0f), type(SkillshotType::SkillshotLine) {}
 
-	Skillshot(float range, float radius, float speed, float castTime, int type, std::vector<int> collidableWith) :
+	Skillshot(float range, float radius, float speed, float castTime, int type, std::vector<int> collidableWith = {}) :
+		slotIndex(0),
 		range(range),
 		radius(radius),
 		speed(speed),
@@ -23,6 +25,7 @@ public:
 		type(type),
 		collidableWith(collidableWith) {}
 
+	void SetSlotIndex(int slotIndex);
 	float GetRange();
 	float GetRadius();
 	float GetSpeed();
@@ -32,6 +35,9 @@ public:
 
 public:
 	float GetMaxRange();
+	std::string GetName();
+	bool IsCastable();
+	int GetStacks();
 };
 
 class SkillshotManager
@@ -47,16 +53,17 @@ private:
 	SkillshotManager() {}
 
 public:
-	static Skillshot RegisterSpell(const std::string& name, const int& spellId, Skillshot spell) {
-		GetInstance().spells[name][spellId] = spell;
+	static Skillshot RegisterSpell(const std::string& name, const int& slotIndex, Skillshot spell) {
+		spell.SetSlotIndex(slotIndex);
+		GetInstance().spells[name][slotIndex] = spell;
 		return spell;
 	}
 
-	static bool GetSpell(const std::string& name, const int& spellId, Skillshot &out) {
+	static bool GetSpell(const std::string& name, const int& slotIndex, Skillshot &out) {
 		auto& instance = GetInstance();
 		auto itName = instance.spells.find(name);
 		if (itName != instance.spells.end()) {
-			auto itSpellId = (*itName).second.find(spellId);
+			auto itSpellId = (*itName).second.find(slotIndex);
 			if (itSpellId != (*itName).second.end()) {
 				out = itSpellId->second;
 				return true;

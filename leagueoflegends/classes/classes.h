@@ -2,6 +2,26 @@
 
 #include "../stdafx.h"
 
+class CharacterStackData
+{
+public:
+    const char* model;
+    char pad1[0x18];
+    int skin;
+    char pad2[0x60];
+    char gear;
+    char pad3[0x7];
+};
+
+class CharacterDataStack
+{
+public:
+    std::vector<CharacterStackData> stack;
+    CharacterStackData base_skin;
+
+    void Update(bool change);
+};
+
 class AiManager
 {
 public:
@@ -24,6 +44,7 @@ class CharacterData
 public:
     float GetSize();
     QWORD GetObjectTypeHash();
+    QWORD GetObjectTypeHashDetailed();
 };
 
 class SpellData
@@ -49,6 +70,7 @@ public:
 	int GetLevel();
 	float GetCooldownTimer();
 	float GetCooldown();
+    int GetStacks();
 	float GetTotalCooldown();
 	float GetRelativeCooldown();
 	SpellInput* GetSpellInput();
@@ -66,6 +88,30 @@ public:
     int GetSpellId();
 public:
     bool IsAutoAttack();
+};
+
+class Buff
+{
+public:
+    std::string GetName();
+    float GetStartTime();
+    float GetEndTime();
+    int GetStacksAlt();
+    int GetStacks();
+public:
+    int GetMaxStacks();
+};
+
+class BuffEntry
+{
+public:
+    Buff* GetBuff();
+};
+
+class BuffManager
+{
+public:
+    BuffEntry* GetBuffEntryByIndex(int index);
 };
 
 class Object
@@ -90,6 +136,8 @@ public:
 	float GetMagicResist();
     float GetAttackRange();
 	std::string GetName();
+    BuffManager* GetBuffManager();
+    QWORD* GetBuffManagerEntriesEnd();
     SpellCast* GetActiveSpellCast();
 	Spell* GetSpellBySlotId(int slotId);
     CharacterData* GetCharacterData();
@@ -108,9 +156,15 @@ public:
     float GetAttackDamage();
     float GetEffectiveHealth(int damageType);
     float GetRealAttackRange();
+    float GetDistanceTo(Object* obj);
     bool IsInRange(Vector3 pos, float radius);
     bool CanCastSpell(int slotId);
     Vector3 GetServerPosition();
+    int GetBuffListSize();
+    Buff* GetBuffByName(std::string name);
+public:
+    CharacterDataStack* GetCharacterDataStack();
+    void ChangeSkin(int skinId);
 };
 
 class ObjectManager

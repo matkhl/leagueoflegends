@@ -87,6 +87,10 @@ namespace menu
 		ImGui::GetIO().MouseDrawCursor = false;
 
 		LOG("Menu initialized");
+
+		int skinId = SETTINGS_INT("skinchanger", "skin id");
+		if (skinId > 0)
+			globals::localPlayer->ChangeSkin(skinId);
 	}
 
 	void SaveSoon()
@@ -114,7 +118,7 @@ namespace menu
 		const ImGuiID id = currentWindow->GetID(label);
 
 		ImVec2 labelSize = ImGui::CalcTextSize(label, NULL, true);
-		ImVec2 valueSize = ImGui::CalcTextSize("Off", NULL, true);
+		ImVec2 valueSize = ImGui::CalcTextSize(SP_STRING("Off"), NULL, true);
 
 		const float minWidgetWidth = 180.0f;
 		const float widgetWidth = ImMax(ImMax(minWidgetWidth, labelSize.x + valueSize.x + 60.0f), ImGui::GetWindowSize().x);
@@ -138,7 +142,7 @@ namespace menu
 
 		textPosition.x += widgetWidth - valueSize.x - 30.0f - ((*isChecked) ? 18.0f : 0.0f) + ((widgetWidth == ImGui::GetWindowSize().x) ? 1.0f : 0.0f);
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(*isChecked ? 0.2f : 8.0f, *isChecked ? 8.0f : 0.2f, 0.2f, 1.0f));
-		ImGui::RenderText(textPosition, *isChecked ? "On" : "Off");
+		ImGui::RenderText(textPosition, *isChecked ? SP_STRING("On") : SP_STRING("Off"));
 		ImGui::PopStyleColor();
 
 		if (*isChecked) {
@@ -151,7 +155,8 @@ namespace menu
 
 	void DrawMenu(std::pair<std::string, settings::SettingsGroup> group, std::pair<std::string, std::vector<std::string>> groupOrder)
 	{
-		if (ImGui::BeginMenu(functions::CapitalizeFirstLetter(group.first).c_str()))
+		std::string groupName = functions::CapitalizeFirstLetter(group.first);
+		if (ImGui::BeginMenu(groupName.c_str()))
 		{
 			int id = 0;
 			for (const auto& key : groupOrder.second)
@@ -175,9 +180,28 @@ namespace menu
 						int intValue = std::get<int>(value);
 						const auto bounds = settings::GetBoundsInt(group.first, key, std::pair<int, int>(0, 1));
 
-						if (ImGui::SliderInt((std::string("##") + key).c_str(), &intValue, bounds.first, bounds.second, key.c_str())) SaveSoon();
-						ImGui::SameLine();
-						ImGui::Text("%.3f", intValue);
+						if (key == SP_STRING("skin id"))
+						{
+							char* items[50] = {};
+
+							for (int i = 0; i < 50; i++) {
+								std::string str = std::to_string(i);
+								items[i] = new char[str.length() + 1];
+								std::strcpy(items[i], str.c_str());
+							}
+
+							if (ImGui::Combo(key.c_str(), &intValue, items, 50, 5))
+								globals::localPlayer->ChangeSkin(intValue);
+
+							for (int i = 0; i < 50; i++)
+								delete[] items[i];
+						}
+						else
+						{
+							if (ImGui::SliderInt(("##" + key).c_str(), &intValue, bounds.first, bounds.second, key.c_str())) SaveSoon();
+							ImGui::SameLine();
+							ImGui::Text("%.3f", intValue);
+						}
 
 						settings::Set(group.first, setting.first, intValue);
 					}
@@ -186,14 +210,14 @@ namespace menu
 						float floatValue = std::get<float>(value);
 						const auto bounds = settings::GetBoundsFloat(group.first, key, std::pair<float, float>(0.0f, 1.0f));
 
-						if (ImGui::SliderFloat((std::string("##") + key).c_str(), &floatValue, bounds.first, bounds.second, key.c_str())) SaveSoon();
+						if (ImGui::SliderFloat(("##" + key).c_str(), &floatValue, bounds.first, bounds.second, key.c_str())) SaveSoon();
 						ImGui::SameLine();
 						ImGui::Text("%.3f", floatValue);
 
 						settings::Set(group.first, setting.first, floatValue);
 					}
 
-					if (!id && groupOrder.second.size() > 1 && key == "enabled")
+					if (!id && groupOrder.second.size() > 1 && key == SP_STRING("enabled"))
 					{
 						ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
 						ImGui::Separator();
@@ -204,6 +228,11 @@ namespace menu
 			}
 
 			ImGui::EndMenu();
+		}
+		if (groupName == SP_STRING("Debug"))
+		{
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 1.0f);
+			ImGui::Separator();
 		}
 	}
 

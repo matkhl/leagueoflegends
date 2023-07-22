@@ -13,6 +13,7 @@
 #define oGetAttackWindup 0x3AFA90
 #define oGetObjectFromNetId 0x38D860
 #define oGetCollisionFlags 0xD67930
+#define oCharacterDataStackUpdate 0x183710
 
 //variables
 #define oGameTime 0x4213710
@@ -68,16 +69,32 @@
 #define oObjMagicResist 0x169C
 #define oObjMovementSpeed 0x16AC
 #define oObjAttackRange 0x16B4
+#define oObjBuffManager 0x27C8
 #define oObjSpellBook 0x29E8
 #define oObjActiveSpellCast 0x2A20
 #define oObjCharData 0x3528
 #define oObjName 0x35D8
+#define oObjCharacterDataStack 0x35C0
 #define oObjAiManager 0x36F0
+
+#define oObjBuffManagerEntriesEnd 0x10
+
+#define oBuffEntryBuff 0x10
+
+#define oBuffType 0x8
+#define oBuffNamePtr 0x10
+#define oBuffStartTime 0x18
+#define oBuffEndTime 0x1C
+#define oBuffStacksAlt 0x38
+#define oBuffStacks 0x8C
+
+#define oBuffNamePtrName 0x8
 
 #define oObjSpellBookSpellSlot 0x6D0
 
 #define oSpellSlotLevel 0x28
 #define oSpellSlotCooldown 0x30
+#define oSpellSlotStacks 0x5C
 #define oSpellSlotTotalCooldown 0x74
 #define oSpellSlotSpellInput 0x128
 #define oSpellSlotSpellInfo 0x130
@@ -99,6 +116,8 @@
 
 #define oObjCharDataDataSize 0xC4
 #define oObjCharDataDataObjType 0x768
+
+#define oObjCharDataDataObjTypeDetailed 0x20
 
 #define oObjAiManagerManager 0x10
 

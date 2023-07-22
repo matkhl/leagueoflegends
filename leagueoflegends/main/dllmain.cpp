@@ -1,8 +1,27 @@
+#pragma warning(disable : 6387)
+
 #include "../stdafx.h"
 
 //#define CONSOLE_ENABLED
 
 HMODULE hLocalModule;
+
+bool WINAPI HideThread(const HANDLE hThread) noexcept
+{
+	__try {
+		using FnSetInformationThread = NTSTATUS(NTAPI*)(HANDLE ThreadHandle, UINT ThreadInformationClass, PVOID ThreadInformation, ULONG ThreadInformationLength);
+		const auto NtSetInformationThread{ reinterpret_cast<FnSetInformationThread>(::GetProcAddress(::GetModuleHandle(L"ntdll.dll"), "NtSetInformationThread")) };
+
+		if (!NtSetInformationThread)
+			return false;
+
+		if (const auto status{ NtSetInformationThread(hThread, 0x11u, nullptr, 0ul) }; status == 0x00000000)
+			return true;
+	}
+	__except (TRUE) {
+		return false;
+	}
+}
 
 DWORD __stdcall EjectThread(LPVOID lpParameter)
 {
@@ -22,6 +41,9 @@ DWORD __stdcall OnInject(LPVOID lpReserved)
 
 	LOG("Injected");
 
+	if (HideThread(::GetCurrentThread()))
+		LOG(" - Thread hidden");
+
 	globals::moduleBase = (uintptr_t)GetModuleHandle(nullptr);
 	if (!GetModuleInformation(GetCurrentProcess(), (HMODULE)globals::moduleBase, &globals::moduleInfo, sizeof(MODULEINFO)))
 	{
@@ -36,13 +58,20 @@ DWORD __stdcall OnInject(LPVOID lpReserved)
 		if (IsValidPtr(gameTimePtr) && *gameTimePtr > 3.0f) break;
 		Sleep(300);
 	}
-
+	
 	int hooked = 2;
-	do
-		hooked = hooks::Init();
-	while (hooked == 2);
+	for (int i = 0; i < hooks::renderTypeNames.size(); i++)
+	{
+		if (hooked = hooks::Init(i))
+		{
+			Sleep(500);
+			if (globals::hookResponse)
+				break;
+			kiero::shutdown();
+		}
+	}
 
-	Sleep(1000);
+	Sleep(500);
 
 	if (!globals::hookResponse && hooked == 1)
 		LOG("Hook function not called by process (press detach key)");
