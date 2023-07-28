@@ -14,4 +14,9 @@ Simple source including:
 
 In order for the injector to work, you need to put two compiled [Guided Hacking injector library](https://github.com/Broihon/GH-Injector-Library) files inside the output directory.  
 Rename them as follows:  
-![File screenshot](https://i.imgur.com/PYJNLlb.png)
+
+The Injector dll file:
+"Injector.dll"
+
+The Injector SM file:
+"GH Injector SM - x64.exe"
