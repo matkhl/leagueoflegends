@@ -225,6 +225,7 @@ enum CollisionFlags
 
 enum SkillshotType
 {
+    SkillshotNone,
     SkillshotLine,
     SkillshotCircle,
     SkillshotCone

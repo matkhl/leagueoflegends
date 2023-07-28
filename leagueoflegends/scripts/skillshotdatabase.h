@@ -14,7 +14,7 @@ private:
 	std::vector<int> collidableWith;
 
 public:
-	Skillshot() : slotIndex(0), range(0.0f), radius(0.0f), speed(0.0f), castTime(0.0f), type(SkillshotType::SkillshotLine) {}
+	Skillshot() : slotIndex(0), range(0.0f), radius(0.0f), speed(0.0f), castTime(0.0f), type(SkillshotType::SkillshotNone) {}
 
 	Skillshot(float range, float radius, float speed, float castTime, int type, std::vector<int> collidableWith = {}) :
 		slotIndex(0),
@@ -31,7 +31,7 @@ public:
 	float GetSpeed();
 	float GetCastTime();
 	int GetType();
-	float IsCollidableWith(int type);
+	bool IsCollidableWith(int type);
 
 public:
 	float GetMaxRange();

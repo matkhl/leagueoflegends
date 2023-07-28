@@ -30,7 +30,7 @@ int Skillshot::GetType()
 	return this->type;
 }
 
-float Skillshot::IsCollidableWith(int type)
+bool Skillshot::IsCollidableWith(int type)
 {
 	return std::find(this->collidableWith.begin(), this->collidableWith.end(), type) != this->collidableWith.end();
 }

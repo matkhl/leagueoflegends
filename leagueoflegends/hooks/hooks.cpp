@@ -2,7 +2,7 @@
 
 namespace hooks
 {
-	std::vector<const char*> renderTypeNames = { "D3D9", "D3D11" };
+	std::vector<const char*> renderTypeNames = { "D3D9",  "D3D11" };
 	std::vector<int> renderTypesIds = { 1, 3 };
 
 	void CheckType(int renderType, const char* typeName)

@@ -41,12 +41,15 @@ DWORD __stdcall OnInject(LPVOID lpReserved)
 
 	LOG("Injected");
 
+	Sleep(100);
+
 	if (HideThread(::GetCurrentThread()))
-		LOG(" - Thread hidden");
+		LOG("Thread hidden");
 
 	globals::moduleBase = (uintptr_t)GetModuleHandle(nullptr);
 	if (!GetModuleInformation(GetCurrentProcess(), (HMODULE)globals::moduleBase, &globals::moduleInfo, sizeof(MODULEINFO)))
 	{
+		Sleep(100);
 		LOG("Failed to get module information.");
 
 		return 0;
@@ -62,16 +65,18 @@ DWORD __stdcall OnInject(LPVOID lpReserved)
 	int hooked = 2;
 	for (int i = 0; i < hooks::renderTypeNames.size(); i++)
 	{
+		LOG("Testing %s", hooks::renderTypeNames[i]);
 		if (hooked = hooks::Init(i))
 		{
-			Sleep(500);
+			Sleep(400);
 			if (globals::hookResponse)
 				break;
 			kiero::shutdown();
 		}
+		Sleep(100);
 	}
 
-	Sleep(500);
+	Sleep(100);
 
 	if (!globals::hookResponse && hooked == 1)
 		LOG("Hook function not called by process (press detach key)");

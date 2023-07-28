@@ -239,6 +239,10 @@
     <ClCompile Include="menu\menu.cpp" />
     <ClCompile Include="render\render.cpp" />
     <ClCompile Include="render\renderfunctions.cpp" />
+    <ClCompile Include="scripts\champions\brand.cpp" />
+    <ClCompile Include="scripts\champions\drmundo.cpp" />
+    <ClCompile Include="scripts\champions\garen.cpp" />
+    <ClCompile Include="scripts\champions\jax.cpp" />
     <ClCompile Include="scripts\champions\syndra.cpp" />
     <ClCompile Include="scripts\prediction.cpp" />
     <ClCompile Include="scripts\scripts.cpp" />

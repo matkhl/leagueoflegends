@@ -2,7 +2,44 @@
 
 namespace scripts::prediction
 {
-	bool IsObjectInWay(Vector3 sourcePos, Vector3 targetPos, Object* targetObject, float projectileRadius)
+	bool CheckCollision(Vector3 sourcePos, Vector3 targetPos, Object* sourceObject, Object* targetObject, Skillshot &skillshot)
+	{
+		if (skillshot.IsCollidableWith(CollidableObjects::Objects) && IsAnyObjectInWay(sourcePos, targetPos, sourceObject, targetObject, skillshot.GetRadius()))
+			return false;
+		return true;
+	}
+
+	bool IsSpecificObjectInWay(Vector3 sourcePos, Vector3 targetPos, Object* collisionObject, float projectileRadius)
+	{
+		auto sourceToTarget = targetPos - sourcePos;
+		sourceToTarget.y = 0.0f;
+		auto distance = sourceToTarget.Length();
+
+		auto objPos = collisionObject->GetPosition();
+		auto sourceToObj = objPos - sourcePos;
+		sourceToObj.y = 0.0f;
+		if (sourceToObj.Length() > distance) return false;
+
+		float dot1 = sourceToObj.DotProduct(sourceToTarget);
+		float dot2 = sourceToTarget.DotProduct(sourceToTarget);
+
+		if (dot1 < 0.0f) return false;
+
+		float t = dot1 / dot2;
+
+		Vector3 projection = sourcePos + (sourceToTarget * t);
+		projection.y = 0.0;
+
+		Vector3 distVector = objPos - projection;
+		distVector.y = 0.0;
+
+		if (distVector.Length() <= projectileRadius + collisionObject->GetBoundingRadius())
+			return true;
+
+		return false;
+	}
+
+	bool IsAnyObjectInWay(Vector3 sourcePos, Vector3 targetPos, Object* sourceObject, Object* targetObject, float projectileRadius)
 	{
 		auto objectInWay = [&](auto& objectManager) {
 			auto sourceToTarget = targetPos - sourcePos;
@@ -11,28 +48,10 @@ namespace scripts::prediction
 
 			for (auto obj : objectManager)
 			{
-				if (obj == targetObject) continue;
+				if (obj == targetObject || obj == sourceObject) continue;
 				if (!obj->IsValidTarget()) continue;
 
-				auto objPos = obj->GetPosition();
-				auto sourceToObj = objPos - sourcePos;
-				sourceToObj.y = 0.0f;
-				if (sourceToObj.Length() > distance) continue;
-
-				float dot1 = sourceToObj.DotProduct(sourceToTarget);
-				float dot2 = sourceToTarget.DotProduct(sourceToTarget);
-
-				if (dot1 < 0.0f) continue;
-
-				float t = dot1 / dot2;
-
-				Vector3 projection = sourcePos + (sourceToTarget * t);
-				projection.y = 0.0;
-
-				Vector3 distVector = objPos - projection;
-				distVector.y = 0.0;
-
-				if (distVector.Length() <= projectileRadius + obj->GetBoundingRadius())
+				if (IsSpecificObjectInWay(sourcePos, targetPos, obj, projectileRadius))
 					return true;
 			}
 			return false;
@@ -50,15 +69,16 @@ namespace scripts::prediction
 		{
 			speed = aiManager->GetDashSpeed();
 		}
-
-		const auto waypoints = aiManager->GetFutureSegments();
+		
+		std::vector<Vector3> waypoints = { obj->GetServerPosition() };
+		auto futureWaypoints = aiManager->GetFutureSegments();
+		for (auto waypoint : futureWaypoints)
+			waypoints.push_back(waypoint);
+		
 		const int waypointsSize = (int)waypoints.size();
 
-		if (!waypointsSize)
+		if (!waypointsSize || !time || !aiManager->IsMoving())
 			return obj->GetServerPosition();
-
-		if (!time || waypointsSize == 1 || !aiManager->IsMoving())
-			return waypoints.front();
 
 		float distance = (speed * time) - distanceBuffer;
 
@@ -79,7 +99,7 @@ namespace scripts::prediction
 
 	bool GetPrediction(Skillshot& skillshot, PredictionOutput &out)
 	{
-		auto target = targetselector::GetEnemyChampionInRange(skillshot.GetMaxRange());
+		auto target = targetselector::GetEnemyChampionInRange(skillshot.GetMaxRange(), skillshot);
 		if (!target) return false;
 
 		return GetPrediction(globals::localPlayer, target, skillshot, out);
@@ -92,30 +112,24 @@ namespace scripts::prediction
 		const float spellRadius = skillshot.GetRadius();
 
 		float distance = sourcePos.Distance(targetObj->GetServerPosition());
-		float distanceBuffer = skillshot.GetType() == SkillshotType::SkillshotCircle ? max(spellRadius - 70.0f, 0.0f) : 0.0f;
+		float distanceBuffer = skillshot.GetType() == SkillshotType::SkillshotCircle ? max(spellRadius - 20.0f, 0.0f) : 0.0f;
 
 		if (distance > skillshot.GetMaxRange())
 			return false;
 
 		if (!skillshot.GetSpeed())
 		{
-			out.position = GetObjectPositionAfterTime(targetObj, skillshot.GetCastTime(), 0.0f);
-			return true;
+			out.position = GetObjectPositionAfterTime(targetObj, skillshot.GetCastTime(), distanceBuffer);
+			return CheckCollision(sourcePos, out.position, sourceObj, targetObj, skillshot);
 		}
 		
 		auto waypoints = targetAiManager->GetFutureSegments();
 		const int waypointsSize = (int)waypoints.size();
 
-		if (!waypointsSize)
+		if (!waypointsSize || !targetAiManager->IsMoving())
 		{
 			out.position = targetObj->GetServerPosition();
-			return true;
-		}
-
-		if (waypointsSize == 1 || !targetAiManager->IsMoving())
-		{
-			out.position = waypoints.front();
-			return true;
+			return CheckCollision(sourcePos, out.position, sourceObj, targetObj, skillshot);
 		}
 
 		float travelTime = (distance / skillshot.GetSpeed()) + skillshot.GetCastTime();
@@ -138,10 +152,7 @@ namespace scripts::prediction
 			missileTime = (distance / skillshot.GetSpeed()) + skillshot.GetCastTime();
 		}
 
-		if (skillshot.IsCollidableWith(CollidableObjects::Objects) && IsObjectInWay(sourcePos, predictedPos, targetObj, skillshot.GetRadius()))
-			return false;
-
 		out.position = predictedPos;
-		return true;
+		return CheckCollision(sourcePos, out.position, sourceObj, targetObj, skillshot);
 	}
 }

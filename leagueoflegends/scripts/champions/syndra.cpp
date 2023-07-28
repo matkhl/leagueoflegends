@@ -2,14 +2,14 @@
 
 using namespace scripts;
 
-class Module : public ChampionModule
+class SyndraModule : public ChampionModule
 {
 private:
     std::string name = SP_STRING("Syndra");
 
-    Skillshot q = SkillshotManager::RegisterSpell(name, SpellIndex::Q, Skillshot(800.0f, 210.0f, 0.0f, 0.6f, SkillshotType::SkillshotCircle));
-    Skillshot w = SkillshotManager::RegisterSpell(name, SpellIndex::W, Skillshot(950.0f, 225.0f, 1900.0f, 0.4f, SkillshotType::SkillshotCircle));
-    Skillshot e = SkillshotManager::RegisterSpell(name, SpellIndex::E, Skillshot(1400.0f, 90.0f, 2000.0f, 0.3f, SkillshotType::SkillshotLine));
+    Skillshot q = SkillshotManager::RegisterSpell(name, SpellIndex::Q, Skillshot(800.0f, 105.0f, 0.0f, 0.6f, SkillshotType::SkillshotCircle));
+    Skillshot w = SkillshotManager::RegisterSpell(name, SpellIndex::W, Skillshot(950.0f, 110.0f, 1900.0f, 0.4f, SkillshotType::SkillshotCircle));
+    Skillshot e = SkillshotManager::RegisterSpell(name, SpellIndex::E, Skillshot(1300.0f, 90.0f, 2200.0f, 0.25f, SkillshotType::SkillshotLine));
 
 private:
     float gameTime = 0.0f;
@@ -25,7 +25,7 @@ private:
     Vector3 lastETargetPos = {};
 
 public:
-    Module()
+    SyndraModule()
     {
         ChampionModuleManager::RegisterModule(name, this);
     }
@@ -106,6 +106,7 @@ public:
 
     void Init() override
     {
+        ADD_SETTING("Syndra", "draw Q-E range", false);
         ADD_SETTING("Syndra", "draw E calculation", false);
     }
 
@@ -123,16 +124,18 @@ public:
         auto spellCast = globals::localPlayer->GetActiveSpellCast();
         if (spellCast && spellCast->GetSpellId() == SpellIndex::E) return;
 
-        if (e.IsCastable() && prediction::GetPrediction(w, ePrediction))
+        if (e.IsCastable() && prediction::GetPrediction(e, ePrediction))
         {
-            if (q.IsCastable() && (q.GetStacks() > 0 || q.GetName().size() == 7))
+            if (q.IsCastable() && (q.GetStacks() > 0 || q.GetName().size() == 7) &&
+                globals::localPlayer->GetSpellBySlotId(SpellIndex::E)->GetManaCost() +
+                globals::localPlayer->GetSpellBySlotId(SpellIndex::Q)->GetManaCost() <= globals::localPlayer->GetMana())
             {
                 actions::CastSpell(SpellIndex::Q, ePrediction.position);
                 lastQForECastTime = gameTime;
                 return;
             }
 
-            if (SphereForEExists(ePrediction.position))
+            if (lastQForECastTime > gameTime + 0.1f ||  SphereForEExists(ePrediction.position))
             {
                 actions::CastSpell(SpellIndex::E, ePrediction.position);
                 lastECastTime = gameTime;
@@ -189,6 +192,11 @@ public:
 
     void Render() override
     {
+        if (e.IsCastable() && SETTINGS_BOOL("Syndra", "draw Q-E range"))
+        {
+            render::RenderCircleWorld(globals::localPlayer->GetPosition(), 40, e.GetRange(), COLOR_PURPLE, 1.0f);
+        }
+
         if (lastEObjPos.IsValid() && lastEProjectionPos.IsValid() && lastETargetPos.IsValid() && SETTINGS_BOOL("Syndra", "draw E calculation"))
         {
             render::RenderCircleWorld(lastEObjPos, 20, 30.0f, COLOR_BLUE, 3.0f);
@@ -210,4 +218,4 @@ public:
     }
 };
 
-Module module;
+SyndraModule module;

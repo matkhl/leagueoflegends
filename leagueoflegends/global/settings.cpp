@@ -20,7 +20,7 @@ namespace settings
 
 	void Save()
 	{
-		std::ofstream file(SP_STRING("settings-metadata.ini"));
+		std::ofstream file("ionia.ini");
 		if (file.is_open()) {
 			for (const auto& group : data) {
 				file << "[" << group.first << "]\n";
@@ -35,7 +35,7 @@ namespace settings
 
 	void Load()
 	{
-		std::ifstream file(SP_STRING("settings-metadata.ini"));
+		std::ifstream file("ionia.ini");
 		if (file.is_open())
 		{
 			std::string line;
@@ -54,10 +54,10 @@ namespace settings
 						std::string valueStr = line.substr(delimiterPos + 1);
 
 						SettingValue value;
-						if (valueStr == "true") {
+						if (valueStr == SP_STRING("true")) {
 							value = true;
 						}
-						else if (valueStr == "false") {
+						else if (valueStr == SP_STRING("false")) {
 							value = false;
 						}
 						else if (std::isdigit(valueStr[0])) {

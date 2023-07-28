@@ -57,6 +57,7 @@ namespace scripts
 		champions::Update();
 		if (SETTINGS_BOOL("orbwalker", "enabled")) orbwalker::Update();
 		if (SETTINGS_BOOL("recalls", "enabled")) recalls::Update();
+		skinchanger::Update();
 	}
 
 	namespace actions
@@ -83,6 +84,14 @@ namespace scripts
 			if (!CanDoAction()) return;
 			functions::AttackObject(obj);
 			RefreshBuffer();
+		}
+
+		void CastSpell(int spellId, Object* target)
+		{
+			Vector3 headPos = target->GetPosition();
+			const float objectHeight = *(float*)(target->GetCharacterData() + oObjCharDataDataSize) * target->GetScale();
+			headPos.y += objectHeight;
+			CastSpell(spellId, headPos);
 		}
 
 		void CastSpell(int spellId, Vector3 pos)
@@ -251,9 +260,23 @@ namespace scripts
 
 	namespace skinchanger
 	{
+		float lastSkinUpdateTime = 0.0f;
+
 		void Init()
 		{
 			ADD_SETTING("skinchanger", "skin id", 0);
+		}
+
+		void Update()
+		{
+			int skinId = SETTINGS_INT("skinchanger", "skin id");
+			if (skinId > 0 &&
+				globals::localPlayer->GetCharacterDataStack()->base_skin.skin != skinId &&
+				gameTime > lastSkinUpdateTime + 1.0f)
+			{
+				globals::localPlayer->ChangeSkin(skinId);
+				lastSkinUpdateTime = gameTime;
+			}
 		}
 	}
 

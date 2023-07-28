@@ -21,7 +21,8 @@ namespace scripts
 		bool ChooseSelectedObject(Object* selectedObject, Object* checkObj);
 
 		Object* GetEnemyChampionInRange(float range);
-		Object* GetEnemyChampionInRange(float range, int damageType);
+		Object* GetEnemyChampionInRange(float range, Skillshot skillshot);
+		Object* GetEnemyChampionInRange(float range, int damageType, Skillshot skillshot);
 		Object* GetObjectInRange(float range, std::string name = "", std::vector<QWORD> includefilterTypeHashes = {}, std::vector<QWORD> excludeFilterTypeHashesDetailed = {}, bool isSpecial = false);
 
 		void Init();
@@ -32,9 +33,12 @@ namespace scripts
 		struct PredictionOutput
 		{
 			Vector3 position;
+			float hitChance = 100.0f;
 		};
 
-		bool IsObjectInWay(Vector3 sourcePos, Vector3 targetPos, Object* targetObject, float projectileRadius);
+		bool CheckCollision(Vector3 sourcePos, Vector3 targetPos, Object* sourceObject, Object* targetObject, Skillshot& skillshot);
+		bool IsSpecificObjectInWay(Vector3 sourcePos, Vector3 targetPos, Object* collisionObject, float projectileRadius);
+		bool IsAnyObjectInWay(Vector3 sourcePos, Vector3 targetPos, Object* sourceObject, Object* targetObject, float projectileRadius);
 
 		Vector3 GetObjectPositionAfterTime(Object* obj, float time, float distanceBuffer = 0.0f);
 
@@ -44,14 +48,19 @@ namespace scripts
 
 	namespace actions
 	{
+		extern float lastActionTime;
+
 		bool CanDoAction();
 		void Idle();
 		void AttackObject(Object* obj);
+		void CastSpell(int spellId, Object* target);
 		void CastSpell(int spellId, Vector3 pos);
 	}
 
 	namespace orbwalker
 	{
+
+		extern float lastAttackTime;
 
 		namespace states
 		{
@@ -81,6 +90,7 @@ namespace scripts
 	namespace skinchanger
 	{
 		void Init();
+		void Update();
 	}
 
 	namespace debug

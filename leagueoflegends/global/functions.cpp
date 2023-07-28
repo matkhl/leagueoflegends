@@ -255,9 +255,9 @@ namespace functions
 			WriteVector3((spellInput + oSpellInputEndPos + sizeof(Vector3)), pos);
 			WriteVector3((spellInput + oSpellInputEndPos + sizeof(Vector3) * 0x2), pos);
 		}
-
+		
 		spoof_call(spoof_trampoline, _fnCastSpellWrapper, (QWORD*)(*(QWORD*)(*(QWORD*)(globals::moduleBase + oHudInstance) + oHudInstanceSpellInfo)), (QWORD*)spellInfo);
-
+		
 		WriteVector3((spellInput + oSpellInputStartPos), spellInputStartPos);
 		WriteVector3((spellInput + oSpellInputEndPos), spellInputEndPos);
 		WriteVector3((spellInput + oSpellInputEndPos + sizeof(Vector3)), spellInputEndPos2);

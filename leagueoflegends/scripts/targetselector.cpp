@@ -10,10 +10,16 @@ namespace scripts::targetselector
 	Object* GetEnemyChampionInRange(float range)
 	{
 		return GetEnemyChampionInRange(range,
-			(globals::localPlayer->GetAttackDamage() > globals::localPlayer->GetAbilityPower()) ? DamageType::Physical : DamageType::Magical);
+			(globals::localPlayer->GetAttackDamage() > globals::localPlayer->GetAbilityPower()) ? DamageType::Physical : DamageType::Magical, Skillshot());
 	}
 
-	Object* GetEnemyChampionInRange(float range, int damageType)
+	Object* GetEnemyChampionInRange(float range, Skillshot skillshot)
+	{
+		return GetEnemyChampionInRange(range,
+			(globals::localPlayer->GetAttackDamage() > globals::localPlayer->GetAbilityPower()) ? DamageType::Physical : DamageType::Magical, skillshot);
+	}
+
+	Object* GetEnemyChampionInRange(float range, int damageType, Skillshot skillshot)
 	{
 		Object* selectedObject = functions::GetSelectedObject();
 		Object* best = nullptr;
@@ -22,6 +28,9 @@ namespace scripts::targetselector
 			if (!obj->IsValidTarget()) continue;
 
 			if (!obj->IsInRange(globals::localPlayer->GetPosition(), range)) continue;
+			
+			prediction::PredictionOutput prediction;
+			if (skillshot.GetType() != SkillshotType::SkillshotNone && !prediction::GetPrediction(globals::localPlayer, obj, skillshot, prediction)) continue;
 
 			if (ChooseSelectedObject(selectedObject, obj)) return obj;
 				

@@ -113,7 +113,7 @@ namespace hooks
 				IMGUI_CHECKVERSION();
 				ImGui::CreateContext();
 				ImGuiIO& io = ImGui::GetIO(); (void)io;
-				io.IniFilename = SP_STRING("settings-window.ini");
+				io.IniFilename = "window.ini";
 				io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
 				io.Fonts->AddFontFromFileTTF(SP_STRING("C:\\Windows\\Fonts\\Arial.ttf"), 14);
 
@@ -182,7 +182,7 @@ namespace hooks
 					IMGUI_CHECKVERSION();
 					ImGui::CreateContext();
 					ImGuiIO& io = ImGui::GetIO(); (void)io;
-					io.IniFilename = SP_STRING("settings-window.ini");
+					io.IniFilename = "window.ini";
 					io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
 					io.Fonts->AddFontFromFileTTF(SP_STRING("C:\\Windows\\Fonts\\Arial.ttf"), 14);
 

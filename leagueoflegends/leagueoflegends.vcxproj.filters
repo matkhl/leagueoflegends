@@ -266,6 +266,18 @@
     <ClCompile Include="scripts\prediction.cpp">
       <Filter>scripts</Filter>
     </ClCompile>
+    <ClCompile Include="scripts\champions\drmundo.cpp">
+      <Filter>scripts\champions</Filter>
+    </ClCompile>
+    <ClCompile Include="scripts\champions\brand.cpp">
+      <Filter>scripts\champions</Filter>
+    </ClCompile>
+    <ClCompile Include="scripts\champions\garen.cpp">
+      <Filter>scripts\champions</Filter>
+    </ClCompile>
+    <ClCompile Include="scripts\champions\jax.cpp">
+      <Filter>scripts\champions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

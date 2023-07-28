@@ -14,7 +14,7 @@
 
 #include "Injection.h"
 
-#define NAMED_PIPE 0
+#define NAMED_PIPE 1
 
 DWORD GetProcId(const wchar_t* procName)
 {
@@ -76,6 +76,8 @@ int main()
 	}
 
 	std::cout << "Process found" << std::endl;
+
+	Sleep(1000);
 
 	std::vector<wchar_t> pathBuf;
 	DWORD copied = 0;

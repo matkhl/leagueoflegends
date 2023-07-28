@@ -263,6 +263,11 @@ float Object::GetHealth()
 	return *(float*)((QWORD)this + oObjHealth);
 }
 
+float Object::GetMaxHealth()
+{
+	return *(float*)((QWORD)this + oObjMaxHealth);
+}
+
 unsigned short Object::GetActionState()
 {
 	return *(unsigned short*)((QWORD)this + oObjActionState);

@@ -1,31 +1,31 @@
 #pragma once
 
 //functions
-#define oGetBaseDrawPosition 0x1F8920
-#define oWorldToScreen 0xDF0950
-#define oTryRightClick 0x882A20
-#define oIssueOrder 0x898580
-#define oIssueMove 0x881E00
-#define oCastSpellWrapper 0x88E890
-#define oPrintChat 0x841720
-#define oGetBoundingRadius 0x1F6110
-#define oGetAttackDelay 0x3AFB90
-#define oGetAttackWindup 0x3AFA90
-#define oGetObjectFromNetId 0x38D860
-#define oGetCollisionFlags 0xD67930
-#define oCharacterDataStackUpdate 0x183710
+#define oGetBaseDrawPosition 0x1F8920 //
+#define oWorldToScreen 0xDF0B70 //
+#define oTryRightClick 0x882B20 //
+#define oIssueOrder 0x898680 //
+#define oIssueMove 0x881F00 //
+#define oCastSpellWrapper 0x88E990 //
+#define oPrintChat 0x841820 //
+#define oGetBoundingRadius 0x1F6110 //
+#define oGetAttackDelay 0x3AFB90 //
+#define oGetAttackWindup 0x3AFA90 //
+#define oGetObjectFromNetId 0x38D860 //
+#define oGetCollisionFlags 0xD67B50 //
+#define oCharacterDataStackUpdate 0x183710 //
 
 //variables
-#define oGameTime 0x4213710
-#define oLocalPlayer 0x421F828
-#define oHeroManager 0x2171780
-#define oMinionManager 0x31C45B8
-#define oViewport 0x31C4578
-#define oHudInstance 0x2171670
-#define oZoomInstance 0x4211A90
-#define oChatClient 0x4220618
-#define oChatInstance 0x31C47D0
-#define oGetObjectFromNetIdParam 0x2171660
+#define oGameTime 0x4213790 //
+#define oLocalPlayer 0x421F8A8 //
+#define oHeroManager 0x2171800 //
+#define oMinionManager 0x31C4638 //
+#define oViewport 0x31C45F8 //
+#define oHudInstance 0x21716F0 //
+#define oZoomInstance 0x4211B10 //
+#define oChatClient 0x4220698 //
+#define oChatInstance 0x31C4850 //
+#define oGetObjectFromNetIdParam 0x21716E0 //
 
 #define oManagerList 0x8
 #define oManagerListSize 0x10
@@ -59,7 +59,8 @@
 #define oObjMana 0x340
 #define oObjTargetable 0xEB0
 #define oObjRecallState 0xF40
-#define oObjHealth 0x1070
+#define oObjHealth 0x1058
+#define oObjMaxHealth 0x1070
 #define oObjActionState 0x13C0
 #define oObjBonusAttackDamage 0x15D8
 #define oObjAbilityPower 0x15E8

@@ -126,6 +126,7 @@ public:
     bool IsTargetable();
     int GetRecallState();
     float GetHealth();
+    float GetMaxHealth();
     unsigned short GetActionState();
     float GetBonusAttackDamage();
     float GetAbilityPower();

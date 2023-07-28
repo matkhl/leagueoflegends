@@ -87,10 +87,6 @@ namespace menu
 		ImGui::GetIO().MouseDrawCursor = false;
 
 		LOG("Menu initialized");
-
-		int skinId = SETTINGS_INT("skinchanger", "skin id");
-		if (skinId > 0)
-			globals::localPlayer->ChangeSkin(skinId);
 	}
 
 	void SaveSoon()
@@ -185,13 +181,20 @@ namespace menu
 							char* items[50] = {};
 
 							for (int i = 0; i < 50; i++) {
-								std::string str = std::to_string(i);
+								std::string str;
+								if (!i)
+									str = SP_STRING("Off");
+								else
+									str = std::to_string(i);
 								items[i] = new char[str.length() + 1];
 								std::strcpy(items[i], str.c_str());
 							}
 
 							if (ImGui::Combo(key.c_str(), &intValue, items, 50, 5))
+							{
 								globals::localPlayer->ChangeSkin(intValue);
+								SaveSoon();
+							}
 
 							for (int i = 0; i < 50; i++)
 								delete[] items[i];
@@ -263,6 +266,7 @@ namespace menu
 		{
 			settings::Save();
 			nextSaveTime = 0.0f;
+			LOG("Saved");
 		}
 	}
 }
