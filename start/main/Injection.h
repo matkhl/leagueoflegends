@@ -12,19 +12,22 @@
 //auto RestorenjectionFunctions		= (f_RestoreInjectionFunctions)GetProcAddress(hInjectionMod, "RestorenjectionFunctions");
 //
 //Symbol state:
-//auto GetSymbolState 		= (f_GetSymbolState)GetProcAddress(hInjectionMod, "GetSymbolState");
-//auto GetDownloadProgress 	= (f_GetDownloadProgress)GetProcAddress(hInjectionMod, "GetDownloadProgress");
+//auto GetSymbolState 			= (f_GetSymbolState)GetProcAddress(hInjectionMod, "GetSymbolState");
+//auto GetImportState			= (f_GetImportState)GetProcAddress(hInjectionMod, "GetImportState");
+//
+//Download progress:
+//auto GetDownloadProgressEx 	= (f_GetDownloadProgress)GetProcAddress(hInjectionMod, "GetDownloadProgressEx");
 
 #pragma once
 
 #define GH_INJ_VERSIONW L"4.6"
 #define GH_INJ_VERSIONA "4.6"
 
-#define GH_INJ_MOD_NAME64W L"Injector.dll"
-#define GH_INJ_MOD_NAME86W L"Injector.dll"
+#define GH_INJ_MOD_NAME64W L"GH Injector - x64.dll"
+#define GH_INJ_MOD_NAME86W L"GH Injector - x86.dll"
 
-#define GH_INJ_MOD_NAME64A "Injector.dll"
-#define GH_INJ_MOD_NAME86A "Injector.dll"
+#define GH_INJ_MOD_NAME64A "GH Injector - x64.dll"
+#define GH_INJ_MOD_NAME86A "GH Injector - x86.dll"
 
 #ifdef _WIN64
 #define GH_INJ_MOD_NAMEW GH_INJ_MOD_NAME64W
