@@ -1,4 +1,4 @@
-##leagueoflegends
+## leagueoflegends
 
 Simple source including:
 - recall tracker (outdated)
@@ -8,4 +8,4 @@ Simple source including:
 - simple prediction & targetselection
 - skinchanger (based on R3nzSkin source)
 
-Updated for patch 13.14.522 (minipatch after 13.14 release)
+*Updated for patch 13.14.522 (minipatch after 13.14 release)*
